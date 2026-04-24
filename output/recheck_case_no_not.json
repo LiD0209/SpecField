@@ -1,0 +1,8 @@
+{
+  "status": "no_not_satisfied",
+  "input": "D:\\project\\conditionFuzzingPaper\\output\\mock_cases\\case_no_not_satisfied.json",
+  "codebase_path": "D:\\project\\conditionFuzzingPaper\\wolfssl-master",
+  "total_items": 2,
+  "codex_calls": 0,
+  "message": "No not-satisfied item found. Stop without calling Codex."
+}

@@ -1,0 +1,2261 @@
+{
+  "meta": {
+    "generated_at": "2026-04-15 16:27:46",
+    "doc_file": "D:\\project\\conditionFuzzingPaper\\document\\TLS1.3.txt",
+    "changes_file": "D:\\project\\conditionFuzzingPaper\\output\\02_variable_changes.json",
+    "changes_key": "changes",
+    "changes_total": 652,
+    "start_index": 0,
+    "end_index_exclusive": 10,
+    "processed_count": 10,
+    "paragraph_count": 1295,
+    "radius": 1,
+    "max_windows": 4,
+    "max_paragraphs_per_window": 8,
+    "min_score": 1.0,
+    "use_llm": true,
+    "model": "gpt-5.4"
+  },
+  "context_store": {
+    "ctx_000001": {
+      "context_id": "ctx_000001",
+      "text": "2.1.  Incorrect DHE Share\n\nIf the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the handshake with\n   an appropriate \"key_share\" extension, as shown in Figure 2.  If no\n   common cryptographic parameters can be negotiated, the server MUST\n   abort the handshake with an appropriate alert.\n\nClient                                               Server\n\nError handling in TLS is very simple.  When an error is detected, the\n   detecting party sends a message to its peer.  Upon transmission or\n   receipt of a fatal alert message, both parties MUST immediately close\n   the connection.\n\nWhenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate the connection\" and\n   \"abort the handshake\" are used without a specific alert it means that\n   the implementation SHOULD send the alert indicated by the\n   descriptions below.  The phrases \"terminate the connection with an X\n   alert\" and \"abort the handshake with an X alert\" mean that the\n   implementation MUST send alert X if it sends any alert.  All alerts\n   defined below in this section, as well as all unknown alerts, are\n   universally considered fatal as of TLS 1.3 (see Section 6).  The\n   implementation SHOULD provide a way to facilitate logging the sending\n   and receiving of alerts.\n\nThe following error alerts are defined:",
+      "selected_window_ids": [
+        "w1",
+        "w4"
+      ],
+      "windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            91,
+            92,
+            93
+          ],
+          "start_line": 748,
+          "end_line": 758,
+          "section": "2.1.  Incorrect DHE Share",
+          "score": 27.365,
+          "text": "2.1.  Incorrect DHE Share\n\nIf the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the handshake with\n   an appropriate \"key_share\" extension, as shown in Figure 2.  If no\n   common cryptographic parameters can be negotiated, the server MUST\n   abort the handshake with an appropriate alert.\n\nClient                                               Server"
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            694,
+            695,
+            696
+          ],
+          "start_line": 4968,
+          "end_line": 4987,
+          "section": "6.2.  Error Alerts",
+          "score": 20.54,
+          "text": "Error handling in TLS is very simple.  When an error is detected, the\n   detecting party sends a message to its peer.  Upon transmission or\n   receipt of a fatal alert message, both parties MUST immediately close\n   the connection.\n\nWhenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate the connection\" and\n   \"abort the handshake\" are used without a specific alert it means that\n   the implementation SHOULD send the alert indicated by the\n   descriptions below.  The phrases \"terminate the connection with an X\n   alert\" and \"abort the handshake with an X alert\" mean that the\n   implementation MUST send alert X if it sends any alert.  All alerts\n   defined below in this section, as well as all unknown alerts, are\n   universally considered fatal as of TLS 1.3 (see Section 6).  The\n   implementation SHOULD provide a way to facilitate logging the sending\n   and receiving of alerts.\n\nThe following error alerts are defined:"
+        }
+      ],
+      "selection_reason": "w1 contains the exact normative condition and action for when no common cryptographic parameters can be negotiated. w4 adds the nearby general definition of what \"abort the handshake with an appropriate alert\" means, making the context more complete than other candidates.",
+      "llm_used": true
+    },
+    "ctx_000002": {
+      "context_id": "ctx_000002",
+      "text": "D.2.  Negotiating with an Older Client\n\nA TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If the\n   \"supported_versions\" extension is not present, the server MUST\n   negotiate the minimum of ClientHello.legacy_version and TLS 1.2.  For\n   example, if the server supports TLS 1.0, 1.1, and 1.2, and\n   legacy_version is TLS 1.0, the server will proceed with a TLS 1.0\n   ServerHello.  If the \"supported_versions\" extension is absent and the\n   server only supports versions greater than\n   ClientHello.legacy_version, the server MUST abort the handshake with\n   a \"protocol_version\" alert.\n\nNote that earlier versions of TLS did not clearly specify the record\n   layer version number value in all cases\n   (TLSPlaintext.legacy_record_version).  Servers will receive various\n   TLS 1.x versions in this field, but its value MUST always be ignored.",
+      "selected_window_ids": [
+        "w3"
+      ],
+      "windows": [
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            1098,
+            1099,
+            1100
+          ],
+          "start_line": 7901,
+          "end_line": 7919,
+          "section": "12.2.  Informative References",
+          "score": 39.095,
+          "text": "D.2.  Negotiating with an Older Client\n\nA TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If the\n   \"supported_versions\" extension is not present, the server MUST\n   negotiate the minimum of ClientHello.legacy_version and TLS 1.2.  For\n   example, if the server supports TLS 1.0, 1.1, and 1.2, and\n   legacy_version is TLS 1.0, the server will proceed with a TLS 1.0\n   ServerHello.  If the \"supported_versions\" extension is absent and the\n   server only supports versions greater than\n   ClientHello.legacy_version, the server MUST abort the handshake with\n   a \"protocol_version\" alert.\n\nNote that earlier versions of TLS did not clearly specify the record\n   layer version number value in all cases\n   (TLSPlaintext.legacy_record_version).  Servers will receive various\n   TLS 1.x versions in this field, but its value MUST always be ignored."
+        }
+      ],
+      "selection_reason": "w3 contains the exact normative condition and required alert, plus the surrounding negotiation rules that define how the server behaves when supported_versions is present or absent.",
+      "llm_used": true
+    },
+    "ctx_000003": {
+      "context_id": "ctx_000003",
+      "text": "Note that 0-RTT data is not compatible with older servers and\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\n   See Appendix D.3.\n\nIf the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert.\n\nSome legacy server implementations are known to not implement the TLS\n   specification properly and might abort connections upon encountering\n   TLS extensions or versions which they are not aware of.\n   Interoperability with buggy servers is a complex topic beyond the\n   scope of this document.  Multiple connection attempts may be required\n   in order to negotiate a backward-compatible connection; however, this\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED.",
+      "selected_window_ids": [
+        "w2"
+      ],
+      "windows": [
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            1095,
+            1096,
+            1097
+          ],
+          "start_line": 7885,
+          "end_line": 7899,
+          "section": "12.2.  Informative References",
+          "score": 29.395,
+          "text": "Note that 0-RTT data is not compatible with older servers and\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\n   See Appendix D.3.\n\nIf the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert.\n\nSome legacy server implementations are known to not implement the TLS\n   specification properly and might abort connections upon encountering\n   TLS extensions or versions which they are not aware of.\n   Interoperability with buggy servers is a complex topic beyond the\n   scope of this document.  Multiple connection attempts may be required\n   in order to negotiate a backward-compatible connection; however, this\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED."
+        }
+      ],
+      "selection_reason": "w2 contains the exact client-side condition and required action from the change record, along with the immediately adjacent interoperability context.",
+      "llm_used": true
+    },
+    "ctx_000004": {
+      "context_id": "ctx_000004",
+      "text": "Implementations MUST NOT send zero-length fragments of Handshake\n   types, even if those fragments contain padding.\n\nAlert messages (Section 6) MUST NOT be fragmented across records, and\n   multiple alert messages MUST NOT be coalesced into a single\n   TLSPlaintext record.  In other words, a record with an Alert type\n   MUST contain exactly one message.\n\nApplication Data messages contain data that is opaque to TLS.\n   Application Data messages are always protected.  Zero-length\n   fragments of Application Data MAY be sent, as they are potentially\n   useful as a traffic analysis countermeasure.  Application Data\n   fragments MAY be split across multiple records or coalesced into a\n   single record.",
+      "selected_window_ids": [
+        "w4"
+      ],
+      "windows": [
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            623,
+            624,
+            625
+          ],
+          "start_line": 4427,
+          "end_line": 4440,
+          "section": "5.1.  Record Layer",
+          "score": 25.67,
+          "text": "Implementations MUST NOT send zero-length fragments of Handshake\n   types, even if those fragments contain padding.\n\nAlert messages (Section 6) MUST NOT be fragmented across records, and\n   multiple alert messages MUST NOT be coalesced into a single\n   TLSPlaintext record.  In other words, a record with an Alert type\n   MUST contain exactly one message.\n\nApplication Data messages contain data that is opaque to TLS.\n   Application Data messages are always protected.  Zero-length\n   fragments of Application Data MAY be sent, as they are potentially\n   useful as a traffic analysis countermeasure.  Application Data\n   fragments MAY be split across multiple records or coalesced into a\n   single record."
+        }
+      ],
+      "selection_reason": "w4 directly contains the exact normative rule for Alert messages in TLSPlaintext records, including the prohibition on fragmentation and coalescing plus the clarifying sentence that such a record must contain exactly one alert message.",
+      "llm_used": true
+    },
+    "ctx_000005": {
+      "context_id": "ctx_000005",
+      "text": "Note: TLS defines two generic alerts (see Section 6) to use upon\n   failure to parse a message.  Peers which receive a message which\n   cannot be parsed according to the syntax (e.g., have a length\n   extending beyond the message boundary or contain an out-of-range\n   length) MUST terminate the connection with a \"decode_error\" alert.\n   Peers which receive a message which is syntactically correct but\n   semantically invalid (e.g., a DHE share of p - 1, or an invalid enum)\n   MUST terminate the connection with an \"illegal_parameter\" alert.\n\nenum { warning(1), fatal(2), (255) } AlertLevel;\n\nenum {\n          close_notify(0),\n          unexpected_message(10),\n          bad_record_mac(20),\n          record_overflow(22),\n          handshake_failure(40),\n          bad_certificate(42),\n          unsupported_certificate(43),\n          certificate_revoked(44),\n          certificate_expired(45),\n          certificate_unknown(46),\n          illegal_parameter(47),\n          unknown_ca(48),\n          access_denied(49),\n          decode_error(50),\n          decrypt_error(51),\n          protocol_version(70),\n          insufficient_security(71),\n          internal_error(80),\n          inappropriate_fallback(86),\n          user_canceled(90),\n          missing_extension(109),\n          unsupported_extension(110),\n          unrecognized_name(112),\n          bad_certificate_status_response(113),\n          unknown_psk_identity(115),\n          certificate_required(116),\n          no_application_protocol(120),\n          (255)\n      } AlertDescription;",
+      "selected_window_ids": [
+        "w2"
+      ],
+      "windows": [
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            681,
+            682,
+            683
+          ],
+          "start_line": 4823,
+          "end_line": 4883,
+          "section": "6.  Alert Protocol",
+          "score": 19.525,
+          "text": "Note: TLS defines two generic alerts (see Section 6) to use upon\n   failure to parse a message.  Peers which receive a message which\n   cannot be parsed according to the syntax (e.g., have a length\n   extending beyond the message boundary or contain an out-of-range\n   length) MUST terminate the connection with a \"decode_error\" alert.\n   Peers which receive a message which is syntactically correct but\n   semantically invalid (e.g., a DHE share of p - 1, or an invalid enum)\n   MUST terminate the connection with an \"illegal_parameter\" alert.\n\nenum { warning(1), fatal(2), (255) } AlertLevel;\n\nenum {\n          close_notify(0),\n          unexpected_message(10),\n          bad_record_mac(20),\n          record_overflow(22),\n          handshake_failure(40),\n          bad_certificate(42),\n          unsupported_certificate(43),\n          certificate_revoked(44),\n          certificate_expired(45),\n          certificate_unknown(46),\n          illegal_parameter(47),\n          unknown_ca(48),\n          access_denied(49),\n          decode_error(50),\n          decrypt_error(51),\n          protocol_version(70),\n          insufficient_security(71),\n          internal_error(80),\n          inappropriate_fallback(86),\n          user_canceled(90),\n          missing_extension(109),\n          unsupported_extension(110),\n          unrecognized_name(112),\n          bad_certificate_status_response(113),\n          unknown_psk_identity(115),\n          certificate_required(116),\n          no_application_protocol(120),\n          (255)\n      } AlertDescription;"
+        }
+      ],
+      "selection_reason": "w2 contains the exact AlertLevel enum definition from RFC 8446 along with immediately adjacent normative parsing/error context, making it the most complete and directly relevant match. w4 is from informative references, and w1/w3 do not contain the enum definition itself.",
+      "llm_used": true
+    },
+    "ctx_000006": {
+      "context_id": "ctx_000006",
+      "text": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages.\n\nAll SHA-1 signature algorithms in this specification are defined\n   solely for use in legacy certificates and are not valid for\n   CertificateVerify signatures.",
+      "selected_window_ids": [
+        "w4"
+      ],
+      "windows": [
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            547,
+            548,
+            549
+          ],
+          "start_line": 3976,
+          "end_line": 3999,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 25.55,
+          "text": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages.\n\nAll SHA-1 signature algorithms in this specification are defined\n   solely for use in legacy certificates and are not valid for\n   CertificateVerify signatures."
+        }
+      ],
+      "selection_reason": "w4 directly contains the exact normative rule for CertificateVerify signatures, plus the surrounding constraints and clarification that SHA-1 algorithms are only for legacy certificates and invalid for CertificateVerify.",
+      "llm_used": true
+    },
+    "ctx_000007": {
+      "context_id": "ctx_000007",
+      "text": "Each PSK is associated with a single Hash algorithm.  For PSKs\n   established via the ticket mechanism (Section 4.6.1), this is the KDF\n   Hash algorithm on the connection where the ticket was established.\n   For externally established PSKs, the Hash algorithm MUST be set when\n\nthe PSK is established or default to SHA-256 if no such algorithm is\n   defined.  The server MUST ensure that it selects a compatible PSK\n   (if any) and cipher suite.\n\nIn TLS versions prior to TLS 1.3, the Server Name Identification\n   (SNI) value was intended to be associated with the session (Section 3\n   of [RFC6066]), with the server being required to enforce that the SNI\n   value associated with the session matches the one specified in the\n   resumption handshake.  However, in reality the implementations were\n   not consistent on which of two supplied SNI values they would use,\n   leading to the consistency requirement being de facto enforced by the\n   clients.  In TLS 1.3, the SNI value is always explicitly specified in\n   the resumption handshake, and there is no need for the server to\n   associate an SNI value with the ticket.  Clients, however, SHOULD\n   store the SNI with the PSK to fulfill the requirements of\n   Section 4.6.1.",
+      "selected_window_ids": [
+        "w3"
+      ],
+      "windows": [
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            426,
+            427,
+            428
+          ],
+          "start_line": 3186,
+          "end_line": 3214,
+          "section": "4.2.11.  Pre-Shared Key Extension",
+          "score": 24.845,
+          "text": "Each PSK is associated with a single Hash algorithm.  For PSKs\n   established via the ticket mechanism (Section 4.6.1), this is the KDF\n   Hash algorithm on the connection where the ticket was established.\n   For externally established PSKs, the Hash algorithm MUST be set when\n\nthe PSK is established or default to SHA-256 if no such algorithm is\n   defined.  The server MUST ensure that it selects a compatible PSK\n   (if any) and cipher suite.\n\nIn TLS versions prior to TLS 1.3, the Server Name Identification\n   (SNI) value was intended to be associated with the session (Section 3\n   of [RFC6066]), with the server being required to enforce that the SNI\n   value associated with the session matches the one specified in the\n   resumption handshake.  However, in reality the implementations were\n   not consistent on which of two supplied SNI values they would use,\n   leading to the consistency requirement being de facto enforced by the\n   clients.  In TLS 1.3, the SNI value is always explicitly specified in\n   the resumption handshake, and there is no need for the server to\n   associate an SNI value with the ticket.  Clients, however, SHOULD\n   store the SNI with the PSK to fulfill the requirements of\n   Section 4.6.1."
+        }
+      ],
+      "selection_reason": "w3 directly contains the exact normative statement about externally established PSKs defaulting the Hash algorithm to SHA-256, plus the immediately preceding definition that each PSK has a single Hash algorithm and the related server compatibility requirement.",
+      "llm_used": true
+    },
+    "ctx_000008": {
+      "context_id": "ctx_000008",
+      "text": "If the CertificateVerify message is sent by a server, the signature\n   algorithm MUST be one offered in the client's \"signature_algorithms\"\n   extension unless no valid certificate chain can be produced without\n   unsupported algorithms (see Section 4.2.3).\n\nIf sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages.",
+      "selected_window_ids": [
+        "w3"
+      ],
+      "windows": [
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            546,
+            547,
+            548
+          ],
+          "start_line": 3971,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 36.325,
+          "text": "If the CertificateVerify message is sent by a server, the signature\n   algorithm MUST be one offered in the client's \"signature_algorithms\"\n   extension unless no valid certificate chain can be produced without\n   unsupported algorithms (see Section 4.2.3).\n\nIf sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages."
+        }
+      ],
+      "selection_reason": "w3 contains the exact client-side normative requirement and the immediately adjacent normative constraints on CertificateVerify signature algorithm selection, making it the most complete and relevant context.",
+      "llm_used": true
+    }
+  },
+  "items": [
+    {
+      "index": 0,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If no common cryptographic parameters can be negotiated",
+        "change_action": "set to appropriate alert",
+        "old_value": "",
+        "new_value": "appropriate alert",
+        "related_state_or_step": "Handshake abort",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If no common cryptographic parameters can be negotiated, the server MUST abort the handshake with an appropriate alert.",
+        "note": "incomplete information",
+        "source_chunk_id": "chunk_0005"
+      },
+      "keywords": [
+        "alert",
+        "appropriate",
+        "to",
+        "be",
+        "can",
+        "common",
+        "cryptographic",
+        "negotiated",
+        "no",
+        "parameters",
+        "abort",
+        "handshake",
+        "an",
+        "server"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 92,
+          "score": 27.365,
+          "start_line": 750,
+          "end_line": 756,
+          "section": "2.1.  Incorrect DHE Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"appropriate alert\"",
+            "token_hits=14",
+            "normative_language"
+          ],
+          "preview": "If the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the "
+        },
+        {
+          "paragraph_id": 290,
+          "score": 20.99,
+          "start_line": 2289,
+          "end_line": 2304,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "TLS 1.3 provides two extensions for indicating which signature\n   algorithms may be used in digital signatures.  The\n   \"signature_algorithms_cert\" extension applies to signatures in\n   certificates, and the \"signature_algorithms\" extension, which\n   originall"
+        },
+        {
+          "paragraph_id": 695,
+          "score": 20.54,
+          "start_line": 4973,
+          "end_line": 4985,
+          "section": "6.2.  Error Alerts",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "Whenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate th"
+        },
+        {
+          "paragraph_id": 221,
+          "score": 20.515,
+          "start_line": 1679,
+          "end_line": 1696,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=9",
+            "normative_language"
+          ],
+          "preview": "All versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messa"
+        },
+        {
+          "paragraph_id": 219,
+          "score": 20.29,
+          "start_line": 1660,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "legacy_compression_methods:  Versions of TLS before 1.3 supported\n      compression with the list of supported compression methods being\n      sent in this field.  For every TLS 1.3 ClientHello, this vector\n      MUST contain exactly one byte, set to zero, whi"
+        },
+        {
+          "paragraph_id": 369,
+          "score": 20.19,
+          "start_line": 2814,
+          "end_line": 2825,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "If using (EC)DHE key establishment, servers offer exactly one\n   KeyShareEntry in the ServerHello.  This value MUST be in the same\n   group as the KeyShareEntry value offered by the client that the\n   server has selected for the negotiated key exchange.  Serve"
+        },
+        {
+          "paragraph_id": 451,
+          "score": 20.165,
+          "start_line": 3377,
+          "end_line": 3382,
+          "section": "4.3.1.  Encrypted Extensions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "The EncryptedExtensions message contains extensions that can be\n   protected, i.e., any which are not needed to establish the\n   cryptographic context but which are not associated with individual\n   certificates.  The client MUST check EncryptedExtensions for "
+        },
+        {
+          "paragraph_id": 360,
+          "score": 20.065,
+          "start_line": 2762,
+          "end_line": 2771,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "Clients can offer as many KeyShareEntry values as the number of\n   supported groups it is offering, each representing a single set of\n   key exchange parameters.  For instance, a client might offer shares\n   for several elliptic curves or multiple FFDHE groups"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            91,
+            92,
+            93
+          ],
+          "start_line": 748,
+          "end_line": 758,
+          "section": "2.1.  Incorrect DHE Share",
+          "score": 27.365
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 20.515
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            289,
+            290,
+            291
+          ],
+          "start_line": 2287,
+          "end_line": 2311,
+          "section": "4.2.3.  Signature Algorithms",
+          "score": 20.99
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            694,
+            695,
+            696
+          ],
+          "start_line": 4968,
+          "end_line": 4987,
+          "section": "6.2.  Error Alerts",
+          "score": 20.54
+        }
+      ],
+      "selected_window_ids": [
+        "w1",
+        "w4"
+      ],
+      "context_id": "ctx_000001",
+      "selection_reason": "w1 contains the exact normative condition and action for when no common cryptographic parameters can be negotiated. w4 adds the nearby general definition of what \"abort the handshake with an appropriate alert\" means, making the context more complete than other candidates.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w1\", \"w4\"],\n  \"merged_context\": \"2.1.  Incorrect DHE Share\\n\\nIf the client has not provided a sufficient \\\"key_share\\\" extension\\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\\n   unsupported by the server), the server corrects the mismatch with a\\n   HelloRetryRequest and the client needs to restart the handshake with\\n   an appropriate \\\"key_share\\\" extension, as shown in Figure 2.  If no\\n   common cryptographic parameters can be negotiated, the server MUST\\n   abort the handshake with an appropriate alert.\\n\\nClient                                               Server\\n\\nError handling in TLS is very simple.  When an error is detected, the\\n   detecting party sends a message to its peer.  Upon transmission or\\n   receipt of a fatal alert message, both parties MUST immediately close\\n   the connection.\\n\\nWhenever an implementation encounters a fatal error condition, it\\n   SHOULD send an appropriate fatal alert and MUST close the connection\\n   without sending or receiving any additional data.  In the rest of\\n   this specification, when the phrases \\\"terminate the connection\\\" and\\n   \\\"abort the handshake\\\" are used without a specific alert it means that\\n   the implementation SHOULD send the alert indicated by the\\n   descriptions below.  The phrases \\\"terminate the connection with an X\\n   alert\\\" and \\\"abort the handshake with an X alert\\\" mean that the\\n   implementation MUST send alert X if it sends any alert.  All alerts\\n   defined below in this section, as well as all unknown alerts, are\\n   universally considered fatal as of TLS 1.3 (see Section 6).  The\\n   implementation SHOULD provide a way to facilitate logging the sending\\n   and receiving of alerts.\\n\\nThe following error alerts are defined:\",\n  \"reason\": \"w1 contains the exact normative condition and action for when no common cryptographic parameters can be negotiated. w4 adds the nearby general definition of what \\\"abort the handshake with an appropriate alert\\\" means, making the context more complete than other candidates.\"\n}"
+    },
+    {
+      "index": 1,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "protocol_version",
+        "related_state_or_step": "Server aborts handshake during negotiation with older client",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version, the server MUST abort the handshake with a \"protocol_version\" alert.",
+        "note": "protocol_version not in catalog; mapped to alert field with incomplete information",
+        "source_chunk_id": "chunk_0048"
+      },
+      "keywords": [
+        "alert",
+        "protocol_version",
+        "constant",
+        "to",
+        "absent",
+        "clienthello",
+        "extension",
+        "greater",
+        "legacy_version",
+        "only",
+        "server",
+        "supported_versions",
+        "supports",
+        "than",
+        "versions"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 1099,
+          "score": 39.095,
+          "start_line": 7903,
+          "end_line": 7914,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\""
+          ],
+          "preview": "A TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If th"
+        },
+        {
+          "paragraph_id": 221,
+          "score": 28.32,
+          "start_line": 1679,
+          "end_line": 1696,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=10"
+          ],
+          "preview": "All versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messa"
+        },
+        {
+          "paragraph_id": 281,
+          "score": 27.99,
+          "start_line": 2230,
+          "end_line": 2237,
+          "section": "4.2.1.  Supported Versions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=9"
+          ],
+          "preview": "parse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supporte"
+        },
+        {
+          "paragraph_id": 1119,
+          "score": 27.77,
+          "start_line": 8019,
+          "end_line": 8023,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=7"
+          ],
+          "preview": "Implementations MUST NOT send a ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 or less.  Any endpoint\n   receiving a Hello message with ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 MUST abort the handshak"
+        },
+        {
+          "paragraph_id": 249,
+          "score": 27.465,
+          "start_line": 1863,
+          "end_line": 1872,
+          "section": "4.1.4.  Hello Retry Request",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=8"
+          ],
+          "preview": "Upon receipt of a HelloRetryRequest, the client MUST check the\n   legacy_version, legacy_session_id_echo, cipher_suite, and\n   legacy_compression_method as specified in Section 4.1.3 and then\n   process the extensions, starting with determining the version usi"
+        },
+        {
+          "paragraph_id": 1096,
+          "score": 26.665,
+          "start_line": 7889,
+          "end_line": 7891,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "If the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert."
+        },
+        {
+          "paragraph_id": 245,
+          "score": 26.56,
+          "start_line": 1838,
+          "end_line": 1841,
+          "section": "4.1.3.  Server Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "A legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been n"
+        },
+        {
+          "paragraph_id": 256,
+          "score": 25.94,
+          "start_line": 1913,
+          "end_line": 1916,
+          "section": "4.1.4.  Hello Retry Request",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=6"
+          ],
+          "preview": "The value of selected_version in the HelloRetryRequest\n   \"supported_versions\" extension MUST be retained in the ServerHello,\n   and a client MUST abort the handshake with an \"illegal_parameter\"\n   alert if the value changes."
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 28.32
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            280,
+            281,
+            282
+          ],
+          "start_line": 2214,
+          "end_line": 2239,
+          "section": "4.2.1.  Supported Versions",
+          "score": 27.99
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            1098,
+            1099,
+            1100
+          ],
+          "start_line": 7901,
+          "end_line": 7919,
+          "section": "12.2.  Informative References",
+          "score": 39.095
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            1118,
+            1119,
+            1120
+          ],
+          "start_line": 8013,
+          "end_line": 8028,
+          "section": "12.2.  Informative References",
+          "score": 27.77
+        }
+      ],
+      "selected_window_ids": [
+        "w3"
+      ],
+      "context_id": "ctx_000002",
+      "selection_reason": "w3 contains the exact normative condition and required alert, plus the surrounding negotiation rules that define how the server behaves when supported_versions is present or absent.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w3\"],\n  \"merged_context\": \"D.2.  Negotiating with an Older Client\\n\\nA TLS server can also receive a ClientHello indicating a version\\n   number smaller than its highest supported version.  If the\\n   \\\"supported_versions\\\" extension is present, the server MUST negotiate\\n   using that extension as described in Section 4.2.1.  If the\\n   \\\"supported_versions\\\" extension is not present, the server MUST\\n   negotiate the minimum of ClientHello.legacy_version and TLS 1.2.  For\\n   example, if the server supports TLS 1.0, 1.1, and 1.2, and\\n   legacy_version is TLS 1.0, the server will proceed with a TLS 1.0\\n   ServerHello.  If the \\\"supported_versions\\\" extension is absent and the\\n   server only supports versions greater than\\n   ClientHello.legacy_version, the server MUST abort the handshake with\\n   a \\\"protocol_version\\\" alert.\\n\\nNote that earlier versions of TLS did not clearly specify the record\\n   layer version number value in all cases\\n   (TLSPlaintext.legacy_record_version).  Servers will receive various\\n   TLS 1.x versions in this field, but its value MUST always be ignored.\",\n  \"reason\": \"w3 contains the exact normative condition and required alert, plus the surrounding negotiation rules that define how the server behaves when supported_versions is present or absent.\"\n}"
+    },
+    {
+      "index": 2,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If the version chosen by the server is not supported by the client (or is not acceptable)",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "protocol_version",
+        "related_state_or_step": "Client aborts handshake during version negotiation with older server",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the version chosen by the server is not supported by the client (or is not acceptable), the client MUST abort the handshake with a \"protocol_version\" alert.",
+        "note": "protocol_version not in catalog; mapped to alert field with incomplete information",
+        "source_chunk_id": "chunk_0048"
+      },
+      "keywords": [
+        "alert",
+        "protocol_version",
+        "constant",
+        "to",
+        "acceptable",
+        "by",
+        "chosen",
+        "client",
+        "server",
+        "supported",
+        "version",
+        "aborts",
+        "during",
+        "handshake",
+        "negotiation"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 1096,
+          "score": 29.395,
+          "start_line": 7889,
+          "end_line": 7891,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=11"
+          ],
+          "preview": "If the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert."
+        },
+        {
+          "paragraph_id": 1099,
+          "score": 27.895,
+          "start_line": 7903,
+          "end_line": 7914,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=7"
+          ],
+          "preview": "A TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If th"
+        },
+        {
+          "paragraph_id": 1119,
+          "score": 26.72,
+          "start_line": 8019,
+          "end_line": 8023,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=5"
+          ],
+          "preview": "Implementations MUST NOT send a ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 or less.  Any endpoint\n   receiving a Hello message with ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 MUST abort the handshak"
+        },
+        {
+          "paragraph_id": 245,
+          "score": 26.665,
+          "start_line": 1838,
+          "end_line": 1841,
+          "section": "4.1.3.  Server Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "A legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been n"
+        },
+        {
+          "paragraph_id": 327,
+          "score": 20.245,
+          "start_line": 2572,
+          "end_line": 2587,
+          "section": "4.2.5.  OID Filters",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "filters:  A list of certificate extension OIDs [RFC5280] with their\n      allowed value(s) and represented in DER-encoded [X690] format.\n      Some certificate extension OIDs allow multiple values (e.g.,\n      Extended Key Usage).  If the server has included a"
+        },
+        {
+          "paragraph_id": 219,
+          "score": 20.045,
+          "start_line": 1660,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "legacy_compression_methods:  Versions of TLS before 1.3 supported\n      compression with the list of supported compression methods being\n      sent in this field.  For every TLS 1.3 ClientHello, this vector\n      MUST contain exactly one byte, set to zero, whi"
+        },
+        {
+          "paragraph_id": 281,
+          "score": 20.045,
+          "start_line": 2230,
+          "end_line": 2237,
+          "section": "4.2.1.  Supported Versions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "parse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supporte"
+        },
+        {
+          "paragraph_id": 193,
+          "score": 19.97,
+          "start_line": 1455,
+          "end_line": 1462,
+          "section": "4.1.1.  Cryptographic Negotiation",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "If the server does not select a PSK, then the first three of these\n   options are entirely orthogonal: the server independently selects a\n   cipher suite, an (EC)DHE group and key share for key establishment,\n   and a signature algorithm/certificate pair to au"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            244,
+            245,
+            246
+          ],
+          "start_line": 1835,
+          "end_line": 1843,
+          "section": "4.1.3.  Server Hello",
+          "score": 26.665
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            1095,
+            1096,
+            1097
+          ],
+          "start_line": 7885,
+          "end_line": 7899,
+          "section": "12.2.  Informative References",
+          "score": 29.395
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            1098,
+            1099,
+            1100
+          ],
+          "start_line": 7901,
+          "end_line": 7919,
+          "section": "12.2.  Informative References",
+          "score": 27.895
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            1118,
+            1119,
+            1120
+          ],
+          "start_line": 8013,
+          "end_line": 8028,
+          "section": "12.2.  Informative References",
+          "score": 26.72
+        }
+      ],
+      "selected_window_ids": [
+        "w2"
+      ],
+      "context_id": "ctx_000003",
+      "selection_reason": "w2 contains the exact client-side condition and required action from the change record, along with the immediately adjacent interoperability context.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w2\"],\n  \"merged_context\": \"Note that 0-RTT data is not compatible with older servers and\\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\\n   See Appendix D.3.\\n\\nIf the version chosen by the server is not supported by the client\\n   (or is not acceptable), the client MUST abort the handshake with a\\n   \\\"protocol_version\\\" alert.\\n\\nSome legacy server implementations are known to not implement the TLS\\n   specification properly and might abort connections upon encountering\\n   TLS extensions or versions which they are not aware of.\\n   Interoperability with buggy servers is a complex topic beyond the\\n   scope of this document.  Multiple connection attempts may be required\\n   in order to negotiate a backward-compatible connection; however, this\\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED.\",\n  \"reason\": \"w2 contains the exact client-side condition and required action from the change record, along with the immediately adjacent interoperability context.\"\n}"
+    },
+    {
+      "index": 3,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "for Alert messages in TLSPlaintext records",
+        "change_action": "must not be fragmented across records",
+        "old_value": "",
+        "new_value": "",
+        "related_state_or_step": "Alert record formatting",
+        "explicit_or_inferred": "explicit",
+        "evidence": "Alert messages (Section 6) MUST NOT be fragmented across records, and multiple alert messages MUST NOT be coalesced into a single TLSPlaintext record.",
+        "note": "",
+        "source_chunk_id": "chunk_0028"
+      },
+      "keywords": [
+        "alert",
+        "across",
+        "be",
+        "fragmented",
+        "records",
+        "messages",
+        "tlsplaintext",
+        "formatting",
+        "record",
+        "coalesced",
+        "multiple",
+        "section",
+        "single"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 624,
+          "score": 25.67,
+          "start_line": 4430,
+          "end_line": 4433,
+          "section": "5.1.  Record Layer",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"must not be fragmented across records\"",
+            "token_hits=12",
+            "normative_language"
+          ],
+          "preview": "Alert messages (Section 6) MUST NOT be fragmented across records, and\n   multiple alert messages MUST NOT be coalesced into a single\n   TLSPlaintext record.  In other words, a record with an Alert type\n   MUST contain exactly one message."
+        },
+        {
+          "paragraph_id": 616,
+          "score": 19.17,
+          "start_line": 4372,
+          "end_line": 4386,
+          "section": "5.  Record Protocol",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "An implementation may receive an unencrypted record of type\n   change_cipher_spec consisting of the single byte value 0x01 at any\n   time after the first ClientHello message has been sent or received\n   and before the peer's Finished message has been received "
+        },
+        {
+          "paragraph_id": 327,
+          "score": 18.95,
+          "start_line": 2572,
+          "end_line": 2587,
+          "section": "4.2.5.  OID Filters",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=3",
+            "normative_language"
+          ],
+          "preview": "filters:  A list of certificate extension OIDs [RFC5280] with their\n      allowed value(s) and represented in DER-encoded [X690] format.\n      Some certificate extension OIDs allow multiple values (e.g.,\n      Extended Key Usage).  If the server has included a"
+        },
+        {
+          "paragraph_id": 360,
+          "score": 18.7,
+          "start_line": 2762,
+          "end_line": 2771,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "Clients can offer as many KeyShareEntry values as the number of\n   supported groups it is offering, each representing a single set of\n   key exchange parameters.  For instance, a client might offer shares\n   for several elliptic curves or multiple FFDHE groups"
+        },
+        {
+          "paragraph_id": 290,
+          "score": 18.575,
+          "start_line": 2289,
+          "end_line": 2304,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "TLS 1.3 provides two extensions for indicating which signature\n   algorithms may be used in digital signatures.  The\n   \"signature_algorithms_cert\" extension applies to signatures in\n   certificates, and the \"signature_algorithms\" extension, which\n   originall"
+        },
+        {
+          "paragraph_id": 679,
+          "score": 18.35,
+          "start_line": 4810,
+          "end_line": 4816,
+          "section": "6.  Alert Protocol",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=3",
+            "normative_language"
+          ],
+          "preview": "Error alerts indicate abortive closure of the connection (see\n   Section 6.2).  Upon receiving an error alert, the TLS implementation\n   SHOULD indicate an error to the application and MUST NOT allow any\n   further data to be sent or received on the connection"
+        },
+        {
+          "paragraph_id": 369,
+          "score": 18.3,
+          "start_line": 2814,
+          "end_line": 2825,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=2",
+            "normative_language"
+          ],
+          "preview": "If using (EC)DHE key establishment, servers offer exactly one\n   KeyShareEntry in the ServerHello.  This value MUST be in the same\n   group as the KeyShareEntry value offered by the client that the\n   server has selected for the negotiated key exchange.  Serve"
+        },
+        {
+          "paragraph_id": 183,
+          "score": 18.275,
+          "start_line": 1407,
+          "end_line": 1410,
+          "section": "4.  Handshake Protocol",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "Protocol messages MUST be sent in the order defined in Section 4.4.1\n   and shown in the diagrams in Section 2.  A peer which receives a\n   handshake message in an unexpected order MUST abort the handshake\n   with an \"unexpected_message\" alert."
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            326,
+            327,
+            328
+          ],
+          "start_line": 2559,
+          "end_line": 2593,
+          "section": "4.2.5.  OID Filters",
+          "score": 18.95
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            359,
+            360,
+            361
+          ],
+          "start_line": 2753,
+          "end_line": 2774,
+          "section": "4.2.8.  Key Share",
+          "score": 18.7
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            615,
+            616,
+            617
+          ],
+          "start_line": 4366,
+          "end_line": 4401,
+          "section": "5.  Record Protocol",
+          "score": 19.17
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            623,
+            624,
+            625
+          ],
+          "start_line": 4427,
+          "end_line": 4440,
+          "section": "5.1.  Record Layer",
+          "score": 25.67
+        }
+      ],
+      "selected_window_ids": [
+        "w4"
+      ],
+      "context_id": "ctx_000004",
+      "selection_reason": "w4 directly contains the exact normative rule for Alert messages in TLSPlaintext records, including the prohibition on fragmentation and coalescing plus the clarifying sentence that such a record must contain exactly one alert message.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w4\"],\n  \"merged_context\": \"Implementations MUST NOT send zero-length fragments of Handshake\\n   types, even if those fragments contain padding.\\n\\nAlert messages (Section 6) MUST NOT be fragmented across records, and\\n   multiple alert messages MUST NOT be coalesced into a single\\n   TLSPlaintext record.  In other words, a record with an Alert type\\n   MUST contain exactly one message.\\n\\nApplication Data messages contain data that is opaque to TLS.\\n   Application Data messages are always protected.  Zero-length\\n   fragments of Application Data MAY be sent, as they are potentially\\n   useful as a traffic analysis countermeasure.  Application Data\\n   fragments MAY be split across multiple records or coalesced into a\\n   single record.\",\n  \"reason\": \"w4 directly contains the exact normative rule for Alert messages in TLSPlaintext records, including the prohibition on fragmentation and coalescing plus the clarifying sentence that such a record must contain exactly one alert message.\"\n}"
+    },
+    {
+      "index": 4,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "for Alert messages in TLSPlaintext records",
+        "change_action": "must contain exactly one message",
+        "old_value": "",
+        "new_value": "",
+        "related_state_or_step": "Alert record formatting",
+        "explicit_or_inferred": "explicit",
+        "evidence": "In other words, a record with an Alert type MUST contain exactly one message.",
+        "note": "",
+        "source_chunk_id": "chunk_0028"
+      },
+      "keywords": [
+        "alert",
+        "contain",
+        "exactly",
+        "message",
+        "one",
+        "messages",
+        "records",
+        "tlsplaintext",
+        "formatting",
+        "record",
+        "an",
+        "other",
+        "type",
+        "words"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 624,
+          "score": 26.195,
+          "start_line": 4430,
+          "end_line": 4433,
+          "section": "5.1.  Record Layer",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"must contain exactly one message\"",
+            "token_hits=13",
+            "normative_language"
+          ],
+          "preview": "Alert messages (Section 6) MUST NOT be fragmented across records, and\n   multiple alert messages MUST NOT be coalesced into a single\n   TLSPlaintext record.  In other words, a record with an Alert type\n   MUST contain exactly one message."
+        },
+        {
+          "paragraph_id": 219,
+          "score": 19.8,
+          "start_line": 1660,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "legacy_compression_methods:  Versions of TLS before 1.3 supported\n      compression with the list of supported compression methods being\n      sent in this field.  For every TLS 1.3 ClientHello, this vector\n      MUST contain exactly one byte, set to zero, whi"
+        },
+        {
+          "paragraph_id": 616,
+          "score": 19.695,
+          "start_line": 4372,
+          "end_line": 4386,
+          "section": "5.  Record Protocol",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "An implementation may receive an unencrypted record of type\n   change_cipher_spec consisting of the single byte value 0x01 at any\n   time after the first ClientHello message has been sent or received\n   and before the peer's Finished message has been received "
+        },
+        {
+          "paragraph_id": 369,
+          "score": 19.35,
+          "start_line": 2814,
+          "end_line": 2825,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "If using (EC)DHE key establishment, servers offer exactly one\n   KeyShareEntry in the ServerHello.  This value MUST be in the same\n   group as the KeyShareEntry value offered by the client that the\n   server has selected for the negotiated key exchange.  Serve"
+        },
+        {
+          "paragraph_id": 327,
+          "score": 19.3,
+          "start_line": 2572,
+          "end_line": 2587,
+          "section": "4.2.5.  OID Filters",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "filters:  A list of certificate extension OIDs [RFC5280] with their\n      allowed value(s) and represented in DER-encoded [X690] format.\n      Some certificate extension OIDs allow multiple values (e.g.,\n      Extended Key Usage).  If the server has included a"
+        },
+        {
+          "paragraph_id": 678,
+          "score": 19.025,
+          "start_line": 4801,
+          "end_line": 4808,
+          "section": "6.  Alert Protocol",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "Alert messages convey a description of the alert and a legacy field\n   that conveyed the severity level of the message in previous versions\n   of TLS.  Alerts are divided into two classes: closure alerts and\n   error alerts.  In TLS 1.3, the severity is implic"
+        },
+        {
+          "paragraph_id": 221,
+          "score": 18.975,
+          "start_line": 1679,
+          "end_line": 1696,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "All versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messa"
+        },
+        {
+          "paragraph_id": 668,
+          "score": 18.975,
+          "start_line": 4713,
+          "end_line": 4720,
+          "section": "5.4.  Record Padding",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "Application Data records may contain a zero-length\n   TLSInnerPlaintext.content if the sender desires.  This permits\n   generation of plausibly sized cover traffic in contexts where the\n   presence or absence of activity may be sensitive.  Implementations\n   M"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            218,
+            219,
+            220
+          ],
+          "start_line": 1632,
+          "end_line": 1677,
+          "section": "4.1.2.  Client Hello",
+          "score": 19.8
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            368,
+            369,
+            370
+          ],
+          "start_line": 2811,
+          "end_line": 2827,
+          "section": "4.2.8.  Key Share",
+          "score": 19.35
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            615,
+            616,
+            617
+          ],
+          "start_line": 4366,
+          "end_line": 4401,
+          "section": "5.  Record Protocol",
+          "score": 19.695
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            623,
+            624,
+            625
+          ],
+          "start_line": 4427,
+          "end_line": 4440,
+          "section": "5.1.  Record Layer",
+          "score": 26.195
+        }
+      ],
+      "selected_window_ids": [
+        "w4"
+      ],
+      "context_id": "ctx_000004",
+      "selection_reason": "w4 directly contains the exact normative requirement for Alert messages in TLSPlaintext records, including the surrounding record-layer formatting rules.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w4\"],\n  \"merged_context\": \"Implementations MUST NOT send zero-length fragments of Handshake\\n   types, even if those fragments contain padding.\\n\\nAlert messages (Section 6) MUST NOT be fragmented across records, and\\n   multiple alert messages MUST NOT be coalesced into a single\\n   TLSPlaintext record.  In other words, a record with an Alert type\\n   MUST contain exactly one message.\\n\\nApplication Data messages contain data that is opaque to TLS.\\n   Application Data messages are always protected.  Zero-length\\n   fragments of Application Data MAY be sent, as they are potentially\\n   useful as a traffic analysis countermeasure.  Application Data\\n   fragments MAY be split across multiple records or coalesced into a\\n   single record.\",\n  \"reason\": \"w4 directly contains the exact normative requirement for Alert messages in TLSPlaintext records, including the surrounding record-layer formatting rules.\"\n}"
+    },
+    {
+      "index": 5,
+      "change": {
+        "variable_name": "AlertLevel",
+        "change_condition": "AlertLevel enum definition",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "warning(1), fatal(2)",
+        "related_state_or_step": "enum definition",
+        "explicit_or_inferred": "explicit",
+        "evidence": "enum { warning(1), fatal(2), (255) } AlertLevel;",
+        "note": "incomplete information",
+        "source_chunk_id": "chunk_0030"
+      },
+      "keywords": [
+        "alertlevel",
+        "fatal",
+        "warning",
+        "constant",
+        "to",
+        "definition",
+        "enum"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 682,
+          "score": 19.525,
+          "start_line": 4852,
+          "end_line": 4852,
+          "section": "6.  Alert Protocol",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=4",
+            "structure_definition"
+          ],
+          "preview": "enum { warning(1), fatal(2), (255) } AlertLevel;"
+        },
+        {
+          "paragraph_id": 978,
+          "score": 19.525,
+          "start_line": 6963,
+          "end_line": 6963,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=4",
+            "structure_definition"
+          ],
+          "preview": "enum { warning(1), fatal(2), (255) } AlertLevel;"
+        },
+        {
+          "paragraph_id": 688,
+          "score": 18.15,
+          "start_line": 4918,
+          "end_line": 4923,
+          "section": "6.1.  Closure Alerts",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=3",
+            "normative_language"
+          ],
+          "preview": "user_canceled:  This alert notifies the recipient that the sender is\n      canceling the handshake for some reason unrelated to a protocol\n      failure.  If a user cancels an operation after the handshake is\n      complete, just closing the connection by send"
+        },
+        {
+          "paragraph_id": 680,
+          "score": 18.05,
+          "start_line": 4818,
+          "end_line": 4821,
+          "section": "6.  Alert Protocol",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=2",
+            "normative_language"
+          ],
+          "preview": "All the alerts listed in Section 6.2 MUST be sent with\n   AlertLevel=fatal and MUST be treated as error alerts when received\n   regardless of the AlertLevel in the message.  Unknown Alert types\n   MUST be treated as error alerts."
+        },
+        {
+          "paragraph_id": 684,
+          "score": 16.9,
+          "start_line": 4885,
+          "end_line": 4888,
+          "section": "6.  Alert Protocol",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=1",
+            "structure_definition"
+          ],
+          "preview": "struct {\n          AlertLevel level;\n          AlertDescription description;\n      } Alert;"
+        },
+        {
+          "paragraph_id": 980,
+          "score": 16.9,
+          "start_line": 7003,
+          "end_line": 7006,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alertlevel\"",
+            "phrase \"alertlevel\"",
+            "token_hits=1",
+            "structure_definition"
+          ],
+          "preview": "struct {\n          AlertLevel level;\n          AlertDescription description;\n      } Alert;"
+        },
+        {
+          "paragraph_id": 695,
+          "score": 3.25,
+          "start_line": 4973,
+          "end_line": 4985,
+          "section": "6.2.  Error Alerts",
+          "reasons": [
+            "token_hits=2",
+            "normative_language"
+          ],
+          "preview": "Whenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate th"
+        },
+        {
+          "paragraph_id": 1090,
+          "score": 2.6,
+          "start_line": 7827,
+          "end_line": 7842,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "token_hits=2",
+            "normative_language"
+          ],
+          "preview": "Prior versions of TLS used the record layer version number\n   (TLSPlaintext.legacy_record_version and\n   TLSCiphertext.legacy_record_version) for various purposes.  As of\n   TLS 1.3, this field is deprecated.  The value of\n   TLSPlaintext.legacy_record_version"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            679,
+            680,
+            681
+          ],
+          "start_line": 4810,
+          "end_line": 4830,
+          "section": "6.  Alert Protocol",
+          "score": 18.05
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            681,
+            682,
+            683
+          ],
+          "start_line": 4823,
+          "end_line": 4883,
+          "section": "6.  Alert Protocol",
+          "score": 19.525
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            687,
+            688,
+            689
+          ],
+          "start_line": 4914,
+          "end_line": 4929,
+          "section": "6.1.  Closure Alerts",
+          "score": 18.15
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            977,
+            978,
+            979
+          ],
+          "start_line": 6961,
+          "end_line": 7001,
+          "section": "12.2.  Informative References",
+          "score": 19.525
+        }
+      ],
+      "selected_window_ids": [
+        "w2"
+      ],
+      "context_id": "ctx_000005",
+      "selection_reason": "w2 contains the exact AlertLevel enum definition from RFC 8446 along with immediately adjacent normative parsing/error context, making it the most complete and directly relevant match. w4 is from informative references, and w1/w3 do not contain the enum definition itself.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w2\"],\n  \"merged_context\": \"Note: TLS defines two generic alerts (see Section 6) to use upon\\n   failure to parse a message.  Peers which receive a message which\\n   cannot be parsed according to the syntax (e.g., have a length\\n   extending beyond the message boundary or contain an out-of-range\\n   length) MUST terminate the connection with a \\\"decode_error\\\" alert.\\n   Peers which receive a message which is syntactically correct but\\n   semantically invalid (e.g., a DHE share of p - 1, or an invalid enum)\\n   MUST terminate the connection with an \\\"illegal_parameter\\\" alert.\\n\\nenum { warning(1), fatal(2), (255) } AlertLevel;\\n\\nenum {\\n          close_notify(0),\\n          unexpected_message(10),\\n          bad_record_mac(20),\\n          record_overflow(22),\\n          handshake_failure(40),\\n          bad_certificate(42),\\n          unsupported_certificate(43),\\n          certificate_revoked(44),\\n          certificate_expired(45),\\n          certificate_unknown(46),\\n          illegal_parameter(47),\\n          unknown_ca(48),\\n          access_denied(49),\\n          decode_error(50),\\n          decrypt_error(51),\\n          protocol_version(70),\\n          insufficient_security(71),\\n          internal_error(80),\\n          inappropriate_fallback(86),\\n          user_canceled(90),\\n          missing_extension(109),\\n          unsupported_extension(110),\\n          unrecognized_name(112),\\n          bad_certificate_status_response(113),\\n          unknown_psk_identity(115),\\n          certificate_required(116),\\n          no_application_protocol(120),\\n          (255)\\n      } AlertDescription;\",\n  \"reason\": \"w2 contains the exact AlertLevel enum definition from RFC 8446 along with immediately adjacent normative parsing/error context, making it the most complete and directly relevant match. w4 is from informative references, and w1/w3 do not contain the enum definition itself.\"\n}"
+    },
+    {
+      "index": 6,
+      "change": {
+        "variable_name": "algorithm",
+        "change_condition": "For any signatures of CertificateVerify messages",
+        "change_action": "must not use",
+        "old_value": "",
+        "new_value": "SHA-1",
+        "related_state_or_step": "CertificateVerify message generation",
+        "explicit_or_inferred": "explicit",
+        "evidence": "The SHA-1 algorithm MUST NOT be used in any signatures of CertificateVerify messages.",
+        "note": "",
+        "source_chunk_id": "chunk_0025"
+      },
+      "keywords": [
+        "algorithm",
+        "sha",
+        "use",
+        "certificateverify",
+        "messages",
+        "of",
+        "signatures",
+        "generation",
+        "message",
+        "be",
+        "used"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 548,
+          "score": 25.55,
+          "start_line": 3981,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"sha-1\"",
+            "token_hits=9",
+            "normative_language"
+          ],
+          "preview": "In addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SH"
+        },
+        {
+          "paragraph_id": 512,
+          "score": 23.925,
+          "start_line": 3798,
+          "end_line": 3804,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"sha-1\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "If the server cannot produce a certificate chain that is signed only\n   via the indicated supported algorithms, then it SHOULD continue the\n   handshake by sending the client a certificate chain of its choice\n   that may include algorithms that are not known t"
+        },
+        {
+          "paragraph_id": 525,
+          "score": 21.45,
+          "start_line": 3866,
+          "end_line": 3873,
+          "section": "4.4.2.4.  Receiving a Certificate Message",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"sha-1\"",
+            "token_hits=2",
+            "normative_language"
+          ],
+          "preview": "Any endpoint receiving any certificate which it would need to\n   validate using any signature algorithm using an MD5 hash MUST abort\n   the handshake with a \"bad_certificate\" alert.  SHA-1 is deprecated,\n   and it is RECOMMENDED that any endpoint receiving any"
+        },
+        {
+          "paragraph_id": 307,
+          "score": 20.17,
+          "start_line": 2438,
+          "end_line": 2448,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PSS PSS algorithms:  Indicates a signature algorithm using\n      RSASSA-PSS [RFC8017] with mask generation function 1.  The digest\n      used in the mask generation function and the digest being signed\n      are both the corresponding hash algorithm as "
+        },
+        {
+          "paragraph_id": 305,
+          "score": 19.045,
+          "start_line": 2425,
+          "end_line": 2431,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PSS RSAE algorithms:  Indicates a signature algorithm using\n      RSASSA-PSS [RFC8017] with mask generation function 1.  The digest\n      used in the mask generation function and the digest being signed\n      are both the corresponding hash algorithm as"
+        },
+        {
+          "paragraph_id": 218,
+          "score": 18.625,
+          "start_line": 1632,
+          "end_line": 1641,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "cipher_suites:  A list of the symmetric cipher options supported by\n      the client, specifically the record protection algorithm\n      (including secret key length) and a hash to be used with HKDF, in\n      descending order of client preference.  Values are "
+        },
+        {
+          "paragraph_id": 303,
+          "score": 18.15,
+          "start_line": 2410,
+          "end_line": 2417,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PKCS1-v1_5 algorithms:  Indicates a signature algorithm using\n      RSASSA-PKCS1-v1_5 [RFC8017] with the corresponding hash algorithm\n      as defined in [SHS].  These values refer solely to signatures\n      which appear in certificates (see Section 4.4"
+        },
+        {
+          "paragraph_id": 547,
+          "score": 18.045,
+          "start_line": 3976,
+          "end_line": 3979,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message."
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            306,
+            307,
+            308
+          ],
+          "start_line": 2433,
+          "end_line": 2472,
+          "section": "4.2.3.  Signature Algorithms",
+          "score": 20.17
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            511,
+            512,
+            513
+          ],
+          "start_line": 3792,
+          "end_line": 3810,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "score": 23.925
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            524,
+            525,
+            526
+          ],
+          "start_line": 3857,
+          "end_line": 3885,
+          "section": "4.4.2.4.  Receiving a Certificate Message",
+          "score": 21.45
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            547,
+            548,
+            549
+          ],
+          "start_line": 3976,
+          "end_line": 3999,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 25.55
+        }
+      ],
+      "selected_window_ids": [
+        "w4"
+      ],
+      "context_id": "ctx_000006",
+      "selection_reason": "w4 directly contains the exact normative rule for CertificateVerify signatures, plus the surrounding constraints and clarification that SHA-1 algorithms are only for legacy certificates and invalid for CertificateVerify.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w4\"],\n  \"merged_context\": \"If sent by a client, the signature algorithm used in the signature\\n   MUST be one of those present in the supported_signature_algorithms\\n   field of the \\\"signature_algorithms\\\" extension in the\\n   CertificateRequest message.\\n\\nIn addition, the signature algorithm MUST be compatible with the key\\n   in the sender's end-entity certificate.  RSA signatures MUST use an\\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\\n   algorithms appear in \\\"signature_algorithms\\\".  The SHA-1 algorithm\\n   MUST NOT be used in any signatures of CertificateVerify messages.\\n\\nAll SHA-1 signature algorithms in this specification are defined\\n   solely for use in legacy certificates and are not valid for\\n   CertificateVerify signatures.\",\n  \"reason\": \"w4 directly contains the exact normative rule for CertificateVerify signatures, plus the surrounding constraints and clarification that SHA-1 algorithms are only for legacy certificates and invalid for CertificateVerify.\"\n}"
+    },
+    {
+      "index": 7,
+      "change": {
+        "variable_name": "algorithm",
+        "change_condition": "For externally established PSKs when no Hash algorithm is defined",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "SHA-256",
+        "related_state_or_step": "external PSK establishment",
+        "explicit_or_inferred": "explicit",
+        "evidence": "For externally established PSKs, the Hash algorithm MUST be set when the PSK is established or default to SHA-256 if no such algorithm is defined.",
+        "note": "",
+        "source_chunk_id": "chunk_0020"
+      },
+      "keywords": [
+        "algorithm",
+        "sha",
+        "constant",
+        "to",
+        "defined",
+        "established",
+        "externally",
+        "hash",
+        "no",
+        "psks",
+        "establishment",
+        "external",
+        "psk",
+        "be",
+        "default"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 427,
+          "score": 24.845,
+          "start_line": 3199,
+          "end_line": 3201,
+          "section": "4.2.11.  Pre-Shared Key Extension",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"sha-256\"",
+            "token_hits=9",
+            "normative_language"
+          ],
+          "preview": "the PSK is established or default to SHA-256 if no such algorithm is\n   defined.  The server MUST ensure that it selects a compatible PSK\n   (if any) and cipher suite."
+        },
+        {
+          "paragraph_id": 512,
+          "score": 19.925,
+          "start_line": 3798,
+          "end_line": 3804,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "If the server cannot produce a certificate chain that is signed only\n   via the indicated supported algorithms, then it SHOULD continue the\n   handshake by sending the client a certificate chain of its choice\n   that may include algorithms that are not known t"
+        },
+        {
+          "paragraph_id": 218,
+          "score": 19.64,
+          "start_line": 1632,
+          "end_line": 1641,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "cipher_suites:  A list of the symmetric cipher options supported by\n      the client, specifically the record protection algorithm\n      (including secret key length) and a hash to be used with HKDF, in\n      descending order of client preference.  Values are "
+        },
+        {
+          "paragraph_id": 307,
+          "score": 19.4,
+          "start_line": 2438,
+          "end_line": 2448,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PSS PSS algorithms:  Indicates a signature algorithm using\n      RSASSA-PSS [RFC8017] with mask generation function 1.  The digest\n      used in the mask generation function and the digest being signed\n      are both the corresponding hash algorithm as "
+        },
+        {
+          "paragraph_id": 426,
+          "score": 19.27,
+          "start_line": 3186,
+          "end_line": 3189,
+          "section": "4.2.11.  Pre-Shared Key Extension",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "Each PSK is associated with a single Hash algorithm.  For PSKs\n   established via the ticket mechanism (Section 4.6.1), this is the KDF\n   Hash algorithm on the connection where the ticket was established.\n   For externally established PSKs, the Hash algorithm"
+        },
+        {
+          "paragraph_id": 107,
+          "score": 18.92,
+          "start_line": 919,
+          "end_line": 920,
+          "section": "2.2.  Resumption and Pre-Shared Key (PSK)",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "When PSKs are provisioned out of band, the PSK identity and the KDF\n   hash algorithm to be used with the PSK MUST also be provisioned."
+        },
+        {
+          "paragraph_id": 305,
+          "score": 18.8,
+          "start_line": 2425,
+          "end_line": 2431,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PSS RSAE algorithms:  Indicates a signature algorithm using\n      RSASSA-PSS [RFC8017] with mask generation function 1.  The digest\n      used in the mask generation function and the digest being signed\n      are both the corresponding hash algorithm as"
+        },
+        {
+          "paragraph_id": 525,
+          "score": 18.675,
+          "start_line": 3866,
+          "end_line": 3873,
+          "section": "4.4.2.4.  Receiving a Certificate Message",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "Any endpoint receiving any certificate which it would need to\n   validate using any signature algorithm using an MD5 hash MUST abort\n   the handshake with a \"bad_certificate\" alert.  SHA-1 is deprecated,\n   and it is RECOMMENDED that any endpoint receiving any"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            217,
+            218,
+            219
+          ],
+          "start_line": 1620,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "score": 19.64
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            306,
+            307,
+            308
+          ],
+          "start_line": 2433,
+          "end_line": 2472,
+          "section": "4.2.3.  Signature Algorithms",
+          "score": 19.4
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            426,
+            427,
+            428
+          ],
+          "start_line": 3186,
+          "end_line": 3214,
+          "section": "4.2.11.  Pre-Shared Key Extension",
+          "score": 24.845
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            511,
+            512,
+            513
+          ],
+          "start_line": 3792,
+          "end_line": 3810,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "score": 19.925
+        }
+      ],
+      "selected_window_ids": [
+        "w3"
+      ],
+      "context_id": "ctx_000007",
+      "selection_reason": "w3 directly contains the exact normative statement about externally established PSKs defaulting the Hash algorithm to SHA-256, plus the immediately preceding definition that each PSK has a single Hash algorithm and the related server compatibility requirement.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w3\"],\n  \"merged_context\": \"Each PSK is associated with a single Hash algorithm.  For PSKs\\n   established via the ticket mechanism (Section 4.6.1), this is the KDF\\n   Hash algorithm on the connection where the ticket was established.\\n   For externally established PSKs, the Hash algorithm MUST be set when\\n\\nthe PSK is established or default to SHA-256 if no such algorithm is\\n   defined.  The server MUST ensure that it selects a compatible PSK\\n   (if any) and cipher suite.\\n\\nIn TLS versions prior to TLS 1.3, the Server Name Identification\\n   (SNI) value was intended to be associated with the session (Section 3\\n   of [RFC6066]), with the server being required to enforce that the SNI\\n   value associated with the session matches the one specified in the\\n   resumption handshake.  However, in reality the implementations were\\n   not consistent on which of two supplied SNI values they would use,\\n   leading to the consistency requirement being de facto enforced by the\\n   clients.  In TLS 1.3, the SNI value is always explicitly specified in\\n   the resumption handshake, and there is no need for the server to\\n   associate an SNI value with the ticket.  Clients, however, SHOULD\\n   store the SNI with the PSK to fulfill the requirements of\\n   Section 4.6.1.\",\n  \"reason\": \"w3 directly contains the exact normative statement about externally established PSKs defaulting the Hash algorithm to SHA-256, plus the immediately preceding definition that each PSK has a single Hash algorithm and the related server compatibility requirement.\"\n}"
+    },
+    {
+      "index": 8,
+      "change": {
+        "variable_name": "algorithm",
+        "change_condition": "If sent by a client",
+        "change_action": "must be selected from offered list",
+        "old_value": "",
+        "new_value": "one of those present in the supported_signature_algorithms field of the \"signature_algorithms\" extension in the CertificateRequest message",
+        "related_state_or_step": "CertificateVerify message generation by client",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If sent by a client, the signature algorithm used in the signature MUST be one of those present in the supported_signature_algorithms field of the \"signature_algorithms\" extension in the CertificateRequest message.",
+        "note": "",
+        "source_chunk_id": "chunk_0025"
+      },
+      "keywords": [
+        "algorithm",
+        "certificaterequest",
+        "extension",
+        "message",
+        "of",
+        "one",
+        "present",
+        "signature_algorithms",
+        "supported_signature_algorithms",
+        "those",
+        "be",
+        "list",
+        "offered",
+        "selected",
+        "by"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 547,
+          "score": 36.325,
+          "start_line": 3976,
+          "end_line": 3979,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"one of those present in the supported_signature_algorithms field of the \"signature_algorithms\" extension in the certificaterequest message\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=16"
+          ],
+          "preview": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message."
+        },
+        {
+          "paragraph_id": 546,
+          "score": 27.845,
+          "start_line": 3971,
+          "end_line": 3974,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=12",
+            "normative_language"
+          ],
+          "preview": "If the CertificateVerify message is sent by a server, the signature\n   algorithm MUST be one offered in the client's \"signature_algorithms\"\n   extension unless no valid certificate chain can be produced without\n   unsupported algorithms (see Section 4.2.3)."
+        },
+        {
+          "paragraph_id": 548,
+          "score": 24.42,
+          "start_line": 3981,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "In addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SH"
+        },
+        {
+          "paragraph_id": 508,
+          "score": 23.925,
+          "start_line": 3776,
+          "end_line": 3779,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "-  The server's end-entity certificate's public key (and associated\n      restrictions) MUST be compatible with the selected authentication\n      algorithm from the client's \"signature_algorithms\" extension\n      (currently RSA, ECDSA, or EdDSA)."
+        },
+        {
+          "paragraph_id": 218,
+          "score": 22.65,
+          "start_line": 1632,
+          "end_line": 1641,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=9",
+            "normative_language"
+          ],
+          "preview": "cipher_suites:  A list of the symmetric cipher options supported by\n      the client, specifically the record protection algorithm\n      (including secret key length) and a hash to be used with HKDF, in\n      descending order of client preference.  Values are "
+        },
+        {
+          "paragraph_id": 309,
+          "score": 22.35,
+          "start_line": 2474,
+          "end_line": 2479,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "The signatures on certificates that are self-signed or certificates\n   that are trust anchors are not validated, since they begin a\n   certification path (see [RFC5280], Section 3.2).  A certificate that\n   begins a certification path MAY use a signature algor"
+        },
+        {
+          "paragraph_id": 307,
+          "score": 22.27,
+          "start_line": 2438,
+          "end_line": 2448,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PSS PSS algorithms:  Indicates a signature algorithm using\n      RSASSA-PSS [RFC8017] with mask generation function 1.  The digest\n      used in the mask generation function and the digest being signed\n      are both the corresponding hash algorithm as "
+        },
+        {
+          "paragraph_id": 303,
+          "score": 21.3,
+          "start_line": 2410,
+          "end_line": 2417,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=3",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PKCS1-v1_5 algorithms:  Indicates a signature algorithm using\n      RSASSA-PKCS1-v1_5 [RFC8017] with the corresponding hash algorithm\n      as defined in [SHS].  These values refer solely to signatures\n      which appear in certificates (see Section 4.4"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            507,
+            508,
+            509
+          ],
+          "start_line": 3773,
+          "end_line": 3785,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "score": 23.925
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            545,
+            546,
+            547
+          ],
+          "start_line": 3968,
+          "end_line": 3979,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 27.845
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            546,
+            547,
+            548
+          ],
+          "start_line": 3971,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 36.325
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            547,
+            548,
+            549
+          ],
+          "start_line": 3976,
+          "end_line": 3999,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 24.42
+        }
+      ],
+      "selected_window_ids": [
+        "w3"
+      ],
+      "context_id": "ctx_000008",
+      "selection_reason": "w3 contains the exact client-side normative requirement and the immediately adjacent normative constraints on CertificateVerify signature algorithm selection, making it the most complete and relevant context.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w3\"],\n  \"merged_context\": \"If the CertificateVerify message is sent by a server, the signature\\n   algorithm MUST be one offered in the client's \\\"signature_algorithms\\\"\\n   extension unless no valid certificate chain can be produced without\\n   unsupported algorithms (see Section 4.2.3).\\n\\nIf sent by a client, the signature algorithm used in the signature\\n   MUST be one of those present in the supported_signature_algorithms\\n   field of the \\\"signature_algorithms\\\" extension in the\\n   CertificateRequest message.\\n\\nIn addition, the signature algorithm MUST be compatible with the key\\n   in the sender's end-entity certificate.  RSA signatures MUST use an\\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\\n   algorithms appear in \\\"signature_algorithms\\\".  The SHA-1 algorithm\\n   MUST NOT be used in any signatures of CertificateVerify messages.\",\n  \"reason\": \"w3 contains the exact client-side normative requirement and the immediately adjacent normative constraints on CertificateVerify signature algorithm selection, making it the most complete and relevant context.\"\n}"
+    },
+    {
+      "index": 9,
+      "change": {
+        "variable_name": "algorithm",
+        "change_condition": "If the CertificateVerify message is sent by a server",
+        "change_action": "must be selected from offered list",
+        "old_value": "",
+        "new_value": "one offered in the client's \"signature_algorithms\" extension",
+        "related_state_or_step": "CertificateVerify message generation by server",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the CertificateVerify message is sent by a server, the signature algorithm MUST be one offered in the client's \"signature_algorithms\" extension unless no valid certificate chain can be produced without unsupported algorithms",
+        "note": "",
+        "source_chunk_id": "chunk_0025"
+      },
+      "keywords": [
+        "algorithm",
+        "client",
+        "extension",
+        "offered",
+        "one",
+        "signature_algorithms",
+        "be",
+        "list",
+        "selected",
+        "by",
+        "certificateverify",
+        "message",
+        "sent",
+        "server",
+        "generation"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 546,
+          "score": 36.325,
+          "start_line": 3971,
+          "end_line": 3974,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"one offered in the client's \"signature_algorithms\" extension\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=23"
+          ],
+          "preview": "If the CertificateVerify message is sent by a server, the signature\n   algorithm MUST be one offered in the client's \"signature_algorithms\"\n   extension unless no valid certificate chain can be produced without\n   unsupported algorithms (see Section 4.2.3)."
+        },
+        {
+          "paragraph_id": 547,
+          "score": 26.725,
+          "start_line": 3976,
+          "end_line": 3979,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=10",
+            "normative_language"
+          ],
+          "preview": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message."
+        },
+        {
+          "paragraph_id": 508,
+          "score": 25.325,
+          "start_line": 3776,
+          "end_line": 3779,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "-  The server's end-entity certificate's public key (and associated\n      restrictions) MUST be compatible with the selected authentication\n      algorithm from the client's \"signature_algorithms\" extension\n      (currently RSA, ECDSA, or EdDSA)."
+        },
+        {
+          "paragraph_id": 548,
+          "score": 23.825,
+          "start_line": 3981,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "In addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SH"
+        },
+        {
+          "paragraph_id": 309,
+          "score": 22.7,
+          "start_line": 2474,
+          "end_line": 2479,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=5",
+            "normative_language"
+          ],
+          "preview": "The signatures on certificates that are self-signed or certificates\n   that are trust anchors are not validated, since they begin a\n   certification path (see [RFC5280], Section 3.2).  A certificate that\n   begins a certification path MAY use a signature algor"
+        },
+        {
+          "paragraph_id": 303,
+          "score": 21.65,
+          "start_line": 2410,
+          "end_line": 2417,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "phrase \"signature_algorithms\"",
+            "token_hits=4",
+            "normative_language"
+          ],
+          "preview": "RSASSA-PKCS1-v1_5 algorithms:  Indicates a signature algorithm using\n      RSASSA-PKCS1-v1_5 [RFC8017] with the corresponding hash algorithm\n      as defined in [SHS].  These values refer solely to signatures\n      which appear in certificates (see Section 4.4"
+        },
+        {
+          "paragraph_id": 218,
+          "score": 21.25,
+          "start_line": 1632,
+          "end_line": 1641,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "cipher_suites:  A list of the symmetric cipher options supported by\n      the client, specifically the record protection algorithm\n      (including secret key length) and a hash to be used with HKDF, in\n      descending order of client preference.  Values are "
+        },
+        {
+          "paragraph_id": 512,
+          "score": 21.15,
+          "start_line": 3798,
+          "end_line": 3804,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "reasons": [
+            "phrase \"algorithm\"",
+            "phrase \"algorithm\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "If the server cannot produce a certificate chain that is signed only\n   via the indicated supported algorithms, then it SHOULD continue the\n   handshake by sending the client a certificate chain of its choice\n   that may include algorithms that are not known t"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            507,
+            508,
+            509
+          ],
+          "start_line": 3773,
+          "end_line": 3785,
+          "section": "4.4.2.2.  Server Certificate Selection",
+          "score": 25.325
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            545,
+            546,
+            547
+          ],
+          "start_line": 3968,
+          "end_line": 3979,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 36.325
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            546,
+            547,
+            548
+          ],
+          "start_line": 3971,
+          "end_line": 3985,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 26.725
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            547,
+            548,
+            549
+          ],
+          "start_line": 3976,
+          "end_line": 3999,
+          "section": "4.4.3.  Certificate Verify",
+          "score": 23.825
+        }
+      ],
+      "selected_window_ids": [
+        "w3"
+      ],
+      "context_id": "ctx_000008",
+      "selection_reason": "w3 contains the exact server-side normative requirement plus the immediately following compatibility constraints for CertificateVerify, making it the most complete and relevant context.",
+      "llm_raw_output": "{\n  \"selected_window_ids\": [\"w3\"],\n  \"merged_context\": \"If the CertificateVerify message is sent by a server, the signature\\n   algorithm MUST be one offered in the client's \\\"signature_algorithms\\\"\\n   extension unless no valid certificate chain can be produced without\\n   unsupported algorithms (see Section 4.2.3).\\n\\nIf sent by a client, the signature algorithm used in the signature\\n   MUST be one of those present in the supported_signature_algorithms\\n   field of the \\\"signature_algorithms\\\" extension in the\\n   CertificateRequest message.\\n\\nIn addition, the signature algorithm MUST be compatible with the key\\n   in the sender's end-entity certificate.  RSA signatures MUST use an\\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\\n   algorithms appear in \\\"signature_algorithms\\\".  The SHA-1 algorithm\\n   MUST NOT be used in any signatures of CertificateVerify messages.\",\n  \"reason\": \"w3 contains the exact server-side normative requirement plus the immediately following compatibility constraints for CertificateVerify, making it the most complete and relevant context.\"\n}"
+    }
+  ]
+}

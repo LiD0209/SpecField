@@ -1,0 +1,29 @@
+python d:\project\conditionFuzzingPaper\step4_find_related_files.py 
+  --files-from d:\project\conditionFuzzingPaper\symbols.csv 
+  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json 
+  --api-key YOUR_API_KEY 
+  --base-url https://api.zhizengzeng.com/v1/ 
+  --model gpt-5.4 
+  --top-k 5 
+  --output d:\project\conditionFuzzingPaper\output\04_related_files_by_change.json
+
+
+
+python d:\project\conditionFuzzingPaper\step4_find_related_files.py ^
+  --files-from d:\project\conditionFuzzingPaper\symbols.csv ^
+  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json ^
+  --max-items 10 ^
+  --api-key YOUR_API_KEY
+
+
+python .\utils\variable_context_pipeline.py `
+  --repo-root . `
+  --var-name alert,quota `
+  --desc "告警和配额相关变量" `
+  --use-llm `
+  --api-key "你的key"
+
+
+python utils/recheck_not_satisfied_reason.py --input result.json --output output/recheck_not_satisfied_final.json --api-key sk-8CC9gb2d5LKEySehX1Wy0oUL6uWDpcC2btO79ZSjH1t8hcWK --review-model gpt-5.4 --test-model gpt-5.3-codex
+
+

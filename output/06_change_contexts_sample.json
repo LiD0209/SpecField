@@ -1,0 +1,755 @@
+{
+  "meta": {
+    "generated_at": "2026-04-15 16:16:54",
+    "doc_file": "D:\\project\\conditionFuzzingPaper\\document\\TLS1.3.txt",
+    "changes_file": "D:\\project\\conditionFuzzingPaper\\output\\02_variable_changes.json",
+    "changes_key": "changes",
+    "changes_total": 652,
+    "start_index": 0,
+    "end_index_exclusive": 3,
+    "processed_count": 3,
+    "paragraph_count": 1295,
+    "radius": 1,
+    "max_windows": 4,
+    "max_paragraphs_per_window": 8,
+    "min_score": 1.0,
+    "use_llm": false,
+    "model": ""
+  },
+  "context_store": {
+    "ctx_000001": {
+      "context_id": "ctx_000001",
+      "text": "2.1.  Incorrect DHE Share\n\nIf the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the handshake with\n   an appropriate \"key_share\" extension, as shown in Figure 2.  If no\n   common cryptographic parameters can be negotiated, the server MUST\n   abort the handshake with an appropriate alert.\n\nClient                                               Server\n\nextensions:  Clients request extended functionality from servers by\n      sending data in the extensions field.  The actual \"Extension\"\n      format is defined in Section 4.2.  In TLS 1.3, the use of certain\n      extensions is mandatory, as functionality has moved into\n      extensions to preserve ClientHello compatibility with previous\n      versions of TLS.  Servers MUST ignore unrecognized extensions.\n\nAll versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messages).  However,\n   TLS 1.3 servers might receive ClientHello messages without an\n   extensions field from prior versions of TLS.  The presence of\n   extensions can be detected by determining whether there are bytes\n   following the compression_methods field at the end of the\n   ClientHello.  Note that this method of detecting optional data\n   differs from the normal TLS method of having a variable-length field,\n   but it is used for compatibility with TLS before extensions were\n   defined.  TLS 1.3 servers will need to perform this check first and\n   only attempt to negotiate TLS 1.3 if the \"supported_versions\"\n   extension is present.  If negotiating a version of TLS prior to 1.3,\n   a server MUST check that the message either contains no data after\n   legacy_compression_methods or that it contains a valid extensions\n   block with no data following.  If not, then it MUST abort the\n   handshake with a \"decode_error\" alert.\n\nIn the event that a client requests additional functionality using\n   extensions and this functionality is not supplied by the server, the\n   client MAY abort the handshake.",
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            91,
+            92,
+            93
+          ],
+          "start_line": 748,
+          "end_line": 758,
+          "section": "2.1.  Incorrect DHE Share",
+          "score": 27.365,
+          "text": "2.1.  Incorrect DHE Share\n\nIf the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the handshake with\n   an appropriate \"key_share\" extension, as shown in Figure 2.  If no\n   common cryptographic parameters can be negotiated, the server MUST\n   abort the handshake with an appropriate alert.\n\nClient                                               Server"
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 20.515,
+          "text": "extensions:  Clients request extended functionality from servers by\n      sending data in the extensions field.  The actual \"Extension\"\n      format is defined in Section 4.2.  In TLS 1.3, the use of certain\n      extensions is mandatory, as functionality has moved into\n      extensions to preserve ClientHello compatibility with previous\n      versions of TLS.  Servers MUST ignore unrecognized extensions.\n\nAll versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messages).  However,\n   TLS 1.3 servers might receive ClientHello messages without an\n   extensions field from prior versions of TLS.  The presence of\n   extensions can be detected by determining whether there are bytes\n   following the compression_methods field at the end of the\n   ClientHello.  Note that this method of detecting optional data\n   differs from the normal TLS method of having a variable-length field,\n   but it is used for compatibility with TLS before extensions were\n   defined.  TLS 1.3 servers will need to perform this check first and\n   only attempt to negotiate TLS 1.3 if the \"supported_versions\"\n   extension is present.  If negotiating a version of TLS prior to 1.3,\n   a server MUST check that the message either contains no data after\n   legacy_compression_methods or that it contains a valid extensions\n   block with no data following.  If not, then it MUST abort the\n   handshake with a \"decode_error\" alert.\n\nIn the event that a client requests additional functionality using\n   extensions and this functionality is not supplied by the server, the\n   client MAY abort the handshake."
+        }
+      ],
+      "selection_reason": "selected by regex score",
+      "llm_used": false
+    },
+    "ctx_000002": {
+      "context_id": "ctx_000002",
+      "text": "extensions:  Clients request extended functionality from servers by\n      sending data in the extensions field.  The actual \"Extension\"\n      format is defined in Section 4.2.  In TLS 1.3, the use of certain\n      extensions is mandatory, as functionality has moved into\n      extensions to preserve ClientHello compatibility with previous\n      versions of TLS.  Servers MUST ignore unrecognized extensions.\n\nAll versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messages).  However,\n   TLS 1.3 servers might receive ClientHello messages without an\n   extensions field from prior versions of TLS.  The presence of\n   extensions can be detected by determining whether there are bytes\n   following the compression_methods field at the end of the\n   ClientHello.  Note that this method of detecting optional data\n   differs from the normal TLS method of having a variable-length field,\n   but it is used for compatibility with TLS before extensions were\n   defined.  TLS 1.3 servers will need to perform this check first and\n   only attempt to negotiate TLS 1.3 if the \"supported_versions\"\n   extension is present.  If negotiating a version of TLS prior to 1.3,\n   a server MUST check that the message either contains no data after\n   legacy_compression_methods or that it contains a valid extensions\n   block with no data following.  If not, then it MUST abort the\n   handshake with a \"decode_error\" alert.\n\nIn the event that a client requests additional functionality using\n   extensions and this functionality is not supplied by the server, the\n   client MAY abort the handshake.\n\nA server which negotiates a version of TLS prior to TLS 1.3 MUST set\n   ServerHello.version and MUST NOT send the \"supported_versions\"\n   extension.  A server which negotiates TLS 1.3 MUST respond by sending\n   a \"supported_versions\" extension containing the selected version\n   value (0x0304).  It MUST set the ServerHello.legacy_version field to\n   0x0303 (TLS 1.2).  Clients MUST check for this extension prior to\n   processing the rest of the ServerHello (although they will have to\n\nparse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supported_versions\" extension in the ServerHello contains a\n   version not offered by the client or contains a version prior to\n   TLS 1.3, the client MUST abort the handshake with an\n   \"illegal_parameter\" alert.\n\n4.2.2.  Cookie",
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 28.32,
+          "text": "extensions:  Clients request extended functionality from servers by\n      sending data in the extensions field.  The actual \"Extension\"\n      format is defined in Section 4.2.  In TLS 1.3, the use of certain\n      extensions is mandatory, as functionality has moved into\n      extensions to preserve ClientHello compatibility with previous\n      versions of TLS.  Servers MUST ignore unrecognized extensions.\n\nAll versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messages).  However,\n   TLS 1.3 servers might receive ClientHello messages without an\n   extensions field from prior versions of TLS.  The presence of\n   extensions can be detected by determining whether there are bytes\n   following the compression_methods field at the end of the\n   ClientHello.  Note that this method of detecting optional data\n   differs from the normal TLS method of having a variable-length field,\n   but it is used for compatibility with TLS before extensions were\n   defined.  TLS 1.3 servers will need to perform this check first and\n   only attempt to negotiate TLS 1.3 if the \"supported_versions\"\n   extension is present.  If negotiating a version of TLS prior to 1.3,\n   a server MUST check that the message either contains no data after\n   legacy_compression_methods or that it contains a valid extensions\n   block with no data following.  If not, then it MUST abort the\n   handshake with a \"decode_error\" alert.\n\nIn the event that a client requests additional functionality using\n   extensions and this functionality is not supplied by the server, the\n   client MAY abort the handshake."
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            280,
+            281,
+            282
+          ],
+          "start_line": 2214,
+          "end_line": 2239,
+          "section": "4.2.1.  Supported Versions",
+          "score": 27.99,
+          "text": "A server which negotiates a version of TLS prior to TLS 1.3 MUST set\n   ServerHello.version and MUST NOT send the \"supported_versions\"\n   extension.  A server which negotiates TLS 1.3 MUST respond by sending\n   a \"supported_versions\" extension containing the selected version\n   value (0x0304).  It MUST set the ServerHello.legacy_version field to\n   0x0303 (TLS 1.2).  Clients MUST check for this extension prior to\n   processing the rest of the ServerHello (although they will have to\n\nparse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supported_versions\" extension in the ServerHello contains a\n   version not offered by the client or contains a version prior to\n   TLS 1.3, the client MUST abort the handshake with an\n   \"illegal_parameter\" alert.\n\n4.2.2.  Cookie"
+        }
+      ],
+      "selection_reason": "selected by regex score",
+      "llm_used": false
+    },
+    "ctx_000003": {
+      "context_id": "ctx_000003",
+      "text": "Note: This is a change from [RFC5246], so in practice many TLS 1.2\n   clients and servers will not behave as specified above.\n\nA legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been negotiated.\n\n4.1.4.  Hello Retry Request\n\nNote that 0-RTT data is not compatible with older servers and\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\n   See Appendix D.3.\n\nIf the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert.\n\nSome legacy server implementations are known to not implement the TLS\n   specification properly and might abort connections upon encountering\n   TLS extensions or versions which they are not aware of.\n   Interoperability with buggy servers is a complex topic beyond the\n   scope of this document.  Multiple connection attempts may be required\n   in order to negotiate a backward-compatible connection; however, this\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED.",
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            244,
+            245,
+            246
+          ],
+          "start_line": 1835,
+          "end_line": 1843,
+          "section": "4.1.3.  Server Hello",
+          "score": 26.665,
+          "text": "Note: This is a change from [RFC5246], so in practice many TLS 1.2\n   clients and servers will not behave as specified above.\n\nA legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been negotiated.\n\n4.1.4.  Hello Retry Request"
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            1095,
+            1096,
+            1097
+          ],
+          "start_line": 7885,
+          "end_line": 7899,
+          "section": "12.2.  Informative References",
+          "score": 29.395,
+          "text": "Note that 0-RTT data is not compatible with older servers and\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\n   See Appendix D.3.\n\nIf the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert.\n\nSome legacy server implementations are known to not implement the TLS\n   specification properly and might abort connections upon encountering\n   TLS extensions or versions which they are not aware of.\n   Interoperability with buggy servers is a complex topic beyond the\n   scope of this document.  Multiple connection attempts may be required\n   in order to negotiate a backward-compatible connection; however, this\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED."
+        }
+      ],
+      "selection_reason": "selected by regex score",
+      "llm_used": false
+    }
+  },
+  "items": [
+    {
+      "index": 0,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If no common cryptographic parameters can be negotiated",
+        "change_action": "set to appropriate alert",
+        "old_value": "",
+        "new_value": "appropriate alert",
+        "related_state_or_step": "Handshake abort",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If no common cryptographic parameters can be negotiated, the server MUST abort the handshake with an appropriate alert.",
+        "note": "incomplete information",
+        "source_chunk_id": "chunk_0005"
+      },
+      "keywords": [
+        "alert",
+        "appropriate",
+        "to",
+        "be",
+        "can",
+        "common",
+        "cryptographic",
+        "negotiated",
+        "no",
+        "parameters",
+        "abort",
+        "handshake",
+        "an",
+        "server"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 92,
+          "score": 27.365,
+          "start_line": 750,
+          "end_line": 756,
+          "section": "2.1.  Incorrect DHE Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"appropriate alert\"",
+            "token_hits=14",
+            "normative_language"
+          ],
+          "preview": "If the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the "
+        },
+        {
+          "paragraph_id": 290,
+          "score": 20.99,
+          "start_line": 2289,
+          "end_line": 2304,
+          "section": "4.2.3.  Signature Algorithms",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "TLS 1.3 provides two extensions for indicating which signature\n   algorithms may be used in digital signatures.  The\n   \"signature_algorithms_cert\" extension applies to signatures in\n   certificates, and the \"signature_algorithms\" extension, which\n   originall"
+        },
+        {
+          "paragraph_id": 695,
+          "score": 20.54,
+          "start_line": 4973,
+          "end_line": 4985,
+          "section": "6.2.  Error Alerts",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "Whenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate th"
+        },
+        {
+          "paragraph_id": 221,
+          "score": 20.515,
+          "start_line": 1679,
+          "end_line": 1696,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=9",
+            "normative_language"
+          ],
+          "preview": "All versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messa"
+        },
+        {
+          "paragraph_id": 219,
+          "score": 20.29,
+          "start_line": 1660,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "legacy_compression_methods:  Versions of TLS before 1.3 supported\n      compression with the list of supported compression methods being\n      sent in this field.  For every TLS 1.3 ClientHello, this vector\n      MUST contain exactly one byte, set to zero, whi"
+        },
+        {
+          "paragraph_id": 369,
+          "score": 20.19,
+          "start_line": 2814,
+          "end_line": 2825,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "If using (EC)DHE key establishment, servers offer exactly one\n   KeyShareEntry in the ServerHello.  This value MUST be in the same\n   group as the KeyShareEntry value offered by the client that the\n   server has selected for the negotiated key exchange.  Serve"
+        },
+        {
+          "paragraph_id": 451,
+          "score": 20.165,
+          "start_line": 3377,
+          "end_line": 3382,
+          "section": "4.3.1.  Encrypted Extensions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "The EncryptedExtensions message contains extensions that can be\n   protected, i.e., any which are not needed to establish the\n   cryptographic context but which are not associated with individual\n   certificates.  The client MUST check EncryptedExtensions for "
+        },
+        {
+          "paragraph_id": 360,
+          "score": 20.065,
+          "start_line": 2762,
+          "end_line": 2771,
+          "section": "4.2.8.  Key Share",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "Clients can offer as many KeyShareEntry values as the number of\n   supported groups it is offering, each representing a single set of\n   key exchange parameters.  For instance, a client might offer shares\n   for several elliptic curves or multiple FFDHE groups"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            91,
+            92,
+            93
+          ],
+          "start_line": 748,
+          "end_line": 758,
+          "section": "2.1.  Incorrect DHE Share",
+          "score": 27.365
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 20.515
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            289,
+            290,
+            291
+          ],
+          "start_line": 2287,
+          "end_line": 2311,
+          "section": "4.2.3.  Signature Algorithms",
+          "score": 20.99
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            694,
+            695,
+            696
+          ],
+          "start_line": 4968,
+          "end_line": 4987,
+          "section": "6.2.  Error Alerts",
+          "score": 20.54
+        }
+      ],
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "context_id": "ctx_000001",
+      "selection_reason": "selected by regex score"
+    },
+    {
+      "index": 1,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "protocol_version",
+        "related_state_or_step": "Server aborts handshake during negotiation with older client",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version, the server MUST abort the handshake with a \"protocol_version\" alert.",
+        "note": "protocol_version not in catalog; mapped to alert field with incomplete information",
+        "source_chunk_id": "chunk_0048"
+      },
+      "keywords": [
+        "alert",
+        "protocol_version",
+        "constant",
+        "to",
+        "absent",
+        "clienthello",
+        "extension",
+        "greater",
+        "legacy_version",
+        "only",
+        "server",
+        "supported_versions",
+        "supports",
+        "than",
+        "versions"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 1099,
+          "score": 39.095,
+          "start_line": 7903,
+          "end_line": 7914,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\""
+          ],
+          "preview": "A TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If th"
+        },
+        {
+          "paragraph_id": 221,
+          "score": 28.32,
+          "start_line": 1679,
+          "end_line": 1696,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=10"
+          ],
+          "preview": "All versions of TLS allow an extensions field to optionally follow\n   the compression_methods field.  TLS 1.3 ClientHello messages always\n   contain extensions (minimally \"supported_versions\", otherwise, they\n   will be interpreted as TLS 1.2 ClientHello messa"
+        },
+        {
+          "paragraph_id": 281,
+          "score": 27.99,
+          "start_line": 2230,
+          "end_line": 2237,
+          "section": "4.2.1.  Supported Versions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=9"
+          ],
+          "preview": "parse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supporte"
+        },
+        {
+          "paragraph_id": 1119,
+          "score": 27.77,
+          "start_line": 8019,
+          "end_line": 8023,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=7"
+          ],
+          "preview": "Implementations MUST NOT send a ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 or less.  Any endpoint\n   receiving a Hello message with ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 MUST abort the handshak"
+        },
+        {
+          "paragraph_id": 249,
+          "score": 27.465,
+          "start_line": 1863,
+          "end_line": 1872,
+          "section": "4.1.4.  Hello Retry Request",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=8"
+          ],
+          "preview": "Upon receipt of a HelloRetryRequest, the client MUST check the\n   legacy_version, legacy_session_id_echo, cipher_suite, and\n   legacy_compression_method as specified in Section 4.1.3 and then\n   process the extensions, starting with determining the version usi"
+        },
+        {
+          "paragraph_id": 1096,
+          "score": 26.665,
+          "start_line": 7889,
+          "end_line": 7891,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "If the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert."
+        },
+        {
+          "paragraph_id": 245,
+          "score": 26.56,
+          "start_line": 1838,
+          "end_line": 1841,
+          "section": "4.1.3.  Server Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "A legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been n"
+        },
+        {
+          "paragraph_id": 256,
+          "score": 25.94,
+          "start_line": 1913,
+          "end_line": 1916,
+          "section": "4.1.4.  Hello Retry Request",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"supported_versions\"",
+            "phrase \"supported_versions\"",
+            "token_hits=6"
+          ],
+          "preview": "The value of selected_version in the HelloRetryRequest\n   \"supported_versions\" extension MUST be retained in the ServerHello,\n   and a client MUST abort the handshake with an \"illegal_parameter\"\n   alert if the value changes."
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            220,
+            221,
+            222
+          ],
+          "start_line": 1672,
+          "end_line": 1700,
+          "section": "4.1.2.  Client Hello",
+          "score": 28.32
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            280,
+            281,
+            282
+          ],
+          "start_line": 2214,
+          "end_line": 2239,
+          "section": "4.2.1.  Supported Versions",
+          "score": 27.99
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            1098,
+            1099,
+            1100
+          ],
+          "start_line": 7901,
+          "end_line": 7919,
+          "section": "12.2.  Informative References",
+          "score": 39.095
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            1118,
+            1119,
+            1120
+          ],
+          "start_line": 8013,
+          "end_line": 8028,
+          "section": "12.2.  Informative References",
+          "score": 27.77
+        }
+      ],
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "context_id": "ctx_000002",
+      "selection_reason": "selected by regex score"
+    },
+    {
+      "index": 2,
+      "change": {
+        "variable_name": "alert",
+        "change_condition": "If the version chosen by the server is not supported by the client (or is not acceptable)",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "protocol_version",
+        "related_state_or_step": "Client aborts handshake during version negotiation with older server",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the version chosen by the server is not supported by the client (or is not acceptable), the client MUST abort the handshake with a \"protocol_version\" alert.",
+        "note": "protocol_version not in catalog; mapped to alert field with incomplete information",
+        "source_chunk_id": "chunk_0048"
+      },
+      "keywords": [
+        "alert",
+        "protocol_version",
+        "constant",
+        "to",
+        "acceptable",
+        "by",
+        "chosen",
+        "client",
+        "server",
+        "supported",
+        "version",
+        "aborts",
+        "during",
+        "handshake",
+        "negotiation"
+      ],
+      "top_matches": [
+        {
+          "paragraph_id": 1096,
+          "score": 29.395,
+          "start_line": 7889,
+          "end_line": 7891,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=11"
+          ],
+          "preview": "If the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert."
+        },
+        {
+          "paragraph_id": 1099,
+          "score": 27.895,
+          "start_line": 7903,
+          "end_line": 7914,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=7"
+          ],
+          "preview": "A TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If th"
+        },
+        {
+          "paragraph_id": 1119,
+          "score": 26.72,
+          "start_line": 8019,
+          "end_line": 8023,
+          "section": "12.2.  Informative References",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=5"
+          ],
+          "preview": "Implementations MUST NOT send a ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 or less.  Any endpoint\n   receiving a Hello message with ClientHello.legacy_version or\n   ServerHello.legacy_version set to 0x0300 MUST abort the handshak"
+        },
+        {
+          "paragraph_id": 245,
+          "score": 26.665,
+          "start_line": 1838,
+          "end_line": 1841,
+          "section": "4.1.3.  Server Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "phrase \"protocol_version\"",
+            "phrase \"protocol_version\"",
+            "token_hits=6"
+          ],
+          "preview": "A legacy TLS client performing renegotiation with TLS 1.2 or prior\n   and which receives a TLS 1.3 ServerHello during renegotiation MUST\n   abort the handshake with a \"protocol_version\" alert.  Note that\n   renegotiation is not possible when TLS 1.3 has been n"
+        },
+        {
+          "paragraph_id": 327,
+          "score": 20.245,
+          "start_line": 2572,
+          "end_line": 2587,
+          "section": "4.2.5.  OID Filters",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=6",
+            "normative_language"
+          ],
+          "preview": "filters:  A list of certificate extension OIDs [RFC5280] with their\n      allowed value(s) and represented in DER-encoded [X690] format.\n      Some certificate extension OIDs allow multiple values (e.g.,\n      Extended Key Usage).  If the server has included a"
+        },
+        {
+          "paragraph_id": 219,
+          "score": 20.045,
+          "start_line": 1660,
+          "end_line": 1670,
+          "section": "4.1.2.  Client Hello",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "legacy_compression_methods:  Versions of TLS before 1.3 supported\n      compression with the list of supported compression methods being\n      sent in this field.  For every TLS 1.3 ClientHello, this vector\n      MUST contain exactly one byte, set to zero, whi"
+        },
+        {
+          "paragraph_id": 281,
+          "score": 20.045,
+          "start_line": 2230,
+          "end_line": 2237,
+          "section": "4.2.1.  Supported Versions",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=7",
+            "normative_language"
+          ],
+          "preview": "parse the ServerHello in order to read the extension).  If this\n   extension is present, clients MUST ignore the\n   ServerHello.legacy_version value and MUST use only the\n   \"supported_versions\" extension to determine the selected version.  If\n   the \"supporte"
+        },
+        {
+          "paragraph_id": 193,
+          "score": 19.97,
+          "start_line": 1455,
+          "end_line": 1462,
+          "section": "4.1.1.  Cryptographic Negotiation",
+          "reasons": [
+            "phrase \"alert\"",
+            "phrase \"alert\"",
+            "token_hits=8",
+            "normative_language"
+          ],
+          "preview": "If the server does not select a PSK, then the first three of these\n   options are entirely orthogonal: the server independently selects a\n   cipher suite, an (EC)DHE group and key share for key establishment,\n   and a signature algorithm/certificate pair to au"
+        }
+      ],
+      "candidate_windows": [
+        {
+          "window_id": "w1",
+          "paragraph_ids": [
+            244,
+            245,
+            246
+          ],
+          "start_line": 1835,
+          "end_line": 1843,
+          "section": "4.1.3.  Server Hello",
+          "score": 26.665
+        },
+        {
+          "window_id": "w2",
+          "paragraph_ids": [
+            1095,
+            1096,
+            1097
+          ],
+          "start_line": 7885,
+          "end_line": 7899,
+          "section": "12.2.  Informative References",
+          "score": 29.395
+        },
+        {
+          "window_id": "w3",
+          "paragraph_ids": [
+            1098,
+            1099,
+            1100
+          ],
+          "start_line": 7901,
+          "end_line": 7919,
+          "section": "12.2.  Informative References",
+          "score": 27.895
+        },
+        {
+          "window_id": "w4",
+          "paragraph_ids": [
+            1118,
+            1119,
+            1120
+          ],
+          "start_line": 8013,
+          "end_line": 8028,
+          "section": "12.2.  Informative References",
+          "score": 26.72
+        }
+      ],
+      "selected_window_ids": [
+        "w1",
+        "w2"
+      ],
+      "context_id": "ctx_000003",
+      "selection_reason": "selected by regex score"
+    }
+  ]
+}

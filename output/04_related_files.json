@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "mode": "batch_changes",
+    "model": "gpt-5.4",
+    "base_url": "https://api.zhizengzeng.com/v1/",
+    "candidate_count": 32,
+    "changes_file": "d:\\project\\conditionFuzzingPaper\\output\\02_variable_changes.json",
+    "changes_key": "changes",
+    "start_index": 0,
+    "end_index_exclusive": 3,
+    "processed_count": 3,
+    "generated_at": "2026-04-15 20:34:45"
+  },
+  "results": [
+    {
+      "index": 0,
+      "change": {
+        "variable_name": "binder",
+        "change_condition": "For the computation of the binder_key, when the PSK type is external PSKs",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "\"ext binder\"",
+        "related_state_or_step": "binder_key derivation",
+        "explicit_or_inferred": "explicit",
+        "evidence": "For the computation of the binder_key, the label is \"ext binder\" for external PSKs",
+        "note": "The chunk states this for the binder_key label; mapped to catalog field binder as the closest available field.",
+        "source_chunk_id": "chunk_0033"
+      },
+      "result": {
+        "related_files": [
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls13.c",
+            "score": 97,
+            "reason": "TLS 1.3 implements PSK binder_key derivation and binder labels like \"ext binder\"."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl.c",
+            "score": 58,
+            "reason": "Core SSL/TLS flow may reference PSK binder handling, but evidence for exact label is weaker than tls13.c."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\internal.c",
+            "score": 44,
+            "reason": "Internal handshake/key schedule helpers could support binder_key derivation; uncertain without direct label evidence."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls.c",
+            "score": 31,
+            "reason": "General TLS logic may interact with PSK processing, but binder_key label is specifically TLS 1.3-related."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl_misc.c",
+            "score": 18,
+            "reason": "Possible utility support for handshake processing; weak evidence for direct binder label handling."
+          }
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "change": {
+        "variable_name": "binder",
+        "change_condition": "For the computation of the binder_key, when the PSK type is resumption PSKs",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "\"res binder\"",
+        "related_state_or_step": "binder_key derivation",
+        "explicit_or_inferred": "explicit",
+        "evidence": "For the computation of the binder_key, the label is \"...\" \"res binder\" for resumption PSKs",
+        "note": "The chunk states this for the binder_key label; mapped to catalog field binder as the closest available field.",
+        "source_chunk_id": "chunk_0033"
+      },
+      "result": {
+        "related_files": [
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls13.c",
+            "score": 98,
+            "reason": "TLS 1.3 implements PSK binder/binder_key derivation and label constants like \"res binder\"."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl_crypto.c",
+            "score": 72,
+            "reason": "Crypto helper code may support HKDF/key derivation used by binder_key, but label logic is less certain."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\internal.c",
+            "score": 58,
+            "reason": "Internal TLS state and helper routines may define binder-related constants or derivation flow; uncertain."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls.c",
+            "score": 42,
+            "reason": "General TLS code could reference PSK handling, but TLS 1.3 binder label logic is more likely elsewhere."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl.c",
+            "score": 35,
+            "reason": "Core SSL/TLS orchestration may touch handshake state for binders, though evidence for label constant is weak."
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "change": {
+        "variable_name": "binder",
+        "change_condition": "If this value is not present or does not validate",
+        "change_action": "invalid if value check fails",
+        "old_value": "",
+        "new_value": "",
+        "related_state_or_step": "server validation before PSK acceptance",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If this value is not present or does not validate, the server MUST abort the handshake.",
+        "note": "",
+        "source_chunk_id": "chunk_0020"
+      },
+      "result": {
+        "related_files": [
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls13.c",
+            "score": 97,
+            "reason": "TLS 1.3 implements PSK binder validation and handshake abort logic on server side."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\internal.c",
+            "score": 72,
+            "reason": "Likely contains shared handshake state and validation helpers used during PSK acceptance; indirect evidence."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl.c",
+            "score": 61,
+            "reason": "Core SSL/TLS handshake processing may route server-side validation failures, but binder-specific evidence is weaker."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\tls.c",
+            "score": 38,
+            "reason": "General TLS logic could contain related handshake checks, though binder is specifically a TLS 1.3 feature."
+          },
+          {
+            "file": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\src\\ssl_misc.c",
+            "score": 24,
+            "reason": "May include miscellaneous validation/error handling helpers; relevance to binder validation is uncertain."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+[
+  {
+    "result": "证据不足",
+    "reason": "提供的片段只显示了 TLSX 扩展结构、查找/响应标记、部分 ClientHello/DTLS 扩展处理，以及客户端侧 unsupported extension 检查。没有直接展示 server Certificate message 的 CertificateEntry 扩展生成或校验逻辑，也未证明其扩展必须对应 ClientHello 中提供的扩展。",
+    "confidence": 0.32,
+    "desc": "For CertificateEntry in a server Certificate message, extensions MUST correspond to extensions offered in the ClientHello message.",
+    "next_search_suggestions": {
+      "functions_or_methods": [
+        "TLSX_GetResponseSize",
+        "TLSX_WriteResponse",
+        "TLSX_Parse",
+        "TLSX_CheckUnsupportedExtension",
+        "TLSX_HandleUnsupportedExtension",
+        "SendTls13Certificate",
+        "DoTls13Certificate",
+        "TLSX_GetRequestSize",
+        "TLSX_WriteRequest"
+      ],
+      "variables_or_fields": [
+        "msgType",
+        "certificate",
+        "certificate_request",
+        "ssl->extensions",
+        "ssl->ctx->extensions",
+        "extension->resp"
+      ],
+      "focus_for_next_search": "Look for TLS 1.3 Certificate message CertificateEntry extension writing/parsing code, especially where msgType is certificate and whether server-sent certificate extensions are checked against ClientHello-offered extensions or gated by extension->resp."
+    },
+    "follow_up": {
+      "enabled": true,
+      "max_followup_rounds": 2,
+      "executed_rounds": 3,
+      "final_snippets_used": 30,
+      "total_unique_snippets_collected": 99,
+      "pipeline_use_llm": false,
+      "trace": [
+        {
+          "round": 1,
+          "snippets_used": 30,
+          "result": "证据不足",
+          "confidence": 0.82,
+          "reason": "现有片段只显示 TLS 1.3 Certificate 消息支持扩展、以及某些单个扩展在未请求时会报错（如 Connection ID）。但没有直接看到针对 server Certificate 的 CertificateEntry 扩展整体解析/校验逻辑，也没有看到它明确与 ClientHello 已提供扩展进行对应检查。",
+          "follow_up_triggered": true,
+          "follow_up_query": {
+            "var_name": [
+              "ssl->extensions",
+              "TLSX_PopulateExtensions",
+              "TLSX_SupportExtensions",
+              "msgType",
+              "TLSX_CONNECTION_ID",
+              "TLSX_ConnectionID_Parse",
+              "TLSX_Parse",
+              "resp"
+            ],
+            "desc": "查找 server Certificate / CertificateEntry 的扩展解析代码，确认是否对每个收到的扩展通过 ssl->extensions 或类似的 ClientHello 扩展列表进行匹配，并在未请求时返回 UNSUPPORTED_EXTENSION。",
+            "pipeline_output": "D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round1.json"
+          },
+          "follow_up_added_snippets": 45,
+          "follow_up_pipeline_stdout_tail": [
+            "[2026-04-23 17:03:46] collecting files",
+            "[2026-04-23 17:03:46] building symbol index",
+            "[2026-04-23 17:04:15] text recall",
+            "[2026-04-23 17:04:16] symbol recall (tree-sitter)",
+            "[2026-04-23 17:04:22] semantic recall",
+            "[2026-04-23 17:04:27] merging candidates",
+            "[2026-04-23 17:04:27] context expansion",
+            "[2026-04-23 17:04:27] done -> D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round1.json"
+          ]
+        },
+        {
+          "round": 2,
+          "snippets_used": 30,
+          "result": "证据不足",
+          "confidence": 0.88,
+          "reason": "现有片段显示了通用扩展结构 TLSX、部分 ClientHello/DTLS 扩展填充，以及 Connection ID 扩展在未被客户端请求时会报 UNSUPPORTED_EXTENSION。 但没有直接出现 TLS 1.3 Certificate/CertificateEntry 扩展解析或校验逻辑，无法确认“服务器 Certificate 消息中的 CertificateEntry 扩展必须对应 ClientHello 提供的扩展”这一要求是否被实现。",
+          "follow_up_triggered": true,
+          "follow_up_query": {
+            "var_name": [
+              "ssl->extensions",
+              "TLSX_PopulateExtensions",
+              "isRequest",
+              "msgType",
+              "parsedExts",
+              "TLSX_Find",
+              "TLSX_GetRequestSize",
+              "TLSX_Parse",
+              "TLSX_WriteRequest",
+              "resp"
+            ],
+            "desc": "重点查找 TLS 1.3 Certificate/CertificateEntry 的解析函数，以及其中是否针对服务器证书扩展逐项比对 ClientHello 中已提供的扩展类型，尤其搜索 Certificate message、CertificateEntry、UNSUPPORTED_EXTENSION 与 TLSX_Find/ssl->extensions 的组合使用。",
+            "pipeline_output": "D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round2.json"
+          },
+          "follow_up_added_snippets": 45,
+          "follow_up_pipeline_stdout_tail": [
+            "[2026-04-23 17:04:43] collecting files",
+            "[2026-04-23 17:04:43] building symbol index",
+            "[2026-04-23 17:05:12] text recall",
+            "[2026-04-23 17:05:14] symbol recall (tree-sitter)",
+            "[2026-04-23 17:05:20] semantic recall",
+            "[2026-04-23 17:05:25] merging candidates",
+            "[2026-04-23 17:05:25] context expansion",
+            "[2026-04-23 17:05:25] done -> D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round2.json"
+          ]
+        },
+        {
+          "round": 3,
+          "snippets_used": 30,
+          "result": "证据不足",
+          "confidence": 0.32,
+          "reason": "提供的片段只显示了 TLSX 扩展结构、查找/响应标记、部分 ClientHello/DTLS 扩展处理，以及客户端侧 unsupported extension 检查。没有直接展示 server Certificate message 的 CertificateEntry 扩展生成或校验逻辑，也未证明其扩展必须对应 ClientHello 中提供的扩展。",
+          "follow_up_triggered": false,
+          "follow_up_stop_reason": "reached max_followup_rounds"
+        }
+      ]
+    }
+  },
+  {
+    "result": "不满足",
+    "reason": "代码在找到有效 PSK 身份后若 binderLen 不匹配或 ConstantCompare 失败，会立即设置 ret = BAD_BINDER 并 goto cleanup；而没有找到可用身份时 current == NULL 的默认分支返回 ret = 0。二者处理结果不相同，且在 WOLFSSL_PSK_ID_PROTECTION 下无有效身份才可能返回 BAD_BINDER。",
+    "confidence": 0.86,
+    "desc": "For server handling of PSK binder validation outcomes, the binder case with a valid identity but invalid binder must be treated identically to the case with no valid PSK identity. This applies to servers which solely support PSK handshakes to resist the described attack.",
+    "next_search_suggestions": {
+      "functions_or_methods": [],
+      "variables_or_fields": [],
+      "focus_for_next_search": ""
+    },
+    "follow_up": {
+      "enabled": true,
+      "max_followup_rounds": 2,
+      "executed_rounds": 2,
+      "final_snippets_used": 30,
+      "total_unique_snippets_collected": 80,
+      "pipeline_use_llm": false,
+      "trace": [
+        {
+          "round": 1,
+          "snippets_used": 30,
+          "result": "证据不足",
+          "confidence": 0.82,
+          "reason": "片段显示服务器会在 `DoPreSharedKeys` 中把 `current == NULL` 的情况在某些编译条件下返回 `BAD_BINDER`，否则返回 0，但没有给出这是“无有效 PSK identity”还是“identity 有效但 binder 无效”两类情况的完整区分与统一处理逻辑。现有证据也未展示仅支持 PSK 握手的服务器路径如何处理这两种结果是否完全一致，因此无法直接证明描述成立。",
+          "follow_up_triggered": true,
+          "follow_up_query": {
+            "var_name": [
+              "ssl->options.isPSK",
+              "BAD_BINDER",
+              "FindPsk",
+              "SetupPskKey",
+              "current->chosen",
+              "ext->resp",
+              "ssl->options.peerAuthGood",
+              "BuildTls13HandshakeHmac",
+              "CheckPreSharedKeys",
+              "DoPreSharedKeys"
+            ],
+            "desc": "查找服务器端在 PSK identity 匹配失败与 binder 校验失败两条分支上的返回码、告警、握手回退/终止行为，尤其是 `CheckPreSharedKeys` 调用 `DoPreSharedKeys` 后对 `BAD_BINDER`、`current == NULL` 和无匹配 identity 的统一处理。",
+            "pipeline_output": "D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round1.json"
+          },
+          "follow_up_added_snippets": 45,
+          "follow_up_pipeline_stdout_tail": [
+            "[2026-04-23 17:08:53] collecting files",
+            "[2026-04-23 17:08:53] building symbol index",
+            "[2026-04-23 17:09:23] text recall",
+            "[2026-04-23 17:09:36] symbol recall (tree-sitter)",
+            "[2026-04-23 17:09:41] semantic recall",
+            "[2026-04-23 17:09:49] merging candidates",
+            "[2026-04-23 17:09:49] context expansion",
+            "[2026-04-23 17:09:50] done -> D:\\project\\conditionFuzzingPaper\\output\\variable_context_result_followup_round1.json"
+          ]
+        },
+        {
+          "round": 2,
+          "snippets_used": 30,
+          "result": "不满足",
+          "confidence": 0.86,
+          "reason": "代码在找到有效 PSK 身份后若 binderLen 不匹配或 ConstantCompare 失败，会立即设置 ret = BAD_BINDER 并 goto cleanup；而没有找到可用身份时 current == NULL 的默认分支返回 ret = 0。二者处理结果不相同，且在 WOLFSSL_PSK_ID_PROTECTION 下无有效身份才可能返回 BAD_BINDER。",
+          "follow_up_triggered": false
+        }
+      ]
+    }
+  }
+]

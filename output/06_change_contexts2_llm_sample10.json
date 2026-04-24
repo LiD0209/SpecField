@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "generated_at": "2026-04-15 16:59:55",
+    "doc_file": "D:\\project\\conditionFuzzingPaper\\document\\TLS1.3.txt",
+    "changes_file": "D:\\project\\conditionFuzzingPaper\\output\\02_variable_changes.json",
+    "changes_key": "changes",
+    "changes_total": 652,
+    "start_index": 0,
+    "end_index_exclusive": 10,
+    "processed_count": 10,
+    "paragraph_count": 1295,
+    "radius": 1,
+    "max_windows": 4,
+    "max_paragraphs_per_window": 8,
+    "min_score": 1.0,
+    "use_llm": true,
+    "model": "gpt-5.4"
+  },
+  "context_store": {
+    "ctx_000001": {
+      "context_name": "alert",
+      "text": "2.1.  Incorrect DHE Share\n\nIf the client has not provided a sufficient \"key_share\" extension\n   (e.g., it includes only DHE or ECDHE groups unacceptable to or\n   unsupported by the server), the server corrects the mismatch with a\n   HelloRetryRequest and the client needs to restart the handshake with\n   an appropriate \"key_share\" extension, as shown in Figure 2.  If no\n   common cryptographic parameters can be negotiated, the server MUST\n   abort the handshake with an appropriate alert.\n\nClient                                               Server\n\nError handling in TLS is very simple.  When an error is detected, the\n   detecting party sends a message to its peer.  Upon transmission or\n   receipt of a fatal alert message, both parties MUST immediately close\n   the connection.\n\nWhenever an implementation encounters a fatal error condition, it\n   SHOULD send an appropriate fatal alert and MUST close the connection\n   without sending or receiving any additional data.  In the rest of\n   this specification, when the phrases \"terminate the connection\" and\n   \"abort the handshake\" are used without a specific alert it means that\n   the implementation SHOULD send the alert indicated by the\n   descriptions below.  The phrases \"terminate the connection with an X\n   alert\" and \"abort the handshake with an X alert\" mean that the\n   implementation MUST send alert X if it sends any alert.  All alerts\n   defined below in this section, as well as all unknown alerts, are\n   universally considered fatal as of TLS 1.3 (see Section 6).  The\n   implementation SHOULD provide a way to facilitate logging the sending\n   and receiving of alerts.\n\nThe following error alerts are defined:",
+      "start_line": [
+        748,
+        4968
+      ],
+      "end_line": [
+        758,
+        4987
+      ]
+    },
+    "ctx_000002": {
+      "context_name": "alert",
+      "text": "D.2.  Negotiating with an Older Client\n\nA TLS server can also receive a ClientHello indicating a version\n   number smaller than its highest supported version.  If the\n   \"supported_versions\" extension is present, the server MUST negotiate\n   using that extension as described in Section 4.2.1.  If the\n   \"supported_versions\" extension is not present, the server MUST\n   negotiate the minimum of ClientHello.legacy_version and TLS 1.2.  For\n   example, if the server supports TLS 1.0, 1.1, and 1.2, and\n   legacy_version is TLS 1.0, the server will proceed with a TLS 1.0\n   ServerHello.  If the \"supported_versions\" extension is absent and the\n   server only supports versions greater than\n   ClientHello.legacy_version, the server MUST abort the handshake with\n   a \"protocol_version\" alert.\n\nNote that earlier versions of TLS did not clearly specify the record\n   layer version number value in all cases\n   (TLSPlaintext.legacy_record_version).  Servers will receive various\n   TLS 1.x versions in this field, but its value MUST always be ignored.",
+      "start_line": [
+        7901
+      ],
+      "end_line": [
+        7919
+      ]
+    },
+    "ctx_000003": {
+      "context_name": "alert",
+      "text": "Note that 0-RTT data is not compatible with older servers and\n   SHOULD NOT be sent absent knowledge that the server supports TLS 1.3.\n   See Appendix D.3.\n\nIf the version chosen by the server is not supported by the client\n   (or is not acceptable), the client MUST abort the handshake with a\n   \"protocol_version\" alert.\n\nSome legacy server implementations are known to not implement the TLS\n   specification properly and might abort connections upon encountering\n   TLS extensions or versions which they are not aware of.\n   Interoperability with buggy servers is a complex topic beyond the\n   scope of this document.  Multiple connection attempts may be required\n   in order to negotiate a backward-compatible connection; however, this\n   practice is vulnerable to downgrade attacks and is NOT RECOMMENDED.",
+      "start_line": [
+        7885
+      ],
+      "end_line": [
+        7899
+      ]
+    },
+    "ctx_000004": {
+      "context_name": "alert",
+      "text": "Implementations MUST NOT send zero-length fragments of Handshake\n   types, even if those fragments contain padding.\n\nAlert messages (Section 6) MUST NOT be fragmented across records, and\n   multiple alert messages MUST NOT be coalesced into a single\n   TLSPlaintext record.  In other words, a record with an Alert type\n   MUST contain exactly one message.\n\nApplication Data messages contain data that is opaque to TLS.\n   Application Data messages are always protected.  Zero-length\n   fragments of Application Data MAY be sent, as they are potentially\n   useful as a traffic analysis countermeasure.  Application Data\n   fragments MAY be split across multiple records or coalesced into a\n   single record.",
+      "start_line": [
+        4427
+      ],
+      "end_line": [
+        4440
+      ]
+    },
+    "ctx_000005": {
+      "context_name": "AlertLevel",
+      "text": "Note: TLS defines two generic alerts (see Section 6) to use upon\n   failure to parse a message.  Peers which receive a message which\n   cannot be parsed according to the syntax (e.g., have a length\n   extending beyond the message boundary or contain an out-of-range\n   length) MUST terminate the connection with a \"decode_error\" alert.\n   Peers which receive a message which is syntactically correct but\n   semantically invalid (e.g., a DHE share of p - 1, or an invalid enum)\n   MUST terminate the connection with an \"illegal_parameter\" alert.\n\nenum { warning(1), fatal(2), (255) } AlertLevel;\n\nenum {\n          close_notify(0),\n          unexpected_message(10),\n          bad_record_mac(20),\n          record_overflow(22),\n          handshake_failure(40),\n          bad_certificate(42),\n          unsupported_certificate(43),\n          certificate_revoked(44),\n          certificate_expired(45),\n          certificate_unknown(46),\n          illegal_parameter(47),\n          unknown_ca(48),\n          access_denied(49),\n          decode_error(50),\n          decrypt_error(51),\n          protocol_version(70),\n          insufficient_security(71),\n          internal_error(80),\n          inappropriate_fallback(86),\n          user_canceled(90),\n          missing_extension(109),\n          unsupported_extension(110),\n          unrecognized_name(112),\n          bad_certificate_status_response(113),\n          unknown_psk_identity(115),\n          certificate_required(116),\n          no_application_protocol(120),\n          (255)\n      } AlertDescription;",
+      "start_line": [
+        4823
+      ],
+      "end_line": [
+        4883
+      ]
+    },
+    "ctx_000006": {
+      "context_name": "algorithm",
+      "text": "If sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages.\n\nAll SHA-1 signature algorithms in this specification are defined\n   solely for use in legacy certificates and are not valid for\n   CertificateVerify signatures.",
+      "start_line": [
+        3976
+      ],
+      "end_line": [
+        3999
+      ]
+    },
+    "ctx_000007": {
+      "context_name": "algorithm",
+      "text": "Each PSK is associated with a single Hash algorithm.  For PSKs\n   established via the ticket mechanism (Section 4.6.1), this is the KDF\n   Hash algorithm on the connection where the ticket was established.\n   For externally established PSKs, the Hash algorithm MUST be set when\n\nthe PSK is established or default to SHA-256 if no such algorithm is\n   defined.  The server MUST ensure that it selects a compatible PSK\n   (if any) and cipher suite.",
+      "start_line": [
+        3186
+      ],
+      "end_line": [
+        3214
+      ]
+    },
+    "ctx_000008": {
+      "context_name": "algorithm",
+      "text": "If the CertificateVerify message is sent by a server, the signature\n   algorithm MUST be one offered in the client's \"signature_algorithms\"\n   extension unless no valid certificate chain can be produced without\n   unsupported algorithms (see Section 4.2.3).\n\nIf sent by a client, the signature algorithm used in the signature\n   MUST be one of those present in the supported_signature_algorithms\n   field of the \"signature_algorithms\" extension in the\n   CertificateRequest message.\n\nIn addition, the signature algorithm MUST be compatible with the key\n   in the sender's end-entity certificate.  RSA signatures MUST use an\n   RSASSA-PSS algorithm, regardless of whether RSASSA-PKCS1-v1_5\n   algorithms appear in \"signature_algorithms\".  The SHA-1 algorithm\n   MUST NOT be used in any signatures of CertificateVerify messages.",
+      "start_line": [
+        3971
+      ],
+      "end_line": [
+        3985
+      ]
+    }
+  },
+  "items": [
+    {
+      "index": 0,
+      "variable_name": "alert",
+      "context_id": "ctx_000001"
+    },
+    {
+      "index": 1,
+      "variable_name": "alert",
+      "context_id": "ctx_000002"
+    },
+    {
+      "index": 2,
+      "variable_name": "alert",
+      "context_id": "ctx_000003"
+    },
+    {
+      "index": 3,
+      "variable_name": "alert",
+      "context_id": "ctx_000004"
+    },
+    {
+      "index": 4,
+      "variable_name": "alert",
+      "context_id": "ctx_000004"
+    },
+    {
+      "index": 5,
+      "variable_name": "AlertLevel",
+      "context_id": "ctx_000005"
+    },
+    {
+      "index": 6,
+      "variable_name": "algorithm",
+      "context_id": "ctx_000006"
+    },
+    {
+      "index": 7,
+      "variable_name": "algorithm",
+      "context_id": "ctx_000007"
+    },
+    {
+      "index": 8,
+      "variable_name": "algorithm",
+      "context_id": "ctx_000008"
+    },
+    {
+      "index": 9,
+      "variable_name": "algorithm",
+      "context_id": "ctx_000008"
+    }
+  ]
+}

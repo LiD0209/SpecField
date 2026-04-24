@@ -1,0 +1,150 @@
+{
+  "status": "done",
+  "input": "D:\\project\\conditionFuzzingPaper\\result.json",
+  "output": "D:\\project\\conditionFuzzingPaper\\output\\recheck_not_satisfied_final.json",
+  "codebase_path": "D:\\project\\conditionFuzzingPaper\\wolfssl-master",
+  "total_items": 2,
+  "matched_top_level_items": 2,
+  "skipped_non_target_items": 0,
+  "standard_source": "D:\\project\\conditionFuzzingPaper\\document\\TLS1.3.txt",
+  "results": [
+    {
+      "matched_index": 0,
+      "matched_result": "证据不足",
+      "matched_result_kind": "insufficient",
+      "desc": "For CertificateEntry in a server Certificate message, extensions MUST correspond to extensions offered in the ClientHello message.",
+      "test_stage": {
+        "model": "gpt-5.3-codex",
+        "result": {
+          "result": "not_satisfied",
+          "static_analysis": {
+            "comparison": "",
+            "preliminary_result": "",
+            "reason": "",
+            "key_evidence": []
+          },
+          "test": {
+            "name": "tls13_certificateentry_unsolicited_extension_rejection_default_config",
+            "execution_mode": "runtime",
+            "runtime_command": "D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/tlsx_cert_ext_runtime.exe",
+            "runtime_output_excerpt": "parse_ret=0\nhave_csr=0",
+            "steps": [
+              "Used repository baseline config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt and D:/project/conditionFuzzingPaper/wolfssl-master/wolfssl/wolfcrypt/settings.h; confirmed active default build macros from D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/CMakeCache.txt and D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h.",
+              "Built a runtime harness against the default build objects (no extra feature switches) that calls TLSX_Parse with msgType=certificate and an incoming status_request CertificateEntry extension block, without any prior ClientHello request state.",
+              "Executed the harness and captured the parser return code."
+            ],
+            "expected": "A server CertificateEntry extension not offered by ClientHello must be rejected (e.g., unsupported_extension path / non-zero error).",
+            "observed": "Parser returned success (parse_ret=0), meaning the unsolicited certificate extension was accepted in this default build.",
+            "result": "fail"
+          },
+          "analysis": "In the default configuration, OCSP stapling/certificate-status-request support is disabled (HAVE_CERTIFICATE_STATUS_REQUEST is not defined), while TLS 1.3 is enabled. In this build, CSR_PARSE is compiled as a no-op macro returning 0, and the runtime parser test confirmed acceptance of a status_request extension in a certificate context without a matching ClientHello offer. That behavior contradicts the described MUST-level correspondence requirement. No non-default feature switches were used for this verification.",
+          "confidence": 0.95,
+          "next_actions": [
+            "Add a guard in TLSX_Parse/TLS 1.3 certificate-extension handling to reject unsolicited CertificateEntry response extensions even when specific extension feature code is compiled out.",
+            "Add an automated regression test in tests/api that injects an unsolicited TLS 1.3 CertificateEntry extension and expects unsupported_extension/handshake failure."
+          ]
+        },
+        "codex_last_message": {
+          "result": "not_satisfied",
+          "test": {
+            "name": "tls13_certificateentry_unsolicited_extension_rejection_default_config",
+            "execution_mode": "runtime",
+            "runtime_command": "D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/tlsx_cert_ext_runtime.exe",
+            "runtime_output_excerpt": "parse_ret=0\nhave_csr=0",
+            "steps": [
+              "Used repository baseline config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt and D:/project/conditionFuzzingPaper/wolfssl-master/wolfssl/wolfcrypt/settings.h; confirmed active default build macros from D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/CMakeCache.txt and D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h.",
+              "Built a runtime harness against the default build objects (no extra feature switches) that calls TLSX_Parse with msgType=certificate and an incoming status_request CertificateEntry extension block, without any prior ClientHello request state.",
+              "Executed the harness and captured the parser return code."
+            ],
+            "expected": "A server CertificateEntry extension not offered by ClientHello must be rejected (e.g., unsupported_extension path / non-zero error).",
+            "observed": "Parser returned success (parse_ret=0), meaning the unsolicited certificate extension was accepted in this default build.",
+            "result": "fail"
+          },
+          "analysis": "In the default configuration, OCSP stapling/certificate-status-request support is disabled (HAVE_CERTIFICATE_STATUS_REQUEST is not defined), while TLS 1.3 is enabled. In this build, CSR_PARSE is compiled as a no-op macro returning 0, and the runtime parser test confirmed acceptance of a status_request extension in a certificate context without a matching ClientHello offer. That behavior contradicts the described MUST-level correspondence requirement. No non-default feature switches were used for this verification.",
+          "confidence": 0.95,
+          "next_actions": [
+            "Add a guard in TLSX_Parse/TLS 1.3 certificate-extension handling to reject unsolicited CertificateEntry response extensions even when specific extension feature code is compiled out.",
+            "Add an automated regression test in tests/api that injects an unsolicited TLS 1.3 CertificateEntry extension and expects unsupported_extension/handshake failure."
+          ]
+        },
+        "codex_last_message_raw": "{\n  \"result\": \"not_satisfied\",\n  \"test\": {\n    \"name\": \"tls13_certificateentry_unsolicited_extension_rejection_default_config\",\n    \"execution_mode\": \"runtime\",\n    \"runtime_command\": \"D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/tlsx_cert_ext_runtime.exe\",\n    \"runtime_output_excerpt\": \"parse_ret=0\\nhave_csr=0\",\n    \"steps\": [\n      \"Used repository baseline config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt and D:/project/conditionFuzzingPaper/wolfssl-master/wolfssl/wolfcrypt/settings.h; confirmed active default build macros from D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/CMakeCache.txt and D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h.\",\n      \"Built a runtime harness against the default build objects (no extra feature switches) that calls TLSX_Parse with msgType=certificate and an incoming status_request CertificateEntry extension block, without any prior ClientHello request state.\",\n      \"Executed the harness and captured the parser return code.\"\n    ],\n    \"expected\": \"A server CertificateEntry extension not offered by ClientHello must be rejected (e.g., unsupported_extension path / non-zero error).\",\n    \"observed\": \"Parser returned success (parse_ret=0), meaning the unsolicited certificate extension was accepted in this default build.\",\n    \"result\": \"fail\"\n  },\n  \"analysis\": \"In the default configuration, OCSP stapling/certificate-status-request support is disabled (HAVE_CERTIFICATE_STATUS_REQUEST is not defined), while TLS 1.3 is enabled. In this build, CSR_PARSE is compiled as a no-op macro returning 0, and the runtime parser test confirmed acceptance of a status_request extension in a certificate context without a matching ClientHello offer. That behavior contradicts the described MUST-level correspondence requirement. No non-default feature switches were used for this verification.\",\n  \"confidence\": 0.95,\n  \"next_actions\": [\n    \"Add a guard in TLSX_Parse/TLS 1.3 certificate-extension handling to reject unsolicited CertificateEntry response extensions even when specific extension feature code is compiled out.\",\n    \"Add an automated regression test in tests/api that injects an unsolicited TLS 1.3 CertificateEntry extension and expects unsupported_extension/handshake failure.\"\n  ]\n}"
+      },
+      "final_decision": "Not satisfied by practical test."
+    },
+    {
+      "matched_index": 1,
+      "matched_result": "不满足",
+      "matched_result_kind": "not_satisfied",
+      "desc": "For server handling of PSK binder validation outcomes, the binder case with a valid identity but invalid binder must be treated identically to the case with no valid PSK identity. This applies to servers which solely support PSK handshakes to resist the described attack.",
+      "test_stage": {
+        "model": "gpt-5.3-codex",
+        "result": {
+          "result": "not_satisfied",
+          "static_analysis": {
+            "comparison": "",
+            "preliminary_result": "",
+            "reason": "",
+            "key_evidence": []
+          },
+          "test": {
+            "name": "psk_only_server_binder_vs_no_identity_outcome_comparison",
+            "execution_mode": "runtime",
+            "runtime_command": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\build-verifier-psk\\psk_binder_compare.exe",
+            "runtime_output_excerpt": "CASE=valid_identity_invalid_binder serverErr=-423 clientErr=-313 serverTxAlert=47 ... success=0\nCASE=no_valid_psk_identity serverErr=-440 clientErr=2 serverTxAlert=-1 ... success=0",
+            "steps": [
+              "Confirmed default baseline from repository config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt (PSK default off in logic), D:/project/conditionFuzzingPaper/wolfssl-master/configure.ac (--enable-psk default disabled), and baseline generated defaults at D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h (NO_PSK defined).",
+              "Enabled only the minimum non-default switch required for PSK scenario: -DWOLFSSL_PSK=yes (kept TLS 1.3 default on; did not enable WOLFSSL_PSK_ID_PROTECTION).",
+              "Built wolfSSL and ran a dedicated runtime harness that executes two handshakes against a server configured to operate PSK-only at runtime (no certificate loaded): (1) valid identity with wrong key (invalid binder), (2) unknown identity (no valid PSK identity).",
+              "Compared server error/alert outcomes between the two cases."
+            ],
+            "expected": "For a solely-PSK server, 'valid identity + invalid binder' and 'no valid PSK identity' should be treated identically.",
+            "observed": "Outcomes differ: invalid binder path returns BAD_BINDER (-423) with illegal_parameter alert 47, while no-valid-identity path returns NO_CERT_ERROR (-440) after PSK miss/fallback behavior.",
+            "result": "fail"
+          },
+          "analysis": "The implementation behavior is not identical for the two PSK binder-validation outcomes under the tested PSK-only server scenario. Static code paths in D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c align with the runtime result: binder mismatch sets BAD_BINDER immediately, while no matching identity can return non-BAD_BINDER when WOLFSSL_PSK_ID_PROTECTION is not enabled. This matches the observed runtime divergence (-423 vs -440). Therefore the description under test is inconsistent with the implementation under baseline defaults plus minimal PSK enablement.",
+          "confidence": 0.96,
+          "next_actions": [
+            "If this behavior is required, enforce identical handling by enabling and/or hardening the no-identity path (e.g., WOLFSSL_PSK_ID_PROTECTION semantics) for PSK-only servers.",
+            "Add this harness as a CI regression test to assert equivalence of the two rejection paths."
+          ]
+        },
+        "codex_last_message": {
+          "result": "not_satisfied",
+          "test": {
+            "name": "psk_only_server_binder_vs_no_identity_outcome_comparison",
+            "execution_mode": "runtime",
+            "runtime_command": "D:\\project\\conditionFuzzingPaper\\wolfssl-master\\build-verifier-psk\\psk_binder_compare.exe",
+            "runtime_output_excerpt": "CASE=valid_identity_invalid_binder serverErr=-423 clientErr=-313 serverTxAlert=47 ... success=0\nCASE=no_valid_psk_identity serverErr=-440 clientErr=2 serverTxAlert=-1 ... success=0",
+            "steps": [
+              "Confirmed default baseline from repository config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt (PSK default off in logic), D:/project/conditionFuzzingPaper/wolfssl-master/configure.ac (--enable-psk default disabled), and baseline generated defaults at D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h (NO_PSK defined).",
+              "Enabled only the minimum non-default switch required for PSK scenario: -DWOLFSSL_PSK=yes (kept TLS 1.3 default on; did not enable WOLFSSL_PSK_ID_PROTECTION).",
+              "Built wolfSSL and ran a dedicated runtime harness that executes two handshakes against a server configured to operate PSK-only at runtime (no certificate loaded): (1) valid identity with wrong key (invalid binder), (2) unknown identity (no valid PSK identity).",
+              "Compared server error/alert outcomes between the two cases."
+            ],
+            "expected": "For a solely-PSK server, 'valid identity + invalid binder' and 'no valid PSK identity' should be treated identically.",
+            "observed": "Outcomes differ: invalid binder path returns BAD_BINDER (-423) with illegal_parameter alert 47, while no-valid-identity path returns NO_CERT_ERROR (-440) after PSK miss/fallback behavior.",
+            "result": "fail"
+          },
+          "analysis": "The implementation behavior is not identical for the two PSK binder-validation outcomes under the tested PSK-only server scenario. Static code paths in D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c align with the runtime result: binder mismatch sets BAD_BINDER immediately, while no matching identity can return non-BAD_BINDER when WOLFSSL_PSK_ID_PROTECTION is not enabled. This matches the observed runtime divergence (-423 vs -440). Therefore the description under test is inconsistent with the implementation under baseline defaults plus minimal PSK enablement.",
+          "confidence": 0.96,
+          "next_actions": [
+            "If this behavior is required, enforce identical handling by enabling and/or hardening the no-identity path (e.g., WOLFSSL_PSK_ID_PROTECTION semantics) for PSK-only servers.",
+            "Add this harness as a CI regression test to assert equivalence of the two rejection paths."
+          ]
+        },
+        "codex_last_message_raw": "{\n  \"result\": \"not_satisfied\",\n  \"test\": {\n    \"name\": \"psk_only_server_binder_vs_no_identity_outcome_comparison\",\n    \"execution_mode\": \"runtime\",\n    \"runtime_command\": \"D:\\\\project\\\\conditionFuzzingPaper\\\\wolfssl-master\\\\build-verifier-psk\\\\psk_binder_compare.exe\",\n    \"runtime_output_excerpt\": \"CASE=valid_identity_invalid_binder serverErr=-423 clientErr=-313 serverTxAlert=47 ... success=0\\nCASE=no_valid_psk_identity serverErr=-440 clientErr=2 serverTxAlert=-1 ... success=0\",\n    \"steps\": [\n      \"Confirmed default baseline from repository config sources: D:/project/conditionFuzzingPaper/wolfssl-master/CMakeLists.txt (PSK default off in logic), D:/project/conditionFuzzingPaper/wolfssl-master/configure.ac (--enable-psk default disabled), and baseline generated defaults at D:/project/conditionFuzzingPaper/wolfssl-master/build-mingw/wolfssl/options.h (NO_PSK defined).\",\n      \"Enabled only the minimum non-default switch required for PSK scenario: -DWOLFSSL_PSK=yes (kept TLS 1.3 default on; did not enable WOLFSSL_PSK_ID_PROTECTION).\",\n      \"Built wolfSSL and ran a dedicated runtime harness that executes two handshakes against a server configured to operate PSK-only at runtime (no certificate loaded): (1) valid identity with wrong key (invalid binder), (2) unknown identity (no valid PSK identity).\",\n      \"Compared server error/alert outcomes between the two cases.\"\n    ],\n    \"expected\": \"For a solely-PSK server, 'valid identity + invalid binder' and 'no valid PSK identity' should be treated identically.\",\n    \"observed\": \"Outcomes differ: invalid binder path returns BAD_BINDER (-423) with illegal_parameter alert 47, while no-valid-identity path returns NO_CERT_ERROR (-440) after PSK miss/fallback behavior.\",\n    \"result\": \"fail\"\n  },\n  \"analysis\": \"The implementation behavior is not identical for the two PSK binder-validation outcomes under the tested PSK-only server scenario. Static code paths in D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c align with the runtime result: binder mismatch sets BAD_BINDER immediately, while no matching identity can return non-BAD_BINDER when WOLFSSL_PSK_ID_PROTECTION is not enabled. This matches the observed runtime divergence (-423 vs -440). Therefore the description under test is inconsistent with the implementation under baseline defaults plus minimal PSK enablement.\",\n  \"confidence\": 0.96,\n  \"next_actions\": [\n    \"If this behavior is required, enforce identical handling by enabling and/or hardening the no-identity path (e.g., WOLFSSL_PSK_ID_PROTECTION semantics) for PSK-only servers.\",\n    \"Add this harness as a CI regression test to assert equivalence of the two rejection paths.\"\n  ]\n}"
+      },
+      "final_decision": "Not satisfied by practical test."
+    }
+  ],
+  "missing_desc_items": [],
+  "failed_items": [],
+  "summary": {
+    "processed_items": 2,
+    "missing_desc_items": 0,
+    "failed_items": 0,
+    "satisfied_by_test": 0,
+    "not_satisfied_by_test": 2
+  },
+  "codex_calls": 2
+}

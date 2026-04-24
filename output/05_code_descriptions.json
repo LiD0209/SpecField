@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "generated_at": "2026-04-15 12:14:20",
+    "repo_root": "D:\\project\\conditionFuzzingPaper",
+    "task_total": 3,
+    "task_start": 0,
+    "task_end_exclusive": 2,
+    "processed_count": 2,
+    "mode": "local",
+    "max_hops": 2,
+    "max_files": 12,
+    "per_hop_limit": 6,
+    "symbol_fanout": 8,
+    "symbols_csv": "symbols.csv",
+    "scan_repo": false
+  },
+  "items": [
+    {
+      "task_index": 0,
+      "task_id": 0,
+      "query": {
+        "variable_name": "alert",
+        "change_condition": "If no common cryptographic parameters can be negotiated",
+        "change_action": "set to appropriate alert",
+        "old_value": "",
+        "new_value": "appropriate alert",
+        "related_state_or_step": "Handshake abort",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If no common cryptographic parameters can be negotiated, the server MUST abort the handshake with an appropriate alert.",
+        "note": "incomplete information",
+        "source_chunk_id": "chunk_0005"
+      },
+      "seed_files": [
+        "D:\\project\\conditionFuzzingPaper\\output\\test.c"
+      ],
+      "context_files": [
+        {
+          "file": "D:\\project\\conditionFuzzingPaper\\output\\test.c",
+          "hop": 0,
+          "score": 100.0,
+          "reasons": [
+            "seed_file"
+          ],
+          "exists": true
+        }
+      ],
+      "description": {
+        "summary": "Target logic centers on `alert` with action `set to appropriate alert`. Context expansion added 0 cross-file candidates from 1 seed file(s).",
+        "key_points": [
+          "test.c: hop=0, score=100.0, symbols=ssl_write_hostname_ext, ssl_write_alpn_ext, ssl_write_supported_groups_ext"
+        ],
+        "cross_file_relations": [],
+        "gaps": [
+          "No additional related file was found beyond seed files.",
+          "test.c -> include/import `ssl_misc.h` unresolved",
+          "test.c -> include/import `string.h` unresolved",
+          "test.c -> include/import `debug_internal.h` unresolved",
+          "test.c -> include/import `mbedtls/error.h` unresolved",
+          "test.c -> include/import `mbedtls/platform.h` unresolved",
+          "test.c -> include/import `ssl_client.h` unresolved",
+          "test.c -> include/import `ssl_tls13_keys.h` unresolved",
+          "test.c -> include/import `ssl_debug_helpers.h` unresolved"
+        ],
+        "confidence": "low"
+      }
+    },
+    {
+      "task_index": 1,
+      "task_id": 1,
+      "query": {
+        "variable_name": "alert",
+        "change_condition": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version",
+        "change_action": "set to constant",
+        "old_value": "",
+        "new_value": "protocol_version",
+        "related_state_or_step": "Server aborts handshake during negotiation with older client",
+        "explicit_or_inferred": "explicit",
+        "evidence": "If the \"supported_versions\" extension is absent and the server only supports versions greater than ClientHello.legacy_version, the server MUST abort the handshake with a \"protocol_version\" alert.",
+        "note": "protocol_version not in catalog; mapped to alert field with incomplete information",
+        "source_chunk_id": "chunk_0048"
+      },
+      "seed_files": [
+        "D:\\project\\conditionFuzzingPaper\\output\\test.c"
+      ],
+      "context_files": [
+        {
+          "file": "D:\\project\\conditionFuzzingPaper\\output\\test.c",
+          "hop": 0,
+          "score": 100.0,
+          "reasons": [
+            "seed_file"
+          ],
+          "exists": true
+        }
+      ],
+      "description": {
+        "summary": "Target logic centers on `alert` with action `set to constant`. Context expansion added 0 cross-file candidates from 1 seed file(s).",
+        "key_points": [
+          "test.c: hop=0, score=100.0, symbols=ssl_write_hostname_ext, ssl_write_alpn_ext, ssl_write_supported_groups_ext"
+        ],
+        "cross_file_relations": [],
+        "gaps": [
+          "No additional related file was found beyond seed files.",
+          "test.c -> include/import `ssl_misc.h` unresolved",
+          "test.c -> include/import `string.h` unresolved",
+          "test.c -> include/import `debug_internal.h` unresolved",
+          "test.c -> include/import `mbedtls/error.h` unresolved",
+          "test.c -> include/import `mbedtls/platform.h` unresolved",
+          "test.c -> include/import `ssl_client.h` unresolved",
+          "test.c -> include/import `ssl_tls13_keys.h` unresolved",
+          "test.c -> include/import `ssl_debug_helpers.h` unresolved"
+        ],
+        "confidence": "low"
+      }
+    }
+  ]
+}
