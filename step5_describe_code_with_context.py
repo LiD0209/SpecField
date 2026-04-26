@@ -724,7 +724,7 @@ def main() -> int:
 
     parser.add_argument("--use-llm", action="store_true", help="use LLM for final description")
     parser.add_argument("--api-key", default=os.getenv("OPENAI_API_KEY", ""))
-    parser.add_argument("--base-url", default="https://api.zhizengzeng.com/v1/")
+    parser.add_argument("--base-url", default="https://api.bltcy.ai/v1/")
     parser.add_argument("--model", default="gpt-5.4")
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--timeout-sec", type=int, default=120)

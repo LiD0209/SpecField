@@ -615,16 +615,16 @@ def main() -> int:
     )
     parser.add_argument(
         "--changes-file",
-        default=r"d:\project\conditionFuzzingPaper\output\02_variable_changes.json",
+        default="output/02_variable_changes.json",
         help="JSON containing a `changes` list or plain list",
     )
     parser.add_argument("--changes-key", default="changes")
     parser.add_argument(
         "--doc-file",
-        default=r"d:\project\conditionFuzzingPaper\document\TLS1.3.txt",
+        default="document/TLS1.3.txt",
         help="TLS1.3 source text",
     )
-    parser.add_argument("--output", default=r"d:\project\conditionFuzzingPaper\output\06_change_contexts.json")
+    parser.add_argument("--output", default="output/06_change_contexts.json")
     parser.add_argument("--start-index", type=int, default=0)
     parser.add_argument("--max-items", type=int, default=0, help="0 means all")
     parser.add_argument("--radius", type=int, default=1, help="paragraph expansion radius")

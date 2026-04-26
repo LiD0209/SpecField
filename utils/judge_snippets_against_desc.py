@@ -781,7 +781,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--pipeline-output-dir",
-        default="output",
+        default="output/workflow",
         help="directory to store follow-up variable_context_pipeline outputs",
     )
     parser.add_argument(

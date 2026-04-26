@@ -18,13 +18,42 @@ def preprocess_document(raw: str) -> str:
         re.compile(r"^Rescorla\s+Standards Track\s+\[Page \d+\]$"),
         re.compile(r"^\[Page \d+\]$"),
     ]
+    word_noise_patterns = [
+        re.compile(r"^_(Toc|Ref|Hlt)\d+$", re.IGNORECASE),
+        re.compile(r"^doc-idp\d+$", re.IGNORECASE),
+        re.compile(r"^(Heading|Table|Subtitle|Title|Normal|Hyperlink)\b", re.IGNORECASE),
+        re.compile(r"^\*?\s*MERGEFORMAT$", re.IGNORECASE),
+        re.compile(r"^REF\s+_Ref\d+", re.IGNORECASE),
+        re.compile(r"^HYPERLINK\b", re.IGNORECASE),
+        re.compile(r"^(Root Entry|WordDocument|SummaryInformation|DocumentSummaryInformation)$", re.IGNORECASE),
+    ]
+    hard_noise_line = re.compile(
+        r"(themeManager\.xml|openxmlformats|Microsoft Word 97-2003 Document|theme/theme/_rels/)",
+        re.IGNORECASE,
+    )
+    url_only_pattern = re.compile(r"^(https?://\S+|mailto:\S+)$", re.IGNORECASE)
+    heavy_noise_token = re.compile(
+        r"(_Toc\d+|_Ref\d+|_Hlt\d+|HYPERLINK|themeManager\.xml|openxmlformats|WordDocument|Root Entry)",
+        re.IGNORECASE,
+    )
 
     for line in lines:
         stripped = line.strip()
         if any(p.match(stripped) for p in header_patterns):
             continue
+        if any(p.match(stripped) for p in word_noise_patterns):
+            continue
+        if hard_noise_line.search(stripped):
+            continue
+        if url_only_pattern.match(stripped):
+            continue
         if stripped and re.fullmatch(r"[-_=]{6,}", stripped):
             continue
+        # Drop metadata-heavy lines from binary .doc extraction.
+        if stripped:
+            hits = len(heavy_noise_token.findall(stripped))
+            if hits >= 2:
+                continue
         cleaned.append(line.rstrip())
 
     text2 = "\n".join(cleaned)

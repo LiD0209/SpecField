@@ -71,7 +71,7 @@ def main() -> int:
     parser.add_argument("--changes", default="output/02_variable_changes.json")
     parser.add_argument("--output", default="output/03_variable_summary.md")
     parser.add_argument("--api-key", required=True)
-    parser.add_argument("--base-url", default="https://api.zhizengzeng.com/v1/")
+    parser.add_argument("--base-url", default="https://api.bltcy.ai/v1/")
     parser.add_argument("--model", default="gpt-5.4")
     args = parser.parse_args()
 

@@ -350,21 +350,25 @@ def _find_claude_cmd() -> str:
 
 
 def _find_git_bash() -> str:
+    import shutil
+
     existing = os.environ.get("CLAUDE_CODE_GIT_BASH_PATH", "")
     if existing and Path(existing).exists():
         return existing
-    for candidate in [
-        Path(r"D:\Application\Git\bin\bash.exe"),
-        Path(r"C:\Program Files\Git\bin\bash.exe"),
-        Path(r"C:\Program Files (x86)\Git\bin\bash.exe"),
-    ]:
-        if candidate.exists():
-            return str(candidate)
-    import shutil
 
     bash = shutil.which("bash")
     if bash:
         return bash
+
+    # Fallback: probe common Program Files roots without hardcoding absolute paths.
+    for env_name in ("ProgramW6432", "ProgramFiles", "ProgramFiles(x86)"):
+        base = os.environ.get(env_name, "")
+        if not base:
+            continue
+        candidate = Path(base) / "Git" / "bin" / "bash.exe"
+        if candidate.exists():
+            return str(candidate)
+
     raise FileNotFoundError("cannot find git-bash; set CLAUDE_CODE_GIT_BASH_PATH")
 
 

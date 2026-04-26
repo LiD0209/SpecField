@@ -40,12 +40,12 @@ def main() -> int:
     )
     parser.add_argument(
         "--input",
-        default=r"d:\project\conditionFuzzingPaper\output\variable_context_result.json",
+        default="output/variable_context_result.json",
         help="Input JSON path",
     )
     parser.add_argument(
         "--output",
-        default=r"d:\project\conditionFuzzingPaper\test.txt",
+        default="test.txt",
         help="Output text path",
     )
     args = parser.parse_args()
@@ -68,4 +68,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+import time
 from pathlib import Path
 
 from pipeline_utils import (
@@ -18,18 +19,21 @@ PROMPT_TEMPLATE = """
 You are a standards-document extraction assistant.
 You can only use the CURRENT chunk and must not assume you have seen the full document.
 
+Target domain hint:
+{domain_hint}
+
 Task:
-Find all concrete protocol packet/message fields that are DEFINED in this chunk.
-Focus on wire-format fields used by TLS records, handshake messages, and extensions.
+Find all concrete serialized/message/variable/schema fields that are DEFINED in this chunk.
+Focus on fields carried in packets/messages/frames/headers/options/extensions or equivalent structured payloads.
 
 Include:
 - fields in `struct` / `enum` / field tables
 - explicit field definitions like `field_name: ...`
-- packet-carried length/type/value/identifier fields
+- serialized length/type/value/identifier fields
 
 Exclude:
-- abstract security concepts or properties
-- implementation advice, state-machine commentary, timers/counters not carried in packets
+- abstract concepts or properties with no concrete field definition
+- implementation advice, state-machine commentary, timers/counters not carried in serialized payloads
 - anything merely mentioned but not defined in this chunk
 
 Extraction rules:
@@ -61,13 +65,17 @@ def run_stage1(
     api_key: str,
     base_url: str,
     model: str,
+    domain_hint: str,
+    max_retries_per_chunk: int,
+    retry_backoff_sec: float,
+    resume: bool,
     chunk_output_dir: str | None = None,
 ) -> list[dict]:
     chunks = json.loads(Path(chunks_path).read_text(encoding="utf-8"))
     client = OpenAICompatClient(api_key=api_key, base_url=base_url, model=model)
     out_path = Path(output_path)
     chunk_dir = Path(chunk_output_dir) if chunk_output_dir else out_path.parent / "stage1_chunks"
-    if chunk_dir.exists():
+    if chunk_dir.exists() and not resume:
         shutil.rmtree(chunk_dir)
     chunk_dir.mkdir(parents=True, exist_ok=True)
 
@@ -76,41 +84,95 @@ def run_stage1(
     total = len(chunks)
     for i, chunk in enumerate(chunks, start=1):
         chunk_id = chunk["chunk_id"]
-        prompt = PROMPT_TEMPLATE.replace("{chunk_text}", chunk["chunk_text"])
+        chunk_out = chunk_dir / f"{chunk_id}.json"
+        prompt = (
+            PROMPT_TEMPLATE.replace("{domain_hint}", domain_hint).replace(
+                "{chunk_text}", chunk["chunk_text"]
+            )
+        )
+        if resume and chunk_out.exists():
+            try:
+                old = json.loads(chunk_out.read_text(encoding="utf-8"))
+                parsed_old = old.get("parsed", [])
+                parsed_count_old = int(old.get("parsed_count", 0) or 0)
+                if parsed_count_old > 0 and isinstance(parsed_old, list):
+                    for item in parsed_old:
+                        if isinstance(item, dict):
+                            item["source_chunk_id"] = chunk_id
+                            parsed_all.append(item)
+                    logs.append(
+                        {
+                            "chunk_id": chunk_id,
+                            "parsed_count": parsed_count_old,
+                            "raw_response": old.get("raw_response", ""),
+                            "resumed": True,
+                        }
+                    )
+                    print(f"[{now_ts()}] stage1 {chunk_id} ({i}/{total}) resume-hit")
+                    continue
+            except Exception:
+                # If resume file is corrupted, just rerun this chunk.
+                pass
+
         print(f"[{now_ts()}] stage1 {chunk_id} ({i}/{total})")
-        try:
-            resp = client.chat(prompt)
-            parsed = extract_json_array(resp)
-            for item in parsed:
-                item["source_chunk_id"] = chunk_id
-            parsed_all.extend(parsed)
+        last_err: Exception | None = None
+        success = False
+        for attempt in range(1, max(1, max_retries_per_chunk) + 1):
+            try:
+                resp = client.chat(prompt)
+                parsed = extract_json_array(resp)
+                for item in parsed:
+                    item["source_chunk_id"] = chunk_id
+                parsed_all.extend(parsed)
+                write_json(
+                    chunk_out,
+                    {
+                        "chunk_id": chunk_id,
+                        "parsed_count": len(parsed),
+                        "parsed": parsed,
+                        "raw_response": resp,
+                        "attempts": attempt,
+                    },
+                )
+                logs.append(
+                    {
+                        "chunk_id": chunk_id,
+                        "parsed_count": len(parsed),
+                        "raw_response": resp,
+                        "attempts": attempt,
+                    }
+                )
+                success = True
+                break
+            except Exception as e:  # noqa: BLE001
+                last_err = e
+                if attempt < max(1, max_retries_per_chunk):
+                    sleep_s = max(0.1, retry_backoff_sec) * attempt
+                    print(
+                        f"[{now_ts()}] stage1 {chunk_id} retry {attempt}/{max_retries_per_chunk}: {e}"
+                    )
+                    time.sleep(sleep_s)
+
+        if not success:
+            err_text = str(last_err) if last_err else "unknown error"
             write_json(
-                chunk_dir / f"{chunk_id}.json",
+                chunk_out,
                 {
                     "chunk_id": chunk_id,
-                    "parsed_count": len(parsed),
-                    "parsed": parsed,
-                    "raw_response": resp,
+                    "parsed_count": 0,
+                    "parsed": [],
+                    "error": err_text,
+                    "attempts": max(1, max_retries_per_chunk),
                 },
             )
             logs.append(
                 {
                     "chunk_id": chunk_id,
-                    "parsed_count": len(parsed),
-                    "raw_response": resp,
+                    "parsed_count": 0,
+                    "error": err_text,
+                    "attempts": max(1, max_retries_per_chunk),
                 }
             )
-        except Exception as e:  # noqa: BLE001
-            write_json(
-                chunk_dir / f"{chunk_id}.json",
-                {
-                    "chunk_id": chunk_id,
-                    "parsed_count": 0,
-                    "parsed": [],
-                    "error": str(e),
-                },
-            )
-            logs.append({"chunk_id": chunk_id, "parsed_count": 0, "error": str(e)})
 
     merged = merge_definition_records(parsed_all)
     write_json(
@@ -123,12 +185,13 @@ def run_stage1(
                 "record_count": len(merged),
                 "generated_at": now_ts(),
                 "chunk_output_dir": str(chunk_dir),
+                "domain_hint": domain_hint,
             },
             "definitions": merged,
             "logs": logs,
         },
     )
-    print(f"[{now_ts()}] stage1 done: {len(merged)} packet fields")
+    print(f"[{now_ts()}] stage1 done: {len(merged)} fields")
     return merged
 
 
@@ -137,8 +200,15 @@ def main() -> int:
     parser.add_argument("--chunks", default="output/preprocessed_chunks.json")
     parser.add_argument("--output", default="output/01_variable_definitions.json")
     parser.add_argument("--api-key", required=True)
-    parser.add_argument("--base-url", default="https://api.zhizengzeng.com/v1/")
+    parser.add_argument("--base-url", default="https://api.bltcy.ai/v1/")
     parser.add_argument("--model", default="gpt-5.4")
+    parser.add_argument(
+        "--domain-hint",
+        default="Generic specification for structured messages/packets (protocol-agnostic)",
+    )
+    parser.add_argument("--max-retries-per-chunk", type=int, default=4)
+    parser.add_argument("--retry-backoff-sec", type=float, default=2.0)
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--chunk-output-dir", default="")
     args = parser.parse_args()
 
@@ -148,6 +218,10 @@ def main() -> int:
         args.api_key,
         args.base_url,
         args.model,
+        args.domain_hint,
+        args.max_retries_per_chunk,
+        args.retry_backoff_sec,
+        args.resume,
         args.chunk_output_dir or None,
     )
     return 0

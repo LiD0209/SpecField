@@ -31,6 +31,10 @@ def normalize_base_url(base_url: str) -> str:
     return base_url.rstrip("/")
 
 
+def resolve_cli_path(raw_path: str) -> Path:
+    return Path(raw_path).expanduser().resolve(strict=False)
+
+
 def call_chat_completions(
     api_key: str,
     base_url: str,
@@ -186,6 +190,15 @@ def run_cmd(cmd: list[str], cwd: Path, *, desc: str, echo_stdout: bool = True) -
     return cp.stdout
 
 
+def save_results_checkpoint(path: Path, results: list[Any]) -> None:
+    tmp_path = path.with_name(path.name + ".tmp")
+    tmp_path.write_text(
+        json.dumps(results, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    tmp_path.replace(path)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Workflow: summarize each change -> variable context -> collect snippets -> judge snippets"
@@ -224,7 +237,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--pipeline-output-pattern",
-        default="output/variable_context_result_change_{idx}.json",
+        default="output/workflow/variable_context_result_change_{idx}.json",
         help="Output path pattern for pipeline result, supports {idx} as 1-based index",
     )
     parser.add_argument(
@@ -241,29 +254,19 @@ def main() -> int:
     if not repo_root.exists():
         raise ValueError(f"repo root not found: {repo_root}")
 
-    changes_path = Path(args.changes_file)
-    if not changes_path.is_absolute():
-        changes_path = (repo_root / changes_path).resolve(strict=False)
+    changes_path = resolve_cli_path(args.changes_file)
     if not changes_path.exists():
         raise ValueError(f"changes file not found: {changes_path}")
 
-    pipeline_script = Path(args.pipeline_script)
-    if not pipeline_script.is_absolute():
-        pipeline_script = (repo_root / pipeline_script).resolve(strict=False)
-    collect_script = Path(args.collect_script)
-    if not collect_script.is_absolute():
-        collect_script = (repo_root / collect_script).resolve(strict=False)
-    judge_script = Path(args.judge_script)
-    if not judge_script.is_absolute():
-        judge_script = (repo_root / judge_script).resolve(strict=False)
+    pipeline_script = resolve_cli_path(args.pipeline_script)
+    collect_script = resolve_cli_path(args.collect_script)
+    judge_script = resolve_cli_path(args.judge_script)
 
     for p in (pipeline_script, collect_script, judge_script):
         if not p.exists():
             raise ValueError(f"script not found: {p}")
 
-    result_json_path = Path(args.result_json)
-    if not result_json_path.is_absolute():
-        result_json_path = (repo_root / result_json_path).resolve(strict=False)
+    result_json_path = resolve_cli_path(args.result_json)
     result_json_path.parent.mkdir(parents=True, exist_ok=True)
 
     raw = json.loads(changes_path.read_text(encoding="utf-8"))
@@ -274,6 +277,7 @@ def main() -> int:
     total = len(changes)
     limit = total if args.max_changes <= 0 else min(total, args.max_changes)
     merged_results: list[Any] = []
+    save_results_checkpoint(result_json_path, merged_results)
 
     print(f"batch mode start: total={total}, processing={limit}")
 
@@ -303,14 +307,10 @@ def main() -> int:
         print(f"[SUMMARY/{summary_source}] {summary}")
 
         pipeline_output = args.pipeline_output_pattern.format(idx=i)
-        pipeline_output_path = Path(pipeline_output)
-        if not pipeline_output_path.is_absolute():
-            pipeline_output_path = (repo_root / pipeline_output_path).resolve(strict=False)
+        pipeline_output_path = resolve_cli_path(pipeline_output)
         pipeline_output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        test_txt_path = Path(args.test_txt)
-        if not test_txt_path.is_absolute():
-            test_txt_path = (repo_root / test_txt_path).resolve(strict=False)
+        test_txt_path = resolve_cli_path(args.test_txt)
         test_txt_path.parent.mkdir(parents=True, exist_ok=True)
 
         run_cmd(
@@ -364,6 +364,10 @@ def main() -> int:
                 str(test_txt_path),
                 "--desc",
                 summary,
+                "--repo-root",
+                str(repo_root),
+                "--variable-context-script",
+                str(pipeline_script),
                 "--api-key",
                 args.api_key,
                 "--base-url",
@@ -390,11 +394,9 @@ def main() -> int:
         print(judge_text)
 
         merged_results.append(judge_result)
+        save_results_checkpoint(result_json_path, merged_results)
+        print(f"[RESULT_JSON/CHECKPOINT] saved: {result_json_path} (items={len(merged_results)})")
 
-    result_json_path.write_text(
-        json.dumps(merged_results, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
     print(f"[RESULT_JSON] saved: {result_json_path}")
 
     print("batch mode done")
