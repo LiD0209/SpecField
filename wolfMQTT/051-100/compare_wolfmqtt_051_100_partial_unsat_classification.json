@@ -1,0 +1,499 @@
+{
+  "scope": "wolfMQTT-master 051-100 partial+unsatisfied",
+  "total_reviewed": 24,
+  "status_summary": {
+    "部分满足": 16,
+    "不满足": 8
+  },
+  "risk_summary": {
+    "low": 0,
+    "medium": 16,
+    "high": 8
+  },
+  "category_summary": {
+    "CONNACK Flags接收校验不足": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "CONNECT失败响应覆盖不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "ClientId拒绝返回码不符合规范": {
+      "count": 4,
+      "partial": 2,
+      "unsatisfied": 2
+    },
+    "DUP重传置位缺失": {
+      "count": 2,
+      "partial": 0,
+      "unsatisfied": 2
+    },
+    "DUP重传语义实现不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "DUP首发语义约束不完整": {
+      "count": 6,
+      "partial": 6,
+      "unsatisfied": 0
+    },
+    "Fixed Header Flags校验缺失": {
+      "count": 3,
+      "partial": 0,
+      "unsatisfied": 3
+    },
+    "KeepAlive客户端责任未自动保障": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "Packet Identifier重发语义不完整": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "Protocol Level校验缺失": {
+      "count": 1,
+      "partial": 0,
+      "unsatisfied": 1
+    }
+  },
+  "results": [
+    {
+      "id": 51,
+      "status": "不满足",
+      "category": "ClientId拒绝返回码不符合规范",
+      "risk_level": "high",
+      "reason": "规范要求该场景返回 0x02 并断链，当前实现会进入接受/分配路径。",
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "source_index": 50,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "空 ClientId + clean_session=0 未返回 0x02（Identifier rejected）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 52,
+      "status": "部分满足",
+      "category": "CONNECT失败响应覆盖不完整",
+      "risk_level": "medium",
+      "reason": "decode 失败等路径会直接断开，未总是“发送非零返回码”。",
+      "variable_name": "CONNACK return code",
+      "change_action": "must not equal zero",
+      "change_condition": "Further CONNECT Packet restriction checks or authentication/authorization checks fail",
+      "source_index": 51,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "部分校验失败会返回非零 CONNACK，但并非所有失败路径都发送 CONNACK。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:2799",
+        "wolfMQTT-master/src/mqtt_broker.c:2960",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    },
+    {
+      "id": 55,
+      "status": "不满足",
+      "category": "ClientId拒绝返回码不符合规范",
+      "risk_level": "high",
+      "reason": "Identifier rejected 约束未命中该条件分支。",
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "source_index": 54,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID51：空 ClientId + clean_session=0 未返回 0x02。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 59,
+      "status": "部分满足",
+      "category": "ClientId拒绝返回码不符合规范",
+      "risk_level": "medium",
+      "reason": "并非所有应拒绝 ClientId 的场景都会回 0x02。",
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Server rejects the ClientId",
+      "source_index": 58,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "存在 ClientId 被拒绝并返回 0x02 的路径（如过长 ID），但覆盖不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 60,
+      "status": "部分满足",
+      "category": "ClientId拒绝返回码不符合规范",
+      "risk_level": "medium",
+      "reason": "拒绝码语义落地存在条件差异。",
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "Server rejects the ClientId",
+      "source_index": 59,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "同 ID59：0x02 返回码仅在部分 ClientId 拒绝路径生效。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 62,
+      "status": "不满足",
+      "category": "Protocol Level校验缺失",
+      "risk_level": "high",
+      "reason": "缺少“unsupported level -> 0x01 + disconnect”的明确实现。",
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "if the Protocol Level is not supported by the Server",
+      "source_index": 61,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "未见对不支持 protocol level 的显式 0x01 响应校验与分支。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:997",
+        "wolfMQTT-master/src/mqtt_broker.c:2736",
+        "wolfMQTT-master/src/mqtt_broker.c:2918"
+      ]
+    },
+    {
+      "id": 63,
+      "status": "部分满足",
+      "category": "CONNACK Flags接收校验不足",
+      "risk_level": "medium",
+      "reason": "编码满足约束，解码未验证保留位合法性。",
+      "variable_name": "Connect Acknowledge Flags",
+      "change_action": "validated value constraint",
+      "change_condition": "In a CONNACK Packet variable header",
+      "source_index": 62,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "发送侧 CONNACK flags 置 0，但接收侧未显式校验 bits7..1 为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2917",
+        "wolfMQTT-master/src/mqtt_packet.c:1176",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:370"
+      ]
+    },
+    {
+      "id": 66,
+      "status": "部分满足",
+      "category": "CONNECT失败响应覆盖不完整",
+      "risk_level": "medium",
+      "reason": "效果上有 close-no-CONNACK，但缺少显式 rule-level 分支。",
+      "variable_name": "Connect Return code",
+      "change_action": "invalid if value selection fails",
+      "change_condition": "If none of the return codes listed are deemed applicable",
+      "source_index": 65,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "存在不发 CONNACK 直接断链路径，但非以“无适用返回码”统一决策实现。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2694",
+        "wolfMQTT-master/src/mqtt_broker.c:2701",
+        "wolfMQTT-master/src/mqtt_broker.c:3541",
+        "wolfMQTT-master/src/mqtt_broker.c:3544"
+      ]
+    },
+    {
+      "id": 70,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "核心路径符合，但库 API 级约束不严格。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 0 delivery protocol, when the Sender sends a PUBLISH packet",
+      "source_index": 69,
+      "source_chunk_id": "chunk_0012",
+      "original_comment": "broker 转发 QoS0 时固定 DUP=0，但通用编码接口未硬性禁止 QoS0+dup=1。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 71,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "缺少全局“首发必为 0”的硬约束。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 1 delivery protocol, when the Sender sends a PUBLISH packet",
+      "source_index": 70,
+      "source_chunk_id": "chunk_0012",
+      "original_comment": "QoS1 首发在 broker 流程为 DUP=0；通用客户端编码由调用方提供 duplicate。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 72,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "通用编码路径未封死异常取值。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 2 delivery protocol, when the Sender sends a PUBLISH packet",
+      "source_index": 71,
+      "source_chunk_id": "chunk_0012",
+      "original_comment": "QoS2 首发同样依赖调用侧 duplicate 输入，未统一强制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 73,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "依赖调用约定而非统一约束。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "When sending a PUBLISH packet in the described case",
+      "source_index": 72,
+      "source_chunk_id": "chunk_0020",
+      "original_comment": "QoS0 发送常见路径 DUP=0，但非所有调用路径都强制该常量。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 74,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "库允许调用方构造不规范组合。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "for all QoS 0 messages",
+      "source_index": 73,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "“所有 QoS0 消息 DUP=0”未在通用编码层做强制校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 75,
+      "status": "部分满足",
+      "category": "DUP重传语义实现不完整",
+      "risk_level": "medium",
+      "reason": "做到了“独立于入站 DUP”，但“仅重传置 1”未形成闭环。",
+      "variable_name": "DUP",
+      "change_action": "must not be derived/computed from another field",
+      "change_condition": "outgoing PUBLISH packet sent to subscribers by the Server",
+      "source_index": 74,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "broker 转发不会传播 incoming DUP，但也未实现“重传时按状态置位”的完整机制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_broker.c:3315"
+      ]
+    },
+    {
+      "id": 76,
+      "status": "不满足",
+      "category": "DUP重传置位缺失",
+      "risk_level": "high",
+      "reason": "规范要求重投递必须 DUP=1，代码无对应自动机制。",
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "when it attempts to re-deliver a PUBLISH Packet",
+      "source_index": 75,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "未发现重投递时自动将 DUP 置 1 的实现路径。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_client.c:2169"
+      ]
+    },
+    {
+      "id": 77,
+      "status": "部分满足",
+      "category": "DUP首发语义约束不完整",
+      "risk_level": "medium",
+      "reason": "缺少库级硬性约束。",
+      "variable_name": "DUP flag",
+      "change_action": "set to constant",
+      "change_condition": "For all QoS 0 messages",
+      "source_index": 76,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "同 ID74：QoS0 DUP=0 在主要路径满足，但通用层不强制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 78,
+      "status": "不满足",
+      "category": "DUP重传置位缺失",
+      "risk_level": "high",
+      "reason": "无显式重投递 DUP 置位策略。",
+      "variable_name": "DUP flag",
+      "change_action": "set to constant",
+      "change_condition": "When a Client or Server attempts to re-deliver a PUBLISH Packet",
+      "source_index": 77,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "同 ID76：Client/Server 重投递场景未见 DUP=1 自动置位。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_client.c:2169"
+      ]
+    },
+    {
+      "id": 79,
+      "status": "部分满足",
+      "category": "DUP重传语义实现不完整",
+      "risk_level": "medium",
+      "reason": "独立性满足，重传状态机不足。",
+      "variable_name": "DUP flag",
+      "change_action": "derived/computed from another condition",
+      "change_condition": "When the Server sends an outgoing PUBLISH packet to subscribers",
+      "source_index": 78,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "转发 DUP 不继承入站值（固定 0），但“仅按是否重传决定”仍未完整实现。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 83,
+      "status": "不满足",
+      "category": "Fixed Header Flags校验缺失",
+      "risk_level": "high",
+      "reason": "仅校验 packet type，缺少 flags 合法值约束。",
+      "variable_name": "flags",
+      "change_action": "must equal value listed in that table",
+      "change_condition": "A flag bit in fixed header byte 1 is marked reserved for future use",
+      "source_index": 82,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "接收侧固定报头 flags 未按包类型做保留位合法性校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3570"
+      ]
+    },
+    {
+      "id": 84,
+      "status": "不满足",
+      "category": "Fixed Header Flags校验缺失",
+      "risk_level": "high",
+      "reason": "缺少对非法 flags 的统一拒绝断链。",
+      "variable_name": "flags",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Invalid flags are received.",
+      "source_index": 83,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "未实现通用“invalid flags -> close connection”处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3438"
+      ]
+    },
+    {
+      "id": 85,
+      "status": "不满足",
+      "category": "Fixed Header Flags校验缺失",
+      "risk_level": "high",
+      "reason": "保留位/非法位值缺少接收端严格校验。",
+      "variable_name": "flags",
+      "change_action": "invalid if value check fails",
+      "change_condition": "invalid flags are received",
+      "source_index": 84,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "同 ID84：非法 flags 场景未覆盖到协议级断链处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3438"
+      ]
+    },
+    {
+      "id": 86,
+      "status": "部分满足",
+      "category": "KeepAlive客户端责任未自动保障",
+      "risk_level": "medium",
+      "reason": "能力存在，依赖上层应用主动调用与调度。",
+      "variable_name": "Keep Alive",
+      "change_action": "validated upper bound check",
+      "change_condition": "Client is sending Control Packets",
+      "source_index": 85,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "客户端携带 Keep Alive 并提供 PING API，但未自动调度保证发送间隔不超时。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:888",
+        "wolfMQTT-master/src/mqtt_client.c:2572",
+        "wolfMQTT-master/src/mqtt_client.c:2641"
+      ]
+    },
+    {
+      "id": 87,
+      "status": "部分满足",
+      "category": "KeepAlive客户端责任未自动保障",
+      "risk_level": "medium",
+      "reason": "库未内建 keepalive 定时发送策略。",
+      "variable_name": "Keep Alive",
+      "change_action": "upper bound check",
+      "change_condition": "Client sending Control Packets",
+      "source_index": 86,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID86：发送间隔控制主要由应用层负责。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:888",
+        "wolfMQTT-master/src/mqtt_client.c:2572",
+        "wolfMQTT-master/src/mqtt_client.c:2641"
+      ]
+    },
+    {
+      "id": 96,
+      "status": "部分满足",
+      "category": "Packet Identifier重发语义不完整",
+      "risk_level": "medium",
+      "reason": "可保持同 ID，但缺少内建“重发必须复用”策略层。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal previous value / reuse same value",
+      "change_condition": "A Client re-sends a particular Control Packet.",
+      "source_index": 95,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "packet_id 在发送过程中保持调用方提供值，但未实现统一自动重发管理策略。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1363",
+        "wolfMQTT-master/src/mqtt_client.c:2169",
+        "wolfMQTT-master/src/mqtt_client.c:2288"
+      ]
+    }
+  ]
+}

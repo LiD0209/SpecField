@@ -1,0 +1,921 @@
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
+    "scope": "source_changes_index_50_to_99",
+    "display_scope": "051-100",
+    "method": "static_code_comparison",
+    "target": "wolfMQTT-master",
+    "generated_at": "2026-04-25T20:56:28",
+    "counts": {
+      "满足": 26,
+      "部分满足": 16,
+      "不满足": 8,
+      "不适用": 0,
+      "待确认": 0
+    },
+    "evidence_validation": {
+      "total_references": 145,
+      "missing_files": [],
+      "out_of_range": [],
+      "bad_format": [],
+      "all_locatable": true
+    }
+  },
+  "results": [
+    {
+      "id": 51,
+      "source_index": 50,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "old_value": "",
+      "new_value": "0x02",
+      "related_state_or_step": "CONNECT rejection",
+      "source_chunk_id": "chunk_0007",
+      "status": "不满足",
+      "comment": "空 ClientId + clean_session=0 未返回 0x02（Identifier rejected）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 52,
+      "source_index": 51,
+      "variable_name": "CONNACK return code",
+      "change_action": "must not equal zero",
+      "change_condition": "Further CONNECT Packet restriction checks or authentication/authorization checks fail",
+      "old_value": "",
+      "new_value": "non-zero return code",
+      "related_state_or_step": "CONNECT validation failure response",
+      "source_chunk_id": "chunk_0007",
+      "status": "部分满足",
+      "comment": "部分校验失败会返回非零 CONNACK，但并非所有失败路径都发送 CONNACK。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:2799",
+        "wolfMQTT-master/src/mqtt_broker.c:2960",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    },
+    {
+      "id": 53,
+      "source_index": 52,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If CONNECT validation is successful",
+      "old_value": "",
+      "new_value": "zero return code",
+      "related_state_or_step": "CONNECT acknowledgement",
+      "source_chunk_id": "chunk_0018",
+      "status": "满足",
+      "comment": "CONNECT 验证成功时，CONNACK 返回码为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 54,
+      "source_index": 53,
+      "variable_name": "CONNACK return code",
+      "change_action": "must not equal",
+      "change_condition": "If a server sends a CONNACK packet containing a non-zero return code",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "CONNACK validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "满足",
+      "comment": "发送非零 CONNACK 后会立即走断链流程。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3043",
+        "wolfMQTT-master/src/mqtt_broker.c:3044",
+        "wolfMQTT-master/src/mqtt_broker.c:3541",
+        "wolfMQTT-master/src/mqtt_broker.c:3544"
+      ]
+    },
+    {
+      "id": 55,
+      "source_index": 54,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "old_value": "",
+      "new_value": "0x02 (Identifier rejected)",
+      "related_state_or_step": "CONNECT validation failure response",
+      "source_chunk_id": "chunk_0018",
+      "status": "不满足",
+      "comment": "同 ID51：空 ClientId + clean_session=0 未返回 0x02。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 56,
+      "source_index": 55,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Server accepts a connection with CleanSession set to 0 and the Server does not have stored Session state",
+      "old_value": "",
+      "new_value": "zero return code",
+      "related_state_or_step": "CONNACK packet generation",
+      "source_chunk_id": "chunk_0008",
+      "status": "满足",
+      "comment": "接受 clean_session=0 连接时返回码为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2744",
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 57,
+      "source_index": 56,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Server accepts a connection with CleanSession set to 1",
+      "old_value": "",
+      "new_value": "zero return code",
+      "related_state_or_step": "CONNACK packet generation",
+      "source_chunk_id": "chunk_0008",
+      "status": "满足",
+      "comment": "接受 clean_session=1 连接时返回码为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2780",
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 58,
+      "source_index": 57,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Server does not have stored Session state",
+      "old_value": "",
+      "new_value": "zero return code",
+      "related_state_or_step": "CONNACK generation",
+      "source_chunk_id": "chunk_0018",
+      "status": "满足",
+      "comment": "无已存会话状态时，接受连接返回码为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2775",
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 59,
+      "source_index": 58,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "If the Server rejects the ClientId",
+      "old_value": "",
+      "new_value": "0x02 (Identifier rejected)",
+      "related_state_or_step": "CONNECT validation failure response",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "存在 ClientId 被拒绝并返回 0x02 的路径（如过长 ID），但覆盖不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 60,
+      "source_index": 59,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "Server rejects the ClientId",
+      "old_value": "",
+      "new_value": "0x02",
+      "related_state_or_step": "CONNECT rejection",
+      "source_chunk_id": "chunk_0007",
+      "status": "部分满足",
+      "comment": "同 ID59：0x02 返回码仅在部分 ClientId 拒绝路径生效。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 61,
+      "source_index": 60,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "The Server acknowledges the CONNECT Packet",
+      "old_value": "",
+      "new_value": "zero return code",
+      "related_state_or_step": "CONNACK Packet generation",
+      "source_chunk_id": "chunk_0008",
+      "status": "满足",
+      "comment": "服务端确认 CONNECT 时使用零返回码。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 62,
+      "source_index": 61,
+      "variable_name": "CONNACK return code",
+      "change_action": "set to constant",
+      "change_condition": "if the Protocol Level is not supported by the Server",
+      "old_value": "",
+      "new_value": "0x01",
+      "related_state_or_step": "CONNECT response",
+      "source_chunk_id": "chunk_0005",
+      "status": "不满足",
+      "comment": "未见对不支持 protocol level 的显式 0x01 响应校验与分支。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:997",
+        "wolfMQTT-master/src/mqtt_broker.c:2736",
+        "wolfMQTT-master/src/mqtt_broker.c:2918"
+      ]
+    },
+    {
+      "id": 63,
+      "source_index": 62,
+      "variable_name": "Connect Acknowledge Flags",
+      "change_action": "validated value constraint",
+      "change_condition": "In a CONNACK Packet variable header",
+      "old_value": "",
+      "new_value": "Bits 7-1 set to 0",
+      "related_state_or_step": "CONNACK variable header encoding",
+      "source_chunk_id": "chunk_0008",
+      "status": "部分满足",
+      "comment": "发送侧 CONNACK flags 置 0，但接收侧未显式校验 bits7..1 为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2917",
+        "wolfMQTT-master/src/mqtt_packet.c:1176",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:370"
+      ]
+    },
+    {
+      "id": 64,
+      "source_index": 63,
+      "variable_name": "Connect Flags",
+      "change_action": "indicates presence or absence of payload fields",
+      "change_condition": "CONNECT packet processing",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT variable header semantics",
+      "source_chunk_id": "chunk_0005",
+      "status": "满足",
+      "comment": "Connect Flags 同时用于连接行为参数和 payload 字段存在性判定。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:869",
+        "wolfMQTT-master/src/mqtt_packet.c:873",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 65,
+      "source_index": 64,
+      "variable_name": "Connect Return code",
+      "change_action": "selected from offered list",
+      "change_condition": "If a well formed CONNECT Packet is received by the Server, but the Server is unable to process it for some reason",
+      "old_value": "",
+      "new_value": "appropriate non-zero Connect return code from this table",
+      "related_state_or_step": "CONNACK packet generation",
+      "source_chunk_id": "chunk_0008",
+      "status": "满足",
+      "comment": "对可处理的“well-formed 但无法处理”场景，会给出表内非零返回码。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:2799",
+        "wolfMQTT-master/src/mqtt_broker.c:2960",
+        "wolfMQTT-master/src/mqtt_broker.c:3025"
+      ]
+    },
+    {
+      "id": 66,
+      "source_index": 65,
+      "variable_name": "Connect Return code",
+      "change_action": "invalid if value selection fails",
+      "change_condition": "If none of the return codes listed are deemed applicable",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNACK decision",
+      "source_chunk_id": "chunk_0008",
+      "status": "部分满足",
+      "comment": "存在不发 CONNACK 直接断链路径，但非以“无适用返回码”统一决策实现。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2694",
+        "wolfMQTT-master/src/mqtt_broker.c:2701",
+        "wolfMQTT-master/src/mqtt_broker.c:3541",
+        "wolfMQTT-master/src/mqtt_broker.c:3544"
+      ]
+    },
+    {
+      "id": 67,
+      "source_index": 66,
+      "variable_name": "continuation bit",
+      "change_action": "set to 1",
+      "change_condition": "Remaining Length uses additional following bytes in the representation",
+      "old_value": "",
+      "new_value": "top bit set",
+      "related_state_or_step": "Remaining Length variable length encoding",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "Remaining Length 编码时，有后续字节会置 continuation bit。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:269",
+        "wolfMQTT-master/src/mqtt_packet.c:272",
+        "wolfMQTT-master/src/mqtt_packet.c:273"
+      ]
+    },
+    {
+      "id": 68,
+      "source_index": 67,
+      "variable_name": "continuation bit",
+      "change_action": "must not equal 0 to continue decoding",
+      "change_condition": "during Remaining Length decoding loop condition",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "Remaining Length decoding algorithm",
+      "source_chunk_id": "chunk_0005",
+      "status": "满足",
+      "comment": "Remaining Length 解码循环条件为 `(encodedByte & 128) != 0`。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:240",
+        "wolfMQTT-master/src/mqtt_packet.c:245"
+      ]
+    },
+    {
+      "id": 69,
+      "source_index": 68,
+      "variable_name": "DUP",
+      "change_action": "value ignored for judgment",
+      "change_condition": "After the Receiver has sent a PUBACK Packet and receives a PUBLISH packet with the same Packet Identifier",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "Receiver processing later incoming PUBLISH packets in QoS 1",
+      "source_chunk_id": "chunk_0012",
+      "status": "满足",
+      "comment": "接收侧未基于 DUP 位做重复抑制判定，同包标识重来仍按发布流程处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3333",
+        "wolfMQTT-master/src/mqtt_packet.c:1426"
+      ]
+    },
+    {
+      "id": 70,
+      "source_index": 69,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 0 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Sender sends PUBLISH in QoS 0 delivery protocol",
+      "source_chunk_id": "chunk_0012",
+      "status": "部分满足",
+      "comment": "broker 转发 QoS0 时固定 DUP=0，但通用编码接口未硬性禁止 QoS0+dup=1。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 71,
+      "source_index": 70,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 1 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "QoS 1 PUBLISH sending",
+      "source_chunk_id": "chunk_0012",
+      "status": "部分满足",
+      "comment": "QoS1 首发在 broker 流程为 DUP=0；通用客户端编码由调用方提供 duplicate。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 72,
+      "source_index": 71,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 2 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "QoS 2 PUBLISH sending",
+      "source_chunk_id": "chunk_0012",
+      "status": "部分满足",
+      "comment": "QoS2 首发同样依赖调用侧 duplicate 输入，未统一强制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 73,
+      "source_index": 72,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "When sending a PUBLISH packet in the described case",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "send PUBLISH packet",
+      "source_chunk_id": "chunk_0020",
+      "status": "部分满足",
+      "comment": "QoS0 发送常见路径 DUP=0，但非所有调用路径都强制该常量。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 74,
+      "source_index": 73,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "for all QoS 0 messages",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "PUBLISH flag setting",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "“所有 QoS0 消息 DUP=0”未在通用编码层做强制校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 75,
+      "source_index": 74,
+      "variable_name": "DUP",
+      "change_action": "must not be derived/computed from another field",
+      "change_condition": "outgoing PUBLISH packet sent to subscribers by the Server",
+      "old_value": "incoming PUBLISH packet DUP value",
+      "new_value": "determined solely by whether the outgoing PUBLISH packet is a retransmission",
+      "related_state_or_step": "Server forwarding PUBLISH",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "broker 转发不会传播 incoming DUP，但也未实现“重传时按状态置位”的完整机制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_broker.c:3315"
+      ]
+    },
+    {
+      "id": 76,
+      "source_index": 75,
+      "variable_name": "DUP",
+      "change_action": "set to constant",
+      "change_condition": "when it attempts to re-deliver a PUBLISH Packet",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "PUBLISH retransmission",
+      "source_chunk_id": "chunk_0018",
+      "status": "不满足",
+      "comment": "未发现重投递时自动将 DUP 置 1 的实现路径。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_client.c:2169"
+      ]
+    },
+    {
+      "id": 77,
+      "source_index": 76,
+      "variable_name": "DUP flag",
+      "change_action": "set to constant",
+      "change_condition": "For all QoS 0 messages",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "PUBLISH fixed header encoding",
+      "source_chunk_id": "chunk_0008",
+      "status": "部分满足",
+      "comment": "同 ID74：QoS0 DUP=0 在主要路径满足，但通用层不强制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 78,
+      "source_index": 77,
+      "variable_name": "DUP flag",
+      "change_action": "set to constant",
+      "change_condition": "When a Client or Server attempts to re-deliver a PUBLISH Packet",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "PUBLISH retransmission",
+      "source_chunk_id": "chunk_0008",
+      "status": "不满足",
+      "comment": "同 ID76：Client/Server 重投递场景未见 DUP=1 自动置位。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305",
+        "wolfMQTT-master/src/mqtt_client.c:2169"
+      ]
+    },
+    {
+      "id": 79,
+      "source_index": 78,
+      "variable_name": "DUP flag",
+      "change_action": "derived/computed from another condition",
+      "change_condition": "When the Server sends an outgoing PUBLISH packet to subscribers",
+      "old_value": "incoming DUP flag value",
+      "new_value": "determined solely by whether the outgoing PUBLISH packet is a retransmission",
+      "related_state_or_step": "Outgoing PUBLISH generation",
+      "source_chunk_id": "chunk_0008",
+      "status": "部分满足",
+      "comment": "转发 DUP 不继承入站值（固定 0），但“仅按是否重传决定”仍未完整实现。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 80,
+      "source_index": 79,
+      "variable_name": "encodedByte",
+      "change_action": "set to X MOD 128",
+      "change_condition": "Algorithm for encoding a non negative integer (X) into the variable length encoding scheme",
+      "old_value": "",
+      "new_value": "X MOD 128",
+      "related_state_or_step": "Remaining Length encoding algorithm",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "Variable Byte Integer 编码实现了 `encodedByte = X MOD 128`。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:269"
+      ]
+    },
+    {
+      "id": 81,
+      "source_index": 80,
+      "variable_name": "encodedByte",
+      "change_action": "set from next byte in stream",
+      "change_condition": "during decoding of the Remaining Length field",
+      "old_value": "",
+      "new_value": "'next byte from stream'",
+      "related_state_or_step": "Remaining Length decoding algorithm",
+      "source_chunk_id": "chunk_0005",
+      "status": "满足",
+      "comment": "解码时 `encodedByte` 从后续字节流读取。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:240"
+      ]
+    },
+    {
+      "id": 82,
+      "source_index": 81,
+      "variable_name": "encodedByte",
+      "change_action": "set to encodedByte OR 128",
+      "change_condition": "if there are more data to encode",
+      "old_value": "encodedByte",
+      "new_value": "encodedByte OR 128",
+      "related_state_or_step": "Remaining Length encoding algorithm",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "存在后续编码数据时执行 `encodedByte |= 128`。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:272",
+        "wolfMQTT-master/src/mqtt_packet.c:273"
+      ]
+    },
+    {
+      "id": 83,
+      "source_index": 82,
+      "variable_name": "flags",
+      "change_action": "must equal value listed in that table",
+      "change_condition": "A flag bit in fixed header byte 1 is marked reserved for future use",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "fixed header flag validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "不满足",
+      "comment": "接收侧固定报头 flags 未按包类型做保留位合法性校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3570"
+      ]
+    },
+    {
+      "id": 84,
+      "source_index": 83,
+      "variable_name": "flags",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Invalid flags are received.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "packet reception",
+      "source_chunk_id": "chunk_0017",
+      "status": "不满足",
+      "comment": "未实现通用“invalid flags -> close connection”处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3438"
+      ]
+    },
+    {
+      "id": 85,
+      "source_index": 84,
+      "variable_name": "flags",
+      "change_action": "invalid if value check fails",
+      "change_condition": "invalid flags are received",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "fixed header flag validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "不满足",
+      "comment": "同 ID84：非法 flags 场景未覆盖到协议级断链处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:197",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3438"
+      ]
+    },
+    {
+      "id": 86,
+      "source_index": 85,
+      "variable_name": "Keep Alive",
+      "change_action": "validated upper bound check",
+      "change_condition": "Client is sending Control Packets",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "Client keep alive behavior",
+      "source_chunk_id": "chunk_0007",
+      "status": "部分满足",
+      "comment": "客户端携带 Keep Alive 并提供 PING API，但未自动调度保证发送间隔不超时。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:888",
+        "wolfMQTT-master/src/mqtt_client.c:2572",
+        "wolfMQTT-master/src/mqtt_client.c:2641"
+      ]
+    },
+    {
+      "id": 87,
+      "source_index": 86,
+      "variable_name": "Keep Alive",
+      "change_action": "upper bound check",
+      "change_condition": "Client sending Control Packets",
+      "old_value": "",
+      "new_value": "interval between Control Packets must not exceed Keep Alive value",
+      "related_state_or_step": "Keep Alive enforcement",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID86：发送间隔控制主要由应用层负责。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:888",
+        "wolfMQTT-master/src/mqtt_client.c:2572",
+        "wolfMQTT-master/src/mqtt_client.c:2641"
+      ]
+    },
+    {
+      "id": 88,
+      "source_index": 87,
+      "variable_name": "Keep Alive",
+      "change_action": "validated timeout check",
+      "change_condition": "If the Keep Alive value is non-zero and the Server does not receive a Control Packet from the Client within one and a half times the Keep Alive time period",
+      "old_value": "",
+      "new_value": "non-zero; server checks receipt within 1.5 times Keep Alive",
+      "related_state_or_step": "Keep Alive enforcement",
+      "source_chunk_id": "chunk_0018",
+      "status": "满足",
+      "comment": "服务端实现了 1.5 倍 Keep Alive 超时断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3607",
+        "wolfMQTT-master/src/mqtt_broker.c:3611",
+        "wolfMQTT-master/src/mqtt_broker.c:3624"
+      ]
+    },
+    {
+      "id": 89,
+      "source_index": 88,
+      "variable_name": "Keep Alive",
+      "change_action": "must equal zero to turn off keep alive mechanism",
+      "change_condition": "Keep Alive value equals zero (0)",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Keep alive mechanism interpretation",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Keep Alive 为 0 时不会进入超时断链逻辑（机制关闭）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3608"
+      ]
+    },
+    {
+      "id": 90,
+      "source_index": 89,
+      "variable_name": "Keep Alive",
+      "change_action": "must not exceed inactivity limit; invalid if value check fails",
+      "change_condition": "Keep Alive value is non-zero and the Server does not receive a Control Packet from the Client within one and a half times the Keep Alive time period",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "Server validation of client inactivity",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "超过 1.5 倍 Keep Alive 无控制报文时会判定超时并断开。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3610",
+        "wolfMQTT-master/src/mqtt_broker.c:3611",
+        "wolfMQTT-master/src/mqtt_broker.c:3624"
+      ]
+    },
+    {
+      "id": 91,
+      "source_index": 90,
+      "variable_name": "Keep Alive",
+      "change_action": "validated range check",
+      "change_condition": "Maximum permitted Keep Alive value",
+      "old_value": "",
+      "new_value": "maximum 18 hours 12 minutes and 15 seconds",
+      "related_state_or_step": "Keep Alive field constraints",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Keep Alive 使用 16 位字段（最大 65535 秒）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:363",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:420",
+        "wolfMQTT-master/src/mqtt_packet.c:1005"
+      ]
+    },
+    {
+      "id": 92,
+      "source_index": 91,
+      "variable_name": "length",
+      "change_action": "must equal byte count of the UTF-8 encoded string itself",
+      "change_condition": "Each UTF-8 encoded string field is transmitted",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "UTF-8 encoded string length prefix",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "UTF-8 字符串编码使用 2 字节长度前缀，长度为字符串字节数。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:361",
+        "wolfMQTT-master/src/mqtt_packet.c:363",
+        "wolfMQTT-master/src/mqtt_packet.c:370"
+      ]
+    },
+    {
+      "id": 93,
+      "source_index": 92,
+      "variable_name": "length",
+      "change_action": "derived/computed from another field",
+      "change_condition": "Password field is present",
+      "old_value": "",
+      "new_value": "number of bytes used by the binary data, excluding the 2 length bytes",
+      "related_state_or_step": "Password length interpretation",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Password 存在时通过长度前缀编码，长度来自实际字节数。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:846",
+        "wolfMQTT-master/src/mqtt_packet.c:941",
+        "wolfMQTT-master/src/mqtt_packet.c:361"
+      ]
+    },
+    {
+      "id": 94,
+      "source_index": 93,
+      "variable_name": "length",
+      "change_action": "validated range check",
+      "change_condition": "UTF-8 encoded string is used in a Control Packet",
+      "old_value": "",
+      "new_value": "0 to 65535 bytes",
+      "related_state_or_step": "UTF-8 encoded string validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "UTF-8 字符串长度有 65535 上限且解码时做边界验证。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:366",
+        "wolfMQTT-master/src/mqtt_packet.c:367",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 95,
+      "source_index": 94,
+      "variable_name": "length",
+      "change_action": "derived/computed from another field",
+      "change_condition": "Will Message field is present",
+      "old_value": "",
+      "new_value": "number of bytes in the data that follows, excluding the 2 length bytes",
+      "related_state_or_step": "Will Message length interpretation",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Will Message 长度前缀来自数据长度，且不包含前缀自身长度。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:818",
+        "wolfMQTT-master/src/mqtt_packet.c:934",
+        "wolfMQTT-master/src/mqtt_packet.c:383"
+      ]
+    },
+    {
+      "id": 96,
+      "source_index": 95,
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal previous value / reuse same value",
+      "change_condition": "A Client re-sends a particular Control Packet.",
+      "old_value": "Packet Identifier used for that packet",
+      "new_value": "same Packet Identifier",
+      "related_state_or_step": "packet resend",
+      "source_chunk_id": "chunk_0017",
+      "status": "部分满足",
+      "comment": "packet_id 在发送过程中保持调用方提供值，但未实现统一自动重发管理策略。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1363",
+        "wolfMQTT-master/src/mqtt_client.c:2169",
+        "wolfMQTT-master/src/mqtt_client.c:2288"
+      ]
+    },
+    {
+      "id": 97,
+      "source_index": 96,
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal corresponding PUBLISH Packet value",
+      "change_condition": "A PUBACK, PUBREC or PUBREL Packet is sent.",
+      "old_value": "",
+      "new_value": "same Packet Identifier as the PUBLISH Packet that was originally sent",
+      "related_state_or_step": "acknowledgement packet construction/validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "PUBACK/PUBREC/PUBREL 响应路径都复用原始 PUBLISH 的 packet_id。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3335",
+        "wolfMQTT-master/src/mqtt_broker.c:3341",
+        "wolfMQTT-master/src/mqtt_broker.c:3411",
+        "wolfMQTT-master/src/mqtt_client.c:964"
+      ]
+    },
+    {
+      "id": 98,
+      "source_index": 97,
+      "variable_name": "Packet Identifier",
+      "change_action": "must be absent",
+      "change_condition": "A PUBLISH Packet has QoS value set to 0.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "PUBLISH packet validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "QoS0 的 PUBLISH 不编码 packet_id，解码也仅在 QoS>0 时读取。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1362",
+        "wolfMQTT-master/src/mqtt_packet.c:1444"
+      ]
+    },
+    {
+      "id": 99,
+      "source_index": 98,
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal corresponding SUBSCRIBE or UNSUBSCRIBE Packet value",
+      "change_condition": "A SUBACK or UNSUBACK Packet is sent.",
+      "old_value": "",
+      "new_value": "the Packet Identifier that was used in the corresponding SUBSCRIBE and UNSUBSCRIBE Packet respectively",
+      "related_state_or_step": "acknowledgement packet construction/validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "SUBACK/UNSUBACK 都使用对应 SUBSCRIBE/UNSUBSCRIBE 的 packet_id。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3111",
+        "wolfMQTT-master/src/mqtt_broker.c:3161",
+        "wolfMQTT-master/src/mqtt_packet.c:2623",
+        "wolfMQTT-master/src/mqtt_packet.c:2319"
+      ]
+    },
+    {
+      "id": 100,
+      "source_index": 99,
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal",
+      "change_condition": "After the Receiver has sent a PUBACK Packet, upon any incoming PUBLISH packet with the same Packet Identifier",
+      "old_value": "",
+      "new_value": "same Packet Identifier",
+      "related_state_or_step": "Receiver processing later incoming PUBLISH packets in QoS 1",
+      "source_chunk_id": "chunk_0012",
+      "status": "满足",
+      "comment": "接收端对同 packet_id 的后续 PUBLISH 仍按新发布流程处理，不依赖 DUP 位判断。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3333",
+        "wolfMQTT-master/src/mqtt_packet.c:1426"
+      ]
+    }
+  ]
+}

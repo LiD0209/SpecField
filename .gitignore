@@ -7,4 +7,5 @@ output/stage1_chunks/
 output/stage2_chunks/
 output/workflow/
 sol-master/
+mosquitto-master/
 

@@ -1,0 +1,661 @@
+{
+  "scope": "wolfMQTT-master 001-050 partial+unsatisfied",
+  "total_reviewed": 32,
+  "status_summary": {
+    "部分满足": 13,
+    "不满足": 19
+  },
+  "risk_summary": {
+    "low": 2,
+    "medium": 6,
+    "high": 24
+  },
+  "category_summary": {
+    "ClientId字符集白名单未显式校验": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "ClientId拒绝返回码0x02覆盖不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "ClientId长度约束与实现上限差异": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "UTF-8协议校验缺失": {
+      "count": 7,
+      "partial": 0,
+      "unsatisfied": 7
+    },
+    "UTF-8语义保障不足": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "会话恢复覆盖不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "会话持久化仅保留订阅": {
+      "count": 3,
+      "partial": 3,
+      "unsatisfied": 0
+    },
+    "固定报头保留位未校验": {
+      "count": 6,
+      "partial": 0,
+      "unsatisfied": 6
+    },
+    "规则文本信息不完整": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "重连重传语义缺失": {
+      "count": 1,
+      "partial": 0,
+      "unsatisfied": 1
+    },
+    "零长度ClientId与CleanSession联动缺失": {
+      "count": 5,
+      "partial": 0,
+      "unsatisfied": 5
+    },
+    "零长度ClientId唯一分配覆盖不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    }
+  },
+  "results": [
+    {
+      "id": 1,
+      "status": "部分满足",
+      "category": "会话持久化仅保留订阅",
+      "risk_level": "high",
+      "reason": "仅 orphan 订阅，不缓存离线 QoS>0 消息，无法满足“断线后继续存储消息”。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal 0 for stored session behavior",
+      "change_condition": "After the disconnection of a Session",
+      "source_index": 0,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "clean_session=0 断连后会保留订阅关系，但未实现离线 QoS1/QoS2 消息存储。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1397",
+        "wolfMQTT-master/src/mqtt_broker.c:1405",
+        "wolfMQTT-master/src/mqtt_broker.c:3291",
+        "wolfMQTT-master/src/mqtt_broker.c:3497"
+      ]
+    },
+    {
+      "id": 4,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "保留位非法值可穿过解码路径，未按规范执行 malformed+close。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If the SUBSCRIBE Control Packet fixed-header bits have any value other than 0,0,1,0",
+      "source_index": 3,
+      "source_chunk_id": "chunk_0010",
+      "original_comment": "SUBSCRIBE 入站仅校验 packet type，不校验固定报头低 4 位，也未在该场景显式断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:1814",
+        "wolfMQTT-master/src/mqtt_broker.c:3570",
+        "wolfMQTT-master/src/mqtt_broker.c:3571"
+      ]
+    },
+    {
+      "id": 5,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "保留位非法值不会触发协议违规断链。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If the UNSUBSCRIBE fixed header reserved bits have any value other than 0,0,1,0.",
+      "source_index": 4,
+      "source_chunk_id": "chunk_0011",
+      "original_comment": "UNSUBSCRIBE 与 ID4 同类问题：无保留位值校验，缺少该违规场景的断链路径。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:2103",
+        "wolfMQTT-master/src/mqtt_broker.c:3573",
+        "wolfMQTT-master/src/mqtt_broker.c:3574"
+      ]
+    },
+    {
+      "id": 8,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "PUBREL 保留位非法值未触发 malformed+close。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "in the PUBREL Control Packet, if any other value is received",
+      "source_index": 7,
+      "source_chunk_id": "chunk_0009",
+      "original_comment": "PUBREL 入站只校验类型，不校验低 4 位是否为 0010，违规包不会按规范断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:1625",
+        "wolfMQTT-master/src/mqtt_broker.c:3375",
+        "wolfMQTT-master/src/mqtt_broker.c:3561"
+      ]
+    },
+    {
+      "id": 9,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "保留位非法值可通过接收链路。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "in the PUBREL Control Packet, if value is not 0,0,1,0",
+      "source_index": 8,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "同 ID8，PUBREL 保留位违规未被拒绝并断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:1625",
+        "wolfMQTT-master/src/mqtt_broker.c:3375",
+        "wolfMQTT-master/src/mqtt_broker.c:3561"
+      ]
+    },
+    {
+      "id": 11,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "缺少对 SUBSCRIBE 报头低 4 位的协议约束校验。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "of the SUBSCRIBE Control Packet, if value is not 0,0,1,0",
+      "source_index": 10,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "SUBSCRIBE 非 0010 的非法固定报头未被显式识别并关闭连接。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:1814",
+        "wolfMQTT-master/src/mqtt_broker.c:3570",
+        "wolfMQTT-master/src/mqtt_broker.c:3571"
+      ]
+    },
+    {
+      "id": 13,
+      "status": "不满足",
+      "category": "固定报头保留位未校验",
+      "risk_level": "high",
+      "reason": "缺少 UNSUBSCRIBE 保留位违规处理。",
+      "variable_name": "Bits 3,2,1 and 0 of the fixed header",
+      "change_action": "invalid if value check fails",
+      "change_condition": "of the UNSUBSCRIBE Control Packet, if value is not 0,0,1,0",
+      "source_index": 12,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "UNSUBSCRIBE 非 0010 的非法固定报头未触发规范要求的断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:2103",
+        "wolfMQTT-master/src/mqtt_broker.c:3573",
+        "wolfMQTT-master/src/mqtt_broker.c:3574"
+      ]
+    },
+    {
+      "id": 14,
+      "status": "部分满足",
+      "category": "会话持久化仅保留订阅",
+      "risk_level": "high",
+      "reason": "未满足“断线后继续存储 QoS1/QoS2 消息”。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal 0 for stored session behavior",
+      "change_condition": "After the disconnection of a Session",
+      "source_index": 13,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "与 ID1 同类：仅持久化订阅，不持久化离线 QoS>0 消息。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1397",
+        "wolfMQTT-master/src/mqtt_broker.c:1405",
+        "wolfMQTT-master/src/mqtt_broker.c:3291",
+        "wolfMQTT-master/src/mqtt_broker.c:3497"
+      ]
+    },
+    {
+      "id": 15,
+      "status": "部分满足",
+      "category": "会话恢复覆盖不完整",
+      "risk_level": "high",
+      "reason": "会话恢复仅覆盖订阅映射，未覆盖 QoS 在途消息。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal 0",
+      "change_condition": "CleanSession is set to 0.",
+      "source_index": 14,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "clean_session=0 可重关联历史订阅，但未恢复离线在途消息状态。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2775",
+        "wolfMQTT-master/src/mqtt_broker.c:2778",
+        "wolfMQTT-master/src/mqtt_broker.c:1745",
+        "wolfMQTT-master/src/mqtt_broker.c:1780"
+      ]
+    },
+    {
+      "id": 17,
+      "status": "不满足",
+      "category": "零长度ClientId与CleanSession联动缺失",
+      "risk_level": "high",
+      "reason": "允许空 ClientId 且 clean_session=0 进入后续处理。",
+      "variable_name": "CleanSession",
+      "change_action": "set to constant",
+      "change_condition": "Client supplies a zero-byte ClientId",
+      "source_index": 16,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "零长度 ClientId 未强制要求 clean_session=1；客户端和服务端均未做该联动约束。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:804",
+        "wolfMQTT-master/src/mqtt_packet.c:869",
+        "wolfMQTT-master/src/mqtt_broker.c:2744",
+        "wolfMQTT-master/src/mqtt_broker.c:2972"
+      ]
+    },
+    {
+      "id": 18,
+      "status": "不满足",
+      "category": "零长度ClientId与CleanSession联动缺失",
+      "risk_level": "high",
+      "reason": "规范要求拒绝+0x02，但实现会在特定路径接受并分配 ID。",
+      "variable_name": "CleanSession",
+      "change_action": "must not equal",
+      "change_condition": "Client supplies a zero-byte ClientId",
+      "source_index": 17,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "空 ClientId + clean_session=0 未返回 0x02 并关闭连接，MQTT5 路径会进入自动分配 ID。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:2980",
+        "wolfMQTT-master/src/mqtt_broker.c:3043"
+      ]
+    },
+    {
+      "id": 19,
+      "status": "不满足",
+      "category": "零长度ClientId与CleanSession联动缺失",
+      "risk_level": "high",
+      "reason": "clean_session 常量约束未落地。",
+      "variable_name": "CleanSession",
+      "change_action": "set to constant",
+      "change_condition": "If the Client supplies a zero-byte ClientId",
+      "source_index": 18,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID17：空 ClientId 场景未绑定 clean_session=1。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:804",
+        "wolfMQTT-master/src/mqtt_packet.c:869",
+        "wolfMQTT-master/src/mqtt_broker.c:2972"
+      ]
+    },
+    {
+      "id": 20,
+      "status": "不满足",
+      "category": "零长度ClientId与CleanSession联动缺失",
+      "risk_level": "high",
+      "reason": "规范拒绝路径缺失。",
+      "variable_name": "CleanSession",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If the Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "source_index": 19,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "空 ClientId + clean_session=0 的违规路径未执行 0x02 + 断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:3043"
+      ]
+    },
+    {
+      "id": 21,
+      "status": "部分满足",
+      "category": "规则文本信息不完整",
+      "risk_level": "low",
+      "reason": "规则目标字段未完整展开，仅能就可观测行为做部分映射。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal",
+      "change_condition": "If the Server accepts a connection with CleanSession set to 1",
+      "source_index": 20,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "可确认 clean_session=1 时 CONNACK flags 固定为 0，但该条规则原文信息不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2917",
+        "wolfMQTT-master/src/mqtt_broker.c:2918"
+      ]
+    },
+    {
+      "id": 25,
+      "status": "部分满足",
+      "category": "会话持久化仅保留订阅",
+      "risk_level": "high",
+      "reason": "仅满足订阅层面的“保持会话”。",
+      "variable_name": "CleanSession",
+      "change_action": "set to constant",
+      "change_condition": "When a Client connects requesting server to maintain session state after disconnect",
+      "source_index": 24,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "实现保留 clean_session=0 的订阅会话语义，但离线 QoS 消息持久化缺失。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1397",
+        "wolfMQTT-master/src/mqtt_broker.c:3581",
+        "wolfMQTT-master/src/mqtt_broker.c:3586"
+      ]
+    },
+    {
+      "id": 27,
+      "status": "不满足",
+      "category": "重连重传语义缺失",
+      "risk_level": "high",
+      "reason": "无离线 inflight 队列与原 packet_id 重发流程。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal",
+      "change_condition": "When a Client reconnects",
+      "source_index": 26,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "clean_session=0 重连后未实现未确认 PUBLISH/PUBREL 的离线重发机制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2777",
+        "wolfMQTT-master/src/mqtt_broker.c:3291",
+        "wolfMQTT-master/src/mqtt_broker.c:3333"
+      ]
+    },
+    {
+      "id": 28,
+      "status": "部分满足",
+      "category": "会话恢复覆盖不完整",
+      "risk_level": "high",
+      "reason": "恢复范围不含离线 QoS 流状态。",
+      "variable_name": "CleanSession",
+      "change_action": "must equal 0 to trigger session resume behavior",
+      "change_condition": "if CleanSession is set to 0",
+      "source_index": 27,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "clean_session=0 的“会话恢复”仅在订阅重关联层面实现。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2775",
+        "wolfMQTT-master/src/mqtt_broker.c:2778",
+        "wolfMQTT-master/src/mqtt_broker.c:1745"
+      ]
+    },
+    {
+      "id": 29,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "字符串解码仅处理长度与边界，不验证 Unicode 合法性。",
+      "variable_name": "Client identifier",
+      "change_action": "invalid if value check fails",
+      "change_condition": "A Control Packet contains ill-formed UTF-8 in a UTF-8 encoded string.",
+      "source_index": 28,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "接收链路未执行 UTF-8 well-formed 校验，无法保证 ill-formed 时断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:356",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    },
+    {
+      "id": 31,
+      "status": "部分满足",
+      "category": "UTF-8语义保障不足",
+      "risk_level": "low",
+      "reason": "表现上不会剥离 BOM，但缺少明确语义验证路径。",
+      "variable_name": "Client identifier",
+      "change_action": "must be interpreted as U+FEFF and must not be skipped or stripped",
+      "change_condition": "A UTF-8 encoded sequence 0xEF 0xBB 0xBF appears in a string.",
+      "source_index": 30,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "实现未见 BOM 去除逻辑（不会主动 strip），但也未显式做 U+FEFF 语义解释校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:354",
+        "wolfMQTT-master/src/mqtt_broker.c:175",
+        "wolfMQTT-master/src/mqtt_broker.c:202"
+      ]
+    },
+    {
+      "id": 32,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "缺少 surrogate code point 编码过滤。",
+      "variable_name": "Client identifier",
+      "change_action": "must not include",
+      "change_condition": "A UTF-8 encoded string includes an encoding of code points between U+D800 and U+DFFF.",
+      "source_index": 31,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "未发现对 UTF-8 代理区编码（U+D800~U+DFFF）的拒绝校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:356"
+      ]
+    },
+    {
+      "id": 33,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "未实现空字符编码的协议级禁止规则。",
+      "variable_name": "Client identifier",
+      "change_action": "must not include",
+      "change_condition": "A UTF-8 encoded string includes an encoding of the null character U+0000.",
+      "source_index": 32,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "未发现 U+0000 编码拒绝校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:356",
+        "wolfMQTT-master/src/mqtt_broker.c:175"
+      ]
+    },
+    {
+      "id": 34,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "缺少 U+0000 接收拒绝和断链逻辑。",
+      "variable_name": "Client identifier",
+      "change_action": "invalid if value check fails",
+      "change_condition": "A receiver receives a Control Packet containing U+0000 in a UTF-8 encoded string.",
+      "source_index": 33,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "含 U+0000 的 UTF-8 字符串未触发规范要求的断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:356",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    },
+    {
+      "id": 39,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "ClientId 的 UTF-8 合法性验证缺位。",
+      "variable_name": "Client identifier",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "Client identifier contains UTF-8 character data",
+      "source_index": 38,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "ClientId UTF-8 合法性（well-formed）未校验，无法保证非法输入断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1038",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    },
+    {
+      "id": 40,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "空字符编码规则未实现。",
+      "variable_name": "Client identifier",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "Client identifier contains encoding of null character U+0000",
+      "source_index": 39,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "ClientId 未显式过滤 U+0000 编码，也未在该场景强制断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1038",
+        "wolfMQTT-master/src/mqtt_broker.c:175"
+      ]
+    },
+    {
+      "id": 41,
+      "status": "部分满足",
+      "category": "ClientId长度约束与实现上限差异",
+      "risk_level": "medium",
+      "reason": "协议长度域与具体实现上限并不完全等价。",
+      "variable_name": "Client identifier",
+      "change_action": "validated range check",
+      "change_condition": "Client identifier is carried as a UTF-8 encoded string",
+      "source_index": 40,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "协议层长度字段覆盖 0..65535，但 broker 侧有实现上限（如静态内存宏限制）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:366",
+        "wolfMQTT-master/src/mqtt_broker.c:2713"
+      ]
+    },
+    {
+      "id": 43,
+      "status": "不满足",
+      "category": "零长度ClientId与CleanSession联动缺失",
+      "risk_level": "high",
+      "reason": "规范拒绝条件未落地。",
+      "variable_name": "Client identifier",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Client supplies a zero-byte ClientId with CleanSession set to 0",
+      "source_index": 42,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "零长度 ClientId + clean_session=0 未执行 0x02 拒绝并断链。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2744",
+        "wolfMQTT-master/src/mqtt_broker.c:2918",
+        "wolfMQTT-master/src/mqtt_broker.c:2972"
+      ]
+    },
+    {
+      "id": 44,
+      "status": "部分满足",
+      "category": "零长度ClientId唯一分配覆盖不完整",
+      "risk_level": "medium",
+      "reason": "仅 MQTT5 接受分支下赋值，不是统一行为。",
+      "variable_name": "Client identifier",
+      "change_action": "set to server-assigned unique value",
+      "change_condition": "ClientId length is zero bytes and Server allows it",
+      "source_index": 43,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "MQTT5 路径会给空 ClientId 分配 `auto-xxxx`，但覆盖范围受协议版本与实现条件限制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:2975",
+        "wolfMQTT-master/src/mqtt_broker.c:2980"
+      ]
+    },
+    {
+      "id": 45,
+      "status": "部分满足",
+      "category": "零长度ClientId唯一分配覆盖不完整",
+      "risk_level": "medium",
+      "reason": "分配逻辑存在条件性。",
+      "variable_name": "Client identifier",
+      "change_action": "set to constant",
+      "change_condition": "If server allows zero-byte ClientId",
+      "source_index": 44,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID44：有服务端分配 ID 能力，但并非统一覆盖所有允许空 ID 场景。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2972",
+        "wolfMQTT-master/src/mqtt_broker.c:2975",
+        "wolfMQTT-master/src/mqtt_broker.c:2980"
+      ]
+    },
+    {
+      "id": 46,
+      "status": "部分满足",
+      "category": "ClientId拒绝返回码0x02覆盖不完整",
+      "risk_level": "medium",
+      "reason": "仅部分拒绝路径绑定 0x02。",
+      "variable_name": "Client identifier",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If the Server rejects the ClientId",
+      "source_index": 45,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "ClientId 超长拒绝路径会返回 0x02 并断链，但对其他应拒绝场景覆盖不全。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:3043",
+        "wolfMQTT-master/src/mqtt_broker.c:3541"
+      ]
+    },
+    {
+      "id": 48,
+      "status": "部分满足",
+      "category": "ClientId字符集白名单未显式校验",
+      "risk_level": "medium",
+      "reason": "缺少规范文本级别的长度/字符集显式检查。",
+      "variable_name": "Client identifier",
+      "change_action": "validated range check and character-set membership check",
+      "change_condition": "Server accepts ClientIds",
+      "source_index": 47,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "实现可接受常见合法 ClientId，但未见 1..23 与字符集白名单的显式校验逻辑。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2713",
+        "wolfMQTT-master/src/mqtt_broker.c:2731"
+      ]
+    },
+    {
+      "id": 49,
+      "status": "部分满足",
+      "category": "ClientId拒绝返回码0x02覆盖不完整",
+      "risk_level": "medium",
+      "reason": "拒绝码语义具备，但实际触发覆盖不完整。",
+      "variable_name": "Client identifier",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Server rejects the ClientId",
+      "source_index": 48,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "存在 0x02 拒绝路径，但应拒绝的空 ClientId+clean_session=0 场景未覆盖。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2726",
+        "wolfMQTT-master/src/mqtt_broker.c:2972"
+      ]
+    },
+    {
+      "id": 50,
+      "status": "不满足",
+      "category": "UTF-8协议校验缺失",
+      "risk_level": "high",
+      "reason": "未实现 Unicode/RFC3629 级别的格式验证。",
+      "variable_name": "Client identifier",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "source_index": 49,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "通用 UTF-8 字符串接收链路未做 well-formed 校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:356",
+        "wolfMQTT-master/src/mqtt_broker.c:2694"
+      ]
+    }
+  ]
+}

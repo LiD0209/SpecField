@@ -1,0 +1,511 @@
+{
+  "scope": "wolfMQTT-master 101-150 partial+unsatisfied",
+  "total_reviewed": 23,
+  "status_summary": {
+    "部分满足": 17,
+    "不满足": 6
+  },
+  "risk_summary": {
+    "low": 0,
+    "medium": 7,
+    "high": 16
+  },
+  "category_summary": {
+    "CONNECT Flags 交叉约束接收校验不足": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "CleanSession=0 重连重传机制缺失": {
+      "count": 2,
+      "partial": 0,
+      "unsatisfied": 2
+    },
+    "Packet Identifier 唯一值分配校验不足": {
+      "count": 5,
+      "partial": 5,
+      "unsatisfied": 0
+    },
+    "Packet Identifier 释放后复用策略不完整": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "Packet Identifier 重传同值约束覆盖不完整": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "Packet Identifier 非零约束接收校验不足": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "Password Flag=0 负载一致性校验不足": {
+      "count": 3,
+      "partial": 3,
+      "unsatisfied": 0
+    },
+    "Password/Username Flag 联动校验不足": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "QoS2 Method B 存储/丢弃流程缺失": {
+      "count": 3,
+      "partial": 0,
+      "unsatisfied": 3
+    },
+    "QoS2 去重状态机覆盖不完整": {
+      "count": 2,
+      "partial": 2,
+      "unsatisfied": 0
+    },
+    "SUBSCRIBE Payload 最小元素约束缺失": {
+      "count": 1,
+      "partial": 0,
+      "unsatisfied": 1
+    }
+  },
+  "results": [
+    {
+      "id": 101,
+      "status": "部分满足",
+      "category": "QoS2 去重状态机覆盖不完整",
+      "risk_level": "high",
+      "reason": "实现按当前包直接处理并回包，缺少完整 QoS2 入站去重状态管理。",
+      "variable_name": "Packet Identifier",
+      "change_action": "validity judgment changes; subsequent matching Packet Identifier is treated as a new publication",
+      "change_condition": "After the receiver has sent a PUBCOMP, and it receives any subsequent PUBLISH packet that contains that Packet Identifier",
+      "source_index": 100,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "PUBCOMP 之后同 packet id 的后续 PUBLISH 会被当作新消息处理；但 QoS2 去重状态机并不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3335",
+        "wolfMQTT-master/src/mqtt_broker.c:3375",
+        "wolfMQTT-master/src/mqtt_broker.c:3562"
+      ]
+    },
+    {
+      "id": 102,
+      "status": "部分满足",
+      "category": "Packet Identifier 唯一值分配校验不足",
+      "risk_level": "high",
+      "reason": "缺少 in-use 集合冲突检测，无法强保证“从未使用值集合选择”。",
+      "variable_name": "Packet Identifier",
+      "change_action": "selected from unused set",
+      "change_condition": "Each time a Client sends a new packet of one of these types.",
+      "source_index": 101,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "Broker 端 packet id 为递增分配并跳过 0，但未校验“当前未使用集合”；Client 端由调用方提供 id。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1628",
+        "wolfMQTT-master/src/mqtt_broker.c:1633",
+        "wolfMQTT-master/src/mqtt_broker.c:3302",
+        "wolfMQTT-master/src/mqtt_client.c:2169"
+      ]
+    },
+    {
+      "id": 107,
+      "status": "部分满足",
+      "category": "Packet Identifier 唯一值分配校验不足",
+      "risk_level": "high",
+      "reason": "仅递增与回绕，未做在用冲突检查。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must be selected from unused values",
+      "change_condition": "In the QoS 1 delivery protocol, each time the Sender has a new Application Message to publish",
+      "source_index": 106,
+      "source_chunk_id": "chunk_0012",
+      "original_comment": "QoS1 新消息会分配 packet id，但分配策略缺少“当前未使用”校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3302",
+        "wolfMQTT-master/src/mqtt_broker.c:1628",
+        "wolfMQTT-master/src/mqtt_broker.c:1633"
+      ]
+    },
+    {
+      "id": 111,
+      "status": "部分满足",
+      "category": "Packet Identifier 唯一值分配校验不足",
+      "risk_level": "high",
+      "reason": "QoS2 分配路径同样缺少在用冲突检测。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must be selected from unused values",
+      "change_condition": "In the QoS 2 delivery protocol, when the Sender has a new Application Message to publish",
+      "source_index": 110,
+      "source_chunk_id": "chunk_0012",
+      "original_comment": "QoS2 新消息分配 packet id，但未建立“未使用集合”唯一性约束。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:3302",
+        "wolfMQTT-master/src/mqtt_broker.c:1628",
+        "wolfMQTT-master/src/mqtt_broker.c:1633"
+      ]
+    },
+    {
+      "id": 116,
+      "status": "不满足",
+      "category": "QoS2 Method B 存储/丢弃流程缺失",
+      "risk_level": "high",
+      "reason": "Broker 客户端状态结构中无对应 Method B 去重/丢弃状态存储。",
+      "variable_name": "Packet Identifier",
+      "change_action": "clear/discard",
+      "change_condition": "Method B discard step",
+      "source_index": 115,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "未实现 Method B 的“discard packet identifier”显式状态迁移。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/wolfmqtt/mqtt_broker.h:194",
+        "wolfMQTT-master/wolfmqtt/mqtt_broker.h:321",
+        "wolfMQTT-master/src/mqtt_broker.c:3556",
+        "wolfMQTT-master/src/mqtt_broker.c:3568"
+      ]
+    },
+    {
+      "id": 117,
+      "status": "不满足",
+      "category": "QoS2 Method B 存储/丢弃流程缺失",
+      "risk_level": "high",
+      "reason": "接收 QoS2 PUBLISH 后无对应 packet id 去重缓存。",
+      "variable_name": "Packet Identifier",
+      "change_action": "store",
+      "change_condition": "Method B receiver handling",
+      "source_index": 116,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "未发现 Method B 接收端 packet identifier 持久化存储与比对逻辑。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/wolfmqtt/mqtt_broker.h:194",
+        "wolfMQTT-master/wolfmqtt/mqtt_broker.h:262",
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3335"
+      ]
+    },
+    {
+      "id": 118,
+      "status": "不满足",
+      "category": "QoS2 Method B 存储/丢弃流程缺失",
+      "risk_level": "high",
+      "reason": "流程仅做即时应答，缺少 Method B 语义化状态机。",
+      "variable_name": "Packet Identifier",
+      "change_action": "store",
+      "change_condition": "On receipt handling indicated by the flow text",
+      "source_index": 117,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "未实现 Method B 流程里与 packet identifier 相关的存储/丢弃闭环。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3411",
+        "wolfMQTT-master/src/mqtt_broker.c:3425",
+        "wolfMQTT-master/src/mqtt_broker.c:3566",
+        "wolfMQTT-master/wolfmqtt/mqtt_broker.h:194"
+      ]
+    },
+    {
+      "id": 121,
+      "status": "部分满足",
+      "category": "Packet Identifier 非零约束接收校验不足",
+      "risk_level": "high",
+      "reason": "发送端严格，接收端对非零约束未完全落地。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must be present and non-zero 16-bit",
+      "change_condition": "SUBSCRIBE, UNSUBSCRIBE, and PUBLISH (in cases where QoS > 0) Control Packets are sent.",
+      "source_index": 120,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "发送路径对 SUBSCRIBE/UNSUBSCRIBE/PUBLISH(QoS>0) 已做 non-zero 校验；接收解码路径未统一校验 non-zero。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1715",
+        "wolfMQTT-master/src/mqtt_packet.c:2010",
+        "wolfMQTT-master/src/mqtt_packet.c:1449",
+        "wolfMQTT-master/src/mqtt_packet.c:1828",
+        "wolfMQTT-master/src/mqtt_packet.c:2117"
+      ]
+    },
+    {
+      "id": 123,
+      "status": "部分满足",
+      "category": "QoS2 去重状态机覆盖不完整",
+      "risk_level": "high",
+      "reason": "缺少“等待 PUBREL 期间”去重状态，可能重复分发。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal",
+      "change_condition": "Until the Receiver has received the corresponding PUBREL packet, and it receives any subsequent PUBLISH packet with the same Packet Identifier",
+      "source_index": 122,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "收到同 packet id 的后续 QoS2 PUBLISH 时会按当前包回 PUBREC；但“直到收到对应 PUBREL”的去重状态约束不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3335",
+        "wolfMQTT-master/src/mqtt_broker.c:3561",
+        "wolfMQTT-master/src/mqtt_broker.c:3564"
+      ]
+    },
+    {
+      "id": 124,
+      "status": "不满足",
+      "category": "CleanSession=0 重连重传机制缺失",
+      "risk_level": "high",
+      "reason": "重连语义缺失 inflight 重放，无法满足该规则要求。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal",
+      "change_condition": "When a Client reconnects with CleanSession set to 0 and re-sends unacknowledged PUBLISH Packets and PUBREL Packets",
+      "source_index": 123,
+      "source_chunk_id": "chunk_0020",
+      "original_comment": "clean_session=0 重连后仅保留订阅，不会自动重发未确认 PUBLISH/PUBREL。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1397",
+        "wolfMQTT-master/src/mqtt_broker.c:2777",
+        "wolfMQTT-master/src/mqtt_client.c:3031",
+        "wolfMQTT-master/src/mqtt_client.c:3042"
+      ]
+    },
+    {
+      "id": 125,
+      "status": "不满足",
+      "category": "CleanSession=0 重连重传机制缺失",
+      "risk_level": "high",
+      "reason": "实现重点在订阅会话延续，不包含未确认消息重放队列。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal original value / reuse original",
+      "change_condition": "When re-sending unacknowledged PUBLISH Packets and PUBREL Packets on reconnect with CleanSession set to 0",
+      "source_index": 124,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "未实现“重连时未确认 PUBLISH/PUBREL 复用原 packet id 并重发”的自动机制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3497",
+        "wolfMQTT-master/src/mqtt_broker.c:3581",
+        "wolfMQTT-master/src/mqtt_client.c:3031",
+        "wolfMQTT-master/src/mqtt_client.c:3042"
+      ]
+    },
+    {
+      "id": 129,
+      "status": "部分满足",
+      "category": "Packet Identifier 释放后复用策略不完整",
+      "risk_level": "medium",
+      "reason": "有“处理后可继续使用”的效果，但缺少统一复用分配约束。",
+      "variable_name": "Packet Identifier",
+      "change_action": "becomes available for reuse",
+      "change_condition": "after the Client has processed the corresponding acknowledgement packet",
+      "source_index": 128,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "ACK 处理后会移除等待响应记录，但 packet id 复用策略依赖调用方/递增器，非显式 in-use 集合管理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_client.c:2287",
+        "wolfMQTT-master/src/mqtt_client.c:2297",
+        "wolfMQTT-master/src/mqtt_client.c:3042",
+        "wolfMQTT-master/src/mqtt_broker.c:1628"
+      ]
+    },
+    {
+      "id": 130,
+      "status": "部分满足",
+      "category": "Packet Identifier 唯一值分配校验不足",
+      "risk_level": "high",
+      "reason": "缺少端到端“发送前未占用校验”。",
+      "variable_name": "Packet Identifier",
+      "change_action": "set to a currently unused value",
+      "change_condition": "each time a Client sends a new packet of one of these types",
+      "source_index": 129,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "发送新包时未统一保证“当前未使用值”；仅有 non-zero 或递增分配。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_client.c:2169",
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_broker.c:1628",
+        "wolfMQTT-master/src/mqtt_broker.c:1633"
+      ]
+    },
+    {
+      "id": 133,
+      "status": "部分满足",
+      "category": "Packet Identifier 非零约束接收校验不足",
+      "risk_level": "high",
+      "reason": "编码侧强约束与解码侧弱约束不一致。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must be present and must not equal zero",
+      "change_condition": "for SUBSCRIBE, UNSUBSCRIBE, and PUBLISH (in cases where QoS > 0) Control Packets",
+      "source_index": 132,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "字段存在性满足；但接收端对 non-zero 的协议约束校验不完整。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1715",
+        "wolfMQTT-master/src/mqtt_packet.c:2010",
+        "wolfMQTT-master/src/mqtt_packet.c:1828",
+        "wolfMQTT-master/src/mqtt_packet.c:2117"
+      ]
+    },
+    {
+      "id": 134,
+      "status": "部分满足",
+      "category": "Packet Identifier 重传同值约束覆盖不完整",
+      "risk_level": "medium",
+      "reason": "行为可实现但依赖调用方策略，缺少内建保障。",
+      "variable_name": "Packet Identifier",
+      "change_action": "must equal prior Packet Identifier used for that packet",
+      "change_condition": "if a Client re-sends a particular Control Packet",
+      "source_index": 133,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "重发时可由调用方复用同 packet id，但库内未形成通用自动重发同 id 的强约束机制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_client.c:2169",
+        "wolfMQTT-master/src/mqtt_client.c:2287",
+        "wolfMQTT-master/src/mqtt_client.c:2910",
+        "wolfMQTT-master/src/mqtt_client.c:3042"
+      ]
+    },
+    {
+      "id": 138,
+      "status": "部分满足",
+      "category": "Packet Identifier 唯一值分配校验不足",
+      "risk_level": "high",
+      "reason": "服务端侧同样缺少“当前未使用值”校验闭环。",
+      "variable_name": "Packet Identifier",
+      "change_action": "same requirements apply as for Client assignment and reuse",
+      "change_condition": "when Server sends a PUBLISH with QoS > 0",
+      "source_index": 137,
+      "source_chunk_id": "chunk_0005",
+      "original_comment": "Server 发送 QoS>0 PUBLISH 时会分配 packet id，但未做 in-use 冲突检查。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3302",
+        "wolfMQTT-master/src/mqtt_broker.c:1628",
+        "wolfMQTT-master/src/mqtt_broker.c:1633",
+        "wolfMQTT-master/src/mqtt_broker.c:3650"
+      ]
+    },
+    {
+      "id": 139,
+      "status": "部分满足",
+      "category": "Password Flag=0 负载一致性校验不足",
+      "risk_level": "medium",
+      "reason": "发送端约束存在，接收端一致性校验不足。",
+      "variable_name": "Password",
+      "change_action": "must be absent",
+      "change_condition": "If the Password Flag is set to 0",
+      "source_index": 138,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "编码路径可保证 Password Flag=0 时不发送密码字段；但解码后未校验 payload 消费完毕，异常组合可能未被显式拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:886",
+        "wolfMQTT-master/src/mqtt_packet.c:940",
+        "wolfMQTT-master/src/mqtt_packet.c:1130",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 140,
+      "status": "部分满足",
+      "category": "Password Flag=0 负载一致性校验不足",
+      "risk_level": "medium",
+      "reason": "缺少对“Flag=0 但携带密码载荷”场景的显式协议拒绝。",
+      "variable_name": "Password",
+      "change_action": "must be absent",
+      "change_condition": "If the Password Flag is set to 0",
+      "source_index": 139,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID139：Password Flag=0 的异常负载一致性校验未完全闭环。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:886",
+        "wolfMQTT-master/src/mqtt_packet.c:940",
+        "wolfMQTT-master/src/mqtt_packet.c:1130",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 143,
+      "status": "部分满足",
+      "category": "Password/Username Flag 联动校验不足",
+      "risk_level": "medium",
+      "reason": "发送端做了强约束，接收端未完整实现同等级协议校验。",
+      "variable_name": "Password",
+      "change_action": "must be present as next field",
+      "change_condition": "Password Flag is set to 1",
+      "source_index": 142,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "编码路径保证 Password 与 Username 联动；接收端未显式校验全部联动约束。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:774",
+        "wolfMQTT-master/src/mqtt_packet.c:777",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 146,
+      "status": "部分满足",
+      "category": "Password Flag=0 负载一致性校验不足",
+      "risk_level": "medium",
+      "reason": "以“是否读取字段”替代了“协议一致性强校验”。",
+      "variable_name": "Password Flag",
+      "change_action": "must equal",
+      "change_condition": "If the Password Flag is set to 0",
+      "source_index": 145,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "Password Flag=0 的主要语义路径成立，但接收端对异常负载一致性的显式拒绝不足。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1130",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 148,
+      "status": "部分满足",
+      "category": "CONNECT Flags 交叉约束接收校验不足",
+      "risk_level": "high",
+      "reason": "客户端编码强约束已实现，但 broker 解码路径缺失对违规组合的协议级拒绝。",
+      "variable_name": "Password Flag",
+      "change_action": "set to constant",
+      "change_condition": "If the User Name Flag is set to 0",
+      "source_index": 147,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "编码端已实现 User Name Flag=0 时 Password 不允许存在；接收端未显式拒绝所有违规 flag 组合。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:774",
+        "wolfMQTT-master/src/mqtt_packet.c:777",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 149,
+      "status": "部分满足",
+      "category": "Password/Username Flag 联动校验不足",
+      "risk_level": "medium",
+      "reason": "顺序正确但联动约束在接收端并未完整硬化。",
+      "variable_name": "Password Flag",
+      "change_action": "must equal",
+      "change_condition": "Password Flag is set to 1",
+      "source_index": 148,
+      "source_chunk_id": "chunk_0007",
+      "original_comment": "Password Flag=1 的字段顺序处理存在，但与 Username/Password 联动一致性校验不完全。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:938",
+        "wolfMQTT-master/src/mqtt_packet.c:941",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 150,
+      "status": "不满足",
+      "category": "SUBSCRIBE Payload 最小元素约束缺失",
+      "risk_level": "high",
+      "reason": "未落实“至少一个 Topic Filter/QoS 对”约束。",
+      "variable_name": "Payload",
+      "change_action": "must be present",
+      "change_condition": "For a SUBSCRIBE packet",
+      "source_index": 149,
+      "source_chunk_id": "chunk_0010",
+      "original_comment": "SUBSCRIBE 解码允许空 payload（topic_count=0），且该异常处理未形成规范化拒绝闭环。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1865",
+        "wolfMQTT-master/src/mqtt_packet.c:1898",
+        "wolfMQTT-master/src/mqtt_broker.c:2603",
+        "wolfMQTT-master/src/mqtt_broker.c:3111",
+        "wolfMQTT-master/src/mqtt_broker.c:3571"
+      ]
+    }
+  ]
+}

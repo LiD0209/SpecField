@@ -1,0 +1,50 @@
+101	部分满足	PUBCOMP 之后同 packet id 的后续 PUBLISH 会被当作新消息处理；但 QoS2 去重状态机并不完整。
+102	部分满足	Broker 端 packet id 为递增分配并跳过 0，但未校验“当前未使用集合”；Client 端由调用方提供 id。
+103	满足	UNSUBACK 的 packet id 直接来自对应 UNSUBSCRIBE。
+104	满足	收到 PUBREL 后发送 PUBCOMP，沿用同一个 packet id。
+105	满足	收到 PUBREC 后发送 PUBREL，沿用同一个 packet id。
+106	满足	SUBACK 的 packet id 来自已解析的 SUBSCRIBE。
+107	部分满足	QoS1 新消息会分配 packet id，但分配策略缺少“当前未使用”校验。
+108	满足	QoS1 入站 PUBLISH 回 PUBACK 时，packet id 复制自入站包。
+109	满足	QoS1 发送 PUBLISH 时要求并编码 packet id（非 0）。
+110	满足	QoS2 入站 PUBLISH 回 PUBREC 时，packet id 复制自入站包。
+111	部分满足	QoS2 新消息分配 packet id，但未建立“未使用集合”唯一性约束。
+112	满足	QoS2 发送 PUBLISH 时要求并编码 packet id（非 0）。
+113	满足	发送 PUBREL（响应 PUBREC）时沿用相同 packet id。
+114	满足	SUBACK 变量头 packet id 源自对应 SUBSCRIBE。
+115	满足	UNSUBACK 变量头 packet id 源自对应 UNSUBSCRIBE。
+116	不满足	未实现 Method B 的“discard packet identifier”显式状态迁移。
+117	不满足	未发现 Method B 接收端 packet identifier 持久化存储与比对逻辑。
+118	不满足	未实现 Method B 流程里与 packet identifier 相关的存储/丢弃闭环。
+119	满足	QoS0 PUBLISH 不编码 packet id，解码也仅在 QoS>0 时读取。
+120	满足	SUBACK 使用与 SUBSCRIBE 相同的 packet id。
+121	部分满足	发送路径对 SUBSCRIBE/UNSUBSCRIBE/PUBLISH(QoS>0) 已做 non-zero 校验；接收解码路径未统一校验 non-zero。
+122	满足	UNSUBACK 对应 UNSUBSCRIBE 的 packet id 保持一致。
+123	部分满足	收到同 packet id 的后续 QoS2 PUBLISH 时会按当前包回 PUBREC；但“直到收到对应 PUBREL”的去重状态约束不完整。
+124	不满足	clean_session=0 重连后仅保留订阅，不会自动重发未确认 PUBLISH/PUBREL。
+125	不满足	未实现“重连时未确认 PUBLISH/PUBREL 复用原 packet id 并重发”的自动机制。
+126	满足	响应 PUBREL 发送 PUBCOMP 时使用同一 packet id。
+127	满足	响应入站 PUBLISH 的 PUBACK 使用原 packet id。
+128	满足	PUBCOMP 发送流程沿用已跟踪的 packet id。
+129	部分满足	ACK 处理后会移除等待响应记录，但 packet id 复用策略依赖调用方/递增器，非显式 in-use 集合管理。
+130	部分满足	发送新包时未统一保证“当前未使用值”；仅有 non-zero 或递增分配。
+131	满足	PUBACK/PUBREC/PUBREL 路径中 packet id 与对应 PUBLISH 保持一致。
+132	满足	SUBACK/UNSUBACK 与请求包 packet id 一一对应。
+133	部分满足	字段存在性满足；但接收端对 non-zero 的协议约束校验不完整。
+134	部分满足	重发时可由调用方复用同 packet id，但库内未形成通用自动重发同 id 的强约束机制。
+135	满足	QoS1/2 PUBLISH 均要求并携带 packet id。
+136	满足	PUBACK 的 packet id 来源于已确认的 PUBLISH。
+137	满足	PUBREC 的 packet id 来源于已确认的 PUBLISH。
+138	部分满足	Server 发送 QoS>0 PUBLISH 时会分配 packet id，但未做 in-use 冲突检查。
+139	部分满足	编码路径可保证 Password Flag=0 时不发送密码字段；但解码后未校验 payload 消费完毕，异常组合可能未被显式拒绝。
+140	部分满足	同 ID139：Password Flag=0 的异常负载一致性校验未完全闭环。
+141	满足	Password Flag=1 时会按协议解析密码字段；缺失时解码失败。
+142	满足	同 ID141：Password Flag=1 对应密码字段读取路径存在且有边界检查。
+143	部分满足	编码路径保证 Password 与 Username 联动；接收端未显式校验全部联动约束。
+144	满足	Password 字段长度使用 16-bit 并进行边界校验（0..65535）。
+145	满足	实现使用 CONNACK 0x04 表示用户名/密码相关校验失败（长度/认证失败）。
+146	部分满足	Password Flag=0 的主要语义路径成立，但接收端对异常负载一致性的显式拒绝不足。
+147	满足	Password Flag=1 时会进入密码字段解析，字段缺失会触发解码错误。
+148	部分满足	编码端已实现 User Name Flag=0 时 Password 不允许存在；接收端未显式拒绝所有违规 flag 组合。
+149	部分满足	Password Flag=1 的字段顺序处理存在，但与 Username/Password 联动一致性校验不完全。
+150	不满足	SUBSCRIBE 解码允许空 payload（topic_count=0），且该异常处理未形成规范化拒绝闭环。

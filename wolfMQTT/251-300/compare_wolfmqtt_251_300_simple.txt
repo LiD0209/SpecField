@@ -1,0 +1,50 @@
+251	不满足	未发现对 Topic Filter 中 U+0000 的显式拒绝；仅解码长度和边界，不校验禁用字符。
+252	满足	字符串采用 2 字节长度字段解码，编码侧也限制 >65535 字节，满足长度上限约束。
+253	满足	订阅匹配时，非通配符层级按字符逐个比较实现。
+254	部分满足	支持通过编译开关禁用通配符匹配，但禁用后并未在 SUBSCRIBE 入站阶段拒绝含通配符的 Topic Filter。
+255	部分满足	SUBSCRIBE 的 Topic Filter 走长度前缀字符串解码，但无 UTF-8 语义校验。
+256	部分满足	UNSUBSCRIBE 的 Topic Filter 同样仅做长度解码，无 UTF-8 合法性判断。
+257	满足	同一客户端对同一 Topic Filter 重复订阅时执行更新 QoS，而非创建重复订阅。
+258	满足	实现了 $ 前缀 Topic Name 与前导通配符过滤器（#/+）不匹配的约束。
+259	满足	匹配逻辑基于字符逐位比较与通配符规则分支，未做归一化或字符替换。
+260	部分满足	匹配阶段仅当 # 为末尾字符才返回匹配；但未在订阅入站阶段显式判定非法位置。
+261	不满足	未实现“+ 必须占据整级”的显式语法校验；匹配器会将 + 作为字符位置通配处理。
+262	不满足	未发现 Topic Name 最小长度（>=1）的显式拒绝；空 Topic Name 可进入后续流程。
+263	不满足	未对 Topic Name 的 U+0000 做拒绝校验。
+264	部分满足	接收侧使用长度前缀解码字符串，但未进行 UTF-8 编码合法性检查。
+265	部分满足	Topic Name 解析流程仅完成长度与边界校验，未做 UTF-8 语义验证。
+266	不满足	Topic Name 未实现 U+0000 特判拒绝。
+267	满足	Topic Name 使用 2 字节长度字段（0..65535）并带边界检查。
+268	满足	编码侧限制 UTF-8 字符串长度不得超过 65535 字节。
+269	部分满足	Broker 入站 PUBLISH 会拒绝 Topic Name 中的 +/#；但编码 API 未做同等限制。
+270	部分满足	与 ID269 一致：仅 Broker 接收路径显式拒绝通配符 Topic Name。
+271	不满足	未实现“所有 Topic Name 至少 1 字符”的统一校验。
+272	不满足	未发现 Topic Name 的 NUL 字符全局拒绝。
+273	满足	Topic Name 长度上限通过编码限制和 2 字节长度字段机制得到保证。
+274	满足	订阅匹配中，非通配符层级按字符精确相等进行比较。
+275	满足	Broker 向订阅者转发前通过 BrokerTopicMatch 判定 Topic Name 与 Topic Filter 是否匹配。
+276	部分满足	PUBLISH 的 Topic Name 以长度前缀字符串编解码，但无 UTF-8 语义校验。
+277	部分满足	接收侧 Broker 拒绝 Topic Name 中 +/#，但发送编码路径未统一校验。
+278	部分满足	PUBLISH Topic Name 的 UTF-8 校验仍停留在长度层，缺少编码语义验证。
+279	满足	PUBLISH 可变头首字段按实现先编解码 Topic Name，再处理 Packet Identifier/属性。
+280	满足	Topic Name 以 $ 开头时不会与前导 +/# 的 Topic Filter 匹配。
+281	满足	匹配算法未做归一化或替换，按原始字符流进行判断。
+282	部分满足	CONNECT 解码仅在 User Name Flag=1 时解析用户名；但未校验“Flag=0 时剩余载荷必须不含用户名字段”。
+283	部分满足	同 ID282：条件分支存在，但未做“多余用户名字段”一致性拒绝。
+284	满足	当 User Name Flag=1 时，解码路径会读取用户名字段；字段缺失将触发边界错误返回。
+285	满足	同 ID284：Flag=1 会触发用户名字段读取，满足存在性约束。
+286	部分满足	实现中确实使用返回码 0x04（v3）表示用户名/密码问题，但覆盖了“认证失败”与“格式错误”两类语义。
+287	部分满足	User Name 字段接收侧仅做长度解码，无 UTF-8 合法性校验。
+288	满足	CONNECT 载荷解析顺序中，User Name Flag=1 时用户名字段作为后续字段被读取。
+289	部分满足	User Name 未做 UTF-8 语义级合法性判断，仅长度边界检查。
+290	不满足	未发现对 User Name 中 U+0000 的显式拒绝。
+291	满足	User Name 解析基于 2 字节长度字段并做边界检查，满足 0..65535 字节范围。
+292	部分满足	CONNECT 中 User Name 使用长度前缀字符串格式，但未校验 UTF-8 语义合法性。
+293	部分满足	发送侧编码已实现“Password 不能在 Username 为空时单独出现”；接收侧 CONNECT 解码未显式验证该约束。
+294	部分满足	实现通过 Flag 位驱动字段解析，但未严格拒绝 Flag=0 时附带用户名数据的异常载荷。
+295	满足	编码侧当用户名存在时会设置 User Name Flag=1。
+296	满足	当 User Name Flag=1 时，CONNECT 解析会读取用户名字段。
+297	部分满足	DISCONNECT 编码在 MQTT3 场景为无可变头；但实现同时支持 MQTT5 可变头，且 broker 收包路径未显式校验 remaining length=0。
+298	部分满足	PINGREQ 发送侧固定 remaining length=0；broker 收到 PINGREQ 后直接回 PINGRESP，未显式拒绝附加可变头/载荷。
+299	部分满足	PINGRESP 编码为无可变头；但 PINGRESP 解码未校验 remaining length 必须为 0。
+300	部分满足	Will 处理逻辑在 Will Flag=1 时会存储并置位 has_will；但条目中的“Connect accepted => Will Flag=1”并非实现的普遍约束。

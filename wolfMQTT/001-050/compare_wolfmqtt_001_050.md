@@ -1,0 +1,63 @@
+# wolfMQTT-master 001-050 对比结果
+
+- 对比输入: `output/02_variable_changes.json` 的索引 `0..49`（共 50 条）
+- 目标代码: `wolfMQTT-master`
+- 满足: 15
+- 部分满足: 13
+- 不满足: 19
+- 不适用: 3
+- 待确认: 0
+- 证据定位校验: all_locatable=True, references=141
+
+| ID | source_idx | variable | action | 状态 | 说明 | 证据数 |
+|---:|---:|---|---|---|---|---:|
+| 1 | 0 | CleanSession | must equal 0 for stored session behavior | 部分满足 | clean_session=0 断连后会保留订阅关系，但未实现离线 QoS1/QoS2 消息存储。 | 4 |
+| 2 | 1 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | SUBSCRIBE 编码固定使用 QoS1，低 4 位为 0010。 | 2 |
+| 3 | 2 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | UNSUBSCRIBE 编码固定使用 QoS1，低 4 位为 0010。 | 2 |
+| 4 | 3 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | SUBSCRIBE 入站仅校验 packet type，不校验固定报头低 4 位，也未在该场景显式断链。 | 4 |
+| 5 | 4 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | UNSUBSCRIBE 与 ID4 同类问题：无保留位值校验，缺少该违规场景的断链路径。 | 4 |
+| 6 | 5 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | PUBREL 发送路径强制 QoS1，固定报头低 4 位为 0010。 | 3 |
+| 7 | 6 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | 同 ID6，PUBREL 编码常量符合 0010 语义。 | 3 |
+| 8 | 7 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | PUBREL 入站只校验类型，不校验低 4 位是否为 0010，违规包不会按规范断链。 | 4 |
+| 9 | 8 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | 同 ID8，PUBREL 保留位违规未被拒绝并断链。 | 4 |
+| 10 | 9 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | SUBSCRIBE 固定报头编码常量满足要求。 | 2 |
+| 11 | 10 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | SUBSCRIBE 非 0010 的非法固定报头未被显式识别并关闭连接。 | 4 |
+| 12 | 11 | Bits 3,2,1 and 0 of the fixed header | set to constant | 满足 | UNSUBSCRIBE 固定报头编码常量满足要求。 | 2 |
+| 13 | 12 | Bits 3,2,1 and 0 of the fixed header | invalid if value check fails | 不满足 | UNSUBSCRIBE 非 0010 的非法固定报头未触发规范要求的断链。 | 4 |
+| 14 | 13 | CleanSession | must equal 0 for stored session behavior | 部分满足 | 与 ID1 同类：仅持久化订阅，不持久化离线 QoS>0 消息。 | 4 |
+| 15 | 14 | CleanSession | must equal 0 | 部分满足 | clean_session=0 可重关联历史订阅，但未恢复离线在途消息状态。 | 4 |
+| 16 | 15 | CleanSession | must equal 1 | 满足 | clean_session=1 分支会移除同 client_id 历史订阅并开启新会话语义。 | 3 |
+| 17 | 16 | CleanSession | set to constant | 不满足 | 零长度 ClientId 未强制要求 clean_session=1；客户端和服务端均未做该联动约束。 | 4 |
+| 18 | 17 | CleanSession | must not equal | 不满足 | 空 ClientId + clean_session=0 未返回 0x02 并关闭连接，MQTT5 路径会进入自动分配 ID。 | 4 |
+| 19 | 18 | CleanSession | set to constant | 不满足 | 同 ID17：空 ClientId 场景未绑定 clean_session=1。 | 3 |
+| 20 | 19 | CleanSession | invalid if value check fails | 不满足 | 空 ClientId + clean_session=0 的违规路径未执行 0x02 + 断链。 | 3 |
+| 21 | 20 | CleanSession | must equal | 部分满足 | 可确认 clean_session=1 时 CONNACK flags 固定为 0，但该条规则原文信息不完整。 | 2 |
+| 22 | 21 | CleanSession | set to constant | 满足 | clean_session=1 路径会删除历史订阅并进入新会话。 | 2 |
+| 23 | 22 | CleanSession | set to constant | 不适用 | 该条为客户端重连策略建议（should），不属于 broker 协议强制校验项。 | 0 |
+| 24 | 23 | CleanSession | should not equal | 不适用 | 该条为客户端使用建议（随机 ClientId 与 clean_session=0 组合的使用约束），非 broker 强制规则。 | 0 |
+| 25 | 24 | CleanSession | set to constant | 部分满足 | 实现保留 clean_session=0 的订阅会话语义，但离线 QoS 消息持久化缺失。 | 3 |
+| 26 | 25 | CleanSession | set to constant | 不适用 | 该条为客户端生命周期建议，不是服务端协议接收校验规则。 | 0 |
+| 27 | 26 | CleanSession | must equal | 不满足 | clean_session=0 重连后未实现未确认 PUBLISH/PUBREL 的离线重发机制。 | 3 |
+| 28 | 27 | CleanSession | must equal 0 to trigger session resume behavior | 部分满足 | clean_session=0 的“会话恢复”仅在订阅重关联层面实现。 | 3 |
+| 29 | 28 | Client identifier | invalid if value check fails | 不满足 | 接收链路未执行 UTF-8 well-formed 校验，无法保证 ill-formed 时断链。 | 3 |
+| 30 | 29 | Client identifier | validated equality check | 满足 | 服务端允许零长度 ClientId（可选行为），并在 MQTT5 路径进入特殊处理。 | 2 |
+| 31 | 30 | Client identifier | must be interpreted as U+FEFF and must not be skipped or stripped | 部分满足 | 实现未见 BOM 去除逻辑（不会主动 strip），但也未显式做 U+FEFF 语义解释校验。 | 3 |
+| 32 | 31 | Client identifier | must not include | 不满足 | 未发现对 UTF-8 代理区编码（U+D800~U+DFFF）的拒绝校验。 | 2 |
+| 33 | 32 | Client identifier | must not include | 不满足 | 未发现 U+0000 编码拒绝校验。 | 3 |
+| 34 | 33 | Client identifier | invalid if value check fails | 不满足 | 含 U+0000 的 UTF-8 字符串未触发规范要求的断链。 | 3 |
+| 35 | 34 | Client identifier | must be present / must be first field | 满足 | CONNECT 负载编码与解码顺序均以 ClientId 为首，后续字段顺序符合规范。 | 4 |
+| 36 | 35 | Client identifier | must be present / must be first field | 满足 | ClientId 为 CONNECT 负载首字段且必经解析路径。 | 2 |
+| 37 | 36 | Client identifier | must be present | 满足 | 实现中 ClientId 字段是 CONNECT 的必经字段。 | 2 |
+| 38 | 37 | Client identifier | must be present | 满足 | 除 ClientId 外，Will/用户名/密码均作为可选字段处理。 | 3 |
+| 39 | 38 | Client identifier | must be valid UTF-8; invalid if value check fails | 不满足 | ClientId UTF-8 合法性（well-formed）未校验，无法保证非法输入断链。 | 3 |
+| 40 | 39 | Client identifier | must not equal or include U+0000; invalid if value check fails | 不满足 | ClientId 未显式过滤 U+0000 编码，也未在该场景强制断链。 | 3 |
+| 41 | 40 | Client identifier | validated range check | 部分满足 | 协议层长度字段覆盖 0..65535，但 broker 侧有实现上限（如静态内存宏限制）。 | 3 |
+| 42 | 41 | Client identifier | must equal zero bytes | 满足 | 代码路径可识别并处理零长度 ClientId。 | 2 |
+| 43 | 42 | Client identifier | invalid if value check fails | 不满足 | 零长度 ClientId + clean_session=0 未执行 0x02 拒绝并断链。 | 3 |
+| 44 | 43 | Client identifier | set to server-assigned unique value | 部分满足 | MQTT5 路径会给空 ClientId 分配 `auto-xxxx`，但覆盖范围受协议版本与实现条件限制。 | 3 |
+| 45 | 44 | Client identifier | set to constant | 部分满足 | 同 ID44：有服务端分配 ID 能力，但并非统一覆盖所有允许空 ID 场景。 | 3 |
+| 46 | 45 | Client identifier | invalid if value check fails | 部分满足 | ClientId 超长拒绝路径会返回 0x02 并断链，但对其他应拒绝场景覆盖不全。 | 4 |
+| 47 | 46 | Client identifier | validated value constraint | 满足 | 0x02(Identifier rejected) 语义在枚举定义和拒绝路径中均有对应。 | 3 |
+| 48 | 47 | Client identifier | validated range check and character-set membership check | 部分满足 | 实现可接受常见合法 ClientId，但未见 1..23 与字符集白名单的显式校验逻辑。 | 2 |
+| 49 | 48 | Client identifier | invalid if value check fails | 部分满足 | 存在 0x02 拒绝路径，但应拒绝的空 ClientId+clean_session=0 场景未覆盖。 | 2 |
+| 50 | 49 | Client identifier | must be valid UTF-8; invalid if value check fails | 不满足 | 通用 UTF-8 字符串接收链路未做 well-formed 校验。 | 3 |

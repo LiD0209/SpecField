@@ -1,0 +1,626 @@
+{
+  "scope": "wolfMQTT-master 251-300 partial+unsatisfied",
+  "total_reviewed": 31,
+  "status_summary": {
+    "部分满足": 23,
+    "不满足": 8
+  },
+  "risk_summary": {
+    "low": 0,
+    "medium": 10,
+    "high": 21
+  },
+  "category_summary": {
+    "CONNECT User Name Flag 与载荷一致性校验不足": {
+      "count": 4,
+      "partial": 4,
+      "unsatisfied": 0
+    },
+    "CONNECT 用户名/密码错误码语义覆盖不精确": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "Topic Filter 语法约束校验不足": {
+      "count": 2,
+      "partial": 1,
+      "unsatisfied": 1
+    },
+    "Topic Name 基本合法性校验缺失": {
+      "count": 2,
+      "partial": 0,
+      "unsatisfied": 2
+    },
+    "Topic Name 通配符约束仅在 Broker 入站侧覆盖": {
+      "count": 3,
+      "partial": 3,
+      "unsatisfied": 0
+    },
+    "UTF-8 禁用字符校验缺失": {
+      "count": 5,
+      "partial": 0,
+      "unsatisfied": 5
+    },
+    "UTF-8 语义校验缺失（仅长度解码）": {
+      "count": 9,
+      "partial": 9,
+      "unsatisfied": 0
+    },
+    "Will Flag 条目语义与实现存在条件差异": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    },
+    "控制报文无可变头约束校验不足": {
+      "count": 3,
+      "partial": 3,
+      "unsatisfied": 0
+    },
+    "禁用通配符场景下订阅拒绝缺失": {
+      "count": 1,
+      "partial": 1,
+      "unsatisfied": 0
+    }
+  },
+  "results": [
+    {
+      "id": 251,
+      "status": "不满足",
+      "category": "UTF-8 禁用字符校验缺失",
+      "risk_level": "high",
+      "reason": "Topic Filter 允许携带 NUL 会导致匹配和字符串处理出现语义偏差。",
+      "variable_name": "Topic Filter",
+      "change_action": "must not equal / include forbidden character",
+      "change_condition": "for all Topic Filters",
+      "source_index": 250,
+      "source_chunk_id": "chunk_0014",
+      "original_comment": "未发现对 Topic Filter 中 U+0000 的显式拒绝；仅解码长度和边界，不校验禁用字符。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346",
+        "wolfMQTT-master/src/mqtt_packet.c:1877",
+        "wolfMQTT-master/src/mqtt_broker.c:1464"
+      ]
+    },
+    {
+      "id": 254,
+      "status": "部分满足",
+      "category": "禁用通配符场景下订阅拒绝缺失",
+      "risk_level": "medium",
+      "reason": "当配置为不支持通配符时，行为更接近“按普通字符存储”，而非协议要求的无效处理。",
+      "variable_name": "Topic Filter",
+      "change_action": "invalid if value check fails",
+      "change_condition": "if the Server chooses not to support topic filters that contain wildcard characters",
+      "source_index": 253,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "支持通过编译开关禁用通配符匹配，但禁用后并未在 SUBSCRIBE 入站阶段拒绝含通配符的 Topic Filter。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2572",
+        "wolfMQTT-master/src/mqtt_broker.c:3066",
+        "wolfMQTT-master/src/mqtt_broker.c:3087"
+      ]
+    },
+    {
+      "id": 255,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "仅做长度解码无法覆盖非法 UTF-8 序列场景。",
+      "variable_name": "Topic Filter",
+      "change_action": "validity check",
+      "change_condition": "in a SUBSCRIBE packet payload",
+      "source_index": 254,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "SUBSCRIBE 的 Topic Filter 走长度前缀字符串解码，但无 UTF-8 语义校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1877",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 256,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "无法拦截非法 UTF-8 的 Topic Filter。",
+      "variable_name": "Topic Filter",
+      "change_action": "validity check",
+      "change_condition": "in an UNSUBSCRIBE packet",
+      "source_index": 255,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "UNSUBSCRIBE 的 Topic Filter 同样仅做长度解码，无 UTF-8 合法性判断。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2165",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 260,
+      "status": "部分满足",
+      "category": "Topic Filter 语法约束校验不足",
+      "risk_level": "medium",
+      "reason": "非法过滤器未被拒绝，只是在匹配时可能不命中。",
+      "variable_name": "Topic Filter",
+      "change_action": "must equal wildcard placement constraint",
+      "change_condition": "when the multi-level wildcard is used in a Topic Filter",
+      "source_index": 259,
+      "source_chunk_id": "chunk_0014",
+      "original_comment": "匹配阶段仅当 # 为末尾字符才返回匹配；但未在订阅入站阶段显式判定非法位置。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2534",
+        "wolfMQTT-master/src/mqtt_broker.c:2535",
+        "wolfMQTT-master/src/mqtt_broker.c:3066"
+      ]
+    },
+    {
+      "id": 261,
+      "status": "不满足",
+      "category": "Topic Filter 语法约束校验不足",
+      "risk_level": "high",
+      "reason": "可能接受规范外过滤器并产生非预期匹配结果。",
+      "variable_name": "Topic Filter",
+      "change_action": "must equal whole-level placement constraint",
+      "change_condition": "when the single-level wildcard '+' is used",
+      "source_index": 260,
+      "source_chunk_id": "chunk_0014",
+      "original_comment": "未实现“+ 必须占据整级”的显式语法校验；匹配器会将 + 作为字符位置通配处理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2537",
+        "wolfMQTT-master/src/mqtt_broker.c:2541",
+        "wolfMQTT-master/src/mqtt_broker.c:2543"
+      ]
+    },
+    {
+      "id": 262,
+      "status": "不满足",
+      "category": "Topic Name 基本合法性校验缺失",
+      "risk_level": "high",
+      "reason": "空主题名不符合条目要求，可能导致路由语义不确定。",
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "General validity requirement",
+      "source_index": 261,
+      "source_chunk_id": "chunk_0020",
+      "original_comment": "未发现 Topic Name 最小长度（>=1）的显式拒绝；空 Topic Name 可进入后续流程。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3214",
+        "wolfMQTT-master/src/mqtt_broker.c:3227"
+      ]
+    },
+    {
+      "id": 263,
+      "status": "不满足",
+      "category": "UTF-8 禁用字符校验缺失",
+      "risk_level": "high",
+      "reason": "NUL 字符会破坏 C 字符串语义并影响匹配一致性。",
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "General validity requirement",
+      "source_index": 262,
+      "source_chunk_id": "chunk_0020",
+      "original_comment": "未对 Topic Name 的 U+0000 做拒绝校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3233"
+      ]
+    },
+    {
+      "id": 264,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "非法 UTF-8 字节序列无法被协议层识别。",
+      "variable_name": "Topic Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "source_index": 263,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "接收侧使用长度前缀解码字符串，但未进行 UTF-8 编码合法性检查。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 265,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "不能满足“字符数据必须是有效 UTF-8”要求。",
+      "variable_name": "Topic Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "Topic Name contains UTF-8 character data",
+      "source_index": 264,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "Topic Name 解析流程仅完成长度与边界校验，未做 UTF-8 语义验证。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 266,
+      "status": "不满足",
+      "category": "UTF-8 禁用字符校验缺失",
+      "risk_level": "high",
+      "reason": "含 NUL 的主题名可能在不同路径被截断解释。",
+      "variable_name": "Topic Name",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "Topic Name contains encoding of null character U+0000",
+      "source_index": 265,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "Topic Name 未实现 U+0000 特判拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3239"
+      ]
+    },
+    {
+      "id": 269,
+      "status": "部分满足",
+      "category": "Topic Name 通配符约束仅在 Broker 入站侧覆盖",
+      "risk_level": "medium",
+      "reason": "发送侧仍可构造不合规 Topic Name。",
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "When using wildcard characters",
+      "source_index": 268,
+      "source_chunk_id": "chunk_0013",
+      "original_comment": "Broker 入站 PUBLISH 会拒绝 Topic Name 中的 +/#；但编码 API 未做同等限制。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1307"
+      ]
+    },
+    {
+      "id": 270,
+      "status": "部分满足",
+      "category": "Topic Name 通配符约束仅在 Broker 入站侧覆盖",
+      "risk_level": "medium",
+      "reason": "全链路一致性不足。",
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "Whenever wildcard characters are considered for use",
+      "source_index": 269,
+      "source_chunk_id": "chunk_0020",
+      "original_comment": "与 ID269 一致：仅 Broker 接收路径显式拒绝通配符 Topic Name。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1361"
+      ]
+    },
+    {
+      "id": 271,
+      "status": "不满足",
+      "category": "Topic Name 基本合法性校验缺失",
+      "risk_level": "high",
+      "reason": "空主题名可能被接收/编码。",
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "for all Topic Names",
+      "source_index": 270,
+      "source_chunk_id": "chunk_0014",
+      "original_comment": "未实现“所有 Topic Name 至少 1 字符”的统一校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1307",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3227"
+      ]
+    },
+    {
+      "id": 272,
+      "status": "不满足",
+      "category": "UTF-8 禁用字符校验缺失",
+      "risk_level": "high",
+      "reason": "字符串截断和路由一致性风险持续存在。",
+      "variable_name": "Topic Name",
+      "change_action": "must not equal / include forbidden character",
+      "change_condition": "for all Topic Names",
+      "source_index": 271,
+      "source_chunk_id": "chunk_0014",
+      "original_comment": "未发现 Topic Name 的 NUL 字符全局拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3233"
+      ]
+    },
+    {
+      "id": 276,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "无法识别非法 UTF-8 Topic Name。",
+      "variable_name": "Topic Name",
+      "change_action": "must equal required type/format",
+      "change_condition": "in the PUBLISH Packet",
+      "source_index": 275,
+      "source_chunk_id": "chunk_0009",
+      "original_comment": "PUBLISH 的 Topic Name 以长度前缀字符串编解码，但无 UTF-8 语义校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1361",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338"
+      ]
+    },
+    {
+      "id": 277,
+      "status": "部分满足",
+      "category": "Topic Name 通配符约束仅在 Broker 入站侧覆盖",
+      "risk_level": "medium",
+      "reason": "发送端约束不足。",
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "in the PUBLISH Packet",
+      "source_index": 276,
+      "source_chunk_id": "chunk_0009",
+      "original_comment": "接收侧 Broker 拒绝 Topic Name 中 +/#，但发送编码路径未统一校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1307"
+      ]
+    },
+    {
+      "id": 278,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "对 malformed UTF-8 缺乏防护。",
+      "variable_name": "Topic Name",
+      "change_action": "validity check",
+      "change_condition": "in the PUBLISH Packet",
+      "source_index": 277,
+      "source_chunk_id": "chunk_0019",
+      "original_comment": "PUBLISH Topic Name 的 UTF-8 校验仍停留在长度层，缺少编码语义验证。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 282,
+      "status": "部分满足",
+      "category": "CONNECT User Name Flag 与载荷一致性校验不足",
+      "risk_level": "high",
+      "reason": "可能接受 Flag/载荷不一致的 CONNECT 报文。",
+      "variable_name": "User Name",
+      "change_action": "must be absent",
+      "change_condition": "If the User Name Flag is set to 0",
+      "source_index": 281,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "CONNECT 解码仅在 User Name Flag=1 时解析用户名；但未校验“Flag=0 时剩余载荷必须不含用户名字段”。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 283,
+      "status": "部分满足",
+      "category": "CONNECT User Name Flag 与载荷一致性校验不足",
+      "risk_level": "high",
+      "reason": "协议一致性约束不完整。",
+      "variable_name": "User Name",
+      "change_action": "must be absent",
+      "change_condition": "If the User Name Flag is set to 0",
+      "source_index": 282,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "同 ID282：条件分支存在，但未做“多余用户名字段”一致性拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 286,
+      "status": "部分满足",
+      "category": "CONNECT 用户名/密码错误码语义覆盖不精确",
+      "risk_level": "medium",
+      "reason": "错误码语义粒度与条目描述存在偏差。",
+      "variable_name": "User Name",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Return code 0x04 is used",
+      "source_index": 285,
+      "source_chunk_id": "chunk_0008",
+      "original_comment": "实现中确实使用返回码 0x04（v3）表示用户名/密码问题，但覆盖了“认证失败”与“格式错误”两类语义。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:389",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:390",
+        "wolfMQTT-master/src/mqtt_broker.c:2959"
+      ]
+    },
+    {
+      "id": 287,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "无法严格满足 UTF-8 接收校验要求。",
+      "variable_name": "User Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "source_index": 286,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "User Name 字段接收侧仅做长度解码，无 UTF-8 合法性校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 289,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "无法拦截非法 UTF-8 用户名。",
+      "variable_name": "User Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "User Name contains UTF-8 character data",
+      "source_index": 288,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "User Name 未做 UTF-8 语义级合法性判断，仅长度边界检查。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 290,
+      "status": "不满足",
+      "category": "UTF-8 禁用字符校验缺失",
+      "risk_level": "high",
+      "reason": "NUL 可能导致认证字符串比较语义偏移。",
+      "variable_name": "User Name",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "User Name contains encoding of null character U+0000",
+      "source_index": 289,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "未发现对 User Name 中 U+0000 的显式拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_broker.c:2860"
+      ]
+    },
+    {
+      "id": 292,
+      "status": "部分满足",
+      "category": "UTF-8 语义校验缺失（仅长度解码）",
+      "risk_level": "high",
+      "reason": "格式层满足但语义层不足。",
+      "variable_name": "User Name",
+      "change_action": "must equal valid UTF-8 encoded string format",
+      "change_condition": "when present in the CONNECT packet",
+      "source_index": 291,
+      "source_chunk_id": "chunk_0001",
+      "original_comment": "CONNECT 中 User Name 使用长度前缀字符串格式，但未校验 UTF-8 语义合法性。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 293,
+      "status": "部分满足",
+      "category": "CONNECT User Name Flag 与载荷一致性校验不足",
+      "risk_level": "high",
+      "reason": "入站 CONNECT 可能放行 Flag 组合违规报文。",
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "Constraint between user name and password signaling",
+      "source_index": 292,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "发送侧编码已实现“Password 不能在 Username 为空时单独出现”；接收侧 CONNECT 解码未显式验证该约束。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:774",
+        "wolfMQTT-master/src/mqtt_packet.c:776",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 294,
+      "status": "部分满足",
+      "category": "CONNECT User Name Flag 与载荷一致性校验不足",
+      "risk_level": "high",
+      "reason": "缺失最终“已消费长度==remaining length”的一致性检查。",
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "If the User Name Flag is set to 0",
+      "source_index": 293,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "实现通过 Flag 位驱动字段解析，但未严格拒绝 Flag=0 时附带用户名数据的异常载荷。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 297,
+      "status": "部分满足",
+      "category": "控制报文无可变头约束校验不足",
+      "risk_level": "medium",
+      "reason": "协议版本分支与收包校验粒度导致约束非强一致。",
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the DISCONNECT Packet.",
+      "source_index": 296,
+      "source_chunk_id": "chunk_0011",
+      "original_comment": "DISCONNECT 编码在 MQTT3 场景为无可变头；但实现同时支持 MQTT5 可变头，且 broker 收包路径未显式校验 remaining length=0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2446",
+        "wolfMQTT-master/src/mqtt_packet.c:2492",
+        "wolfMQTT-master/src/mqtt_broker.c:3579"
+      ]
+    },
+    {
+      "id": 298,
+      "status": "部分满足",
+      "category": "控制报文无可变头约束校验不足",
+      "risk_level": "medium",
+      "reason": "接收侧缺少 strict format check。",
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGREQ Packet.",
+      "source_index": 297,
+      "source_chunk_id": "chunk_0011",
+      "original_comment": "PINGREQ 发送侧固定 remaining length=0；broker 收到 PINGREQ 后直接回 PINGRESP，未显式拒绝附加可变头/载荷。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2355",
+        "wolfMQTT-master/src/mqtt_packet.c:2365",
+        "wolfMQTT-master/src/mqtt_broker.c:3576"
+      ]
+    },
+    {
+      "id": 299,
+      "status": "部分满足",
+      "category": "控制报文无可变头约束校验不足",
+      "risk_level": "medium",
+      "reason": "接收侧可放行非零 remaining length 的 PINGRESP。",
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGRESP Packet.",
+      "source_index": 298,
+      "source_chunk_id": "chunk_0011",
+      "original_comment": "PINGRESP 编码为无可变头；但 PINGRESP 解码未校验 remaining length 必须为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2591",
+        "wolfMQTT-master/src/mqtt_broker.c:2592",
+        "wolfMQTT-master/src/mqtt_packet.c:2389"
+      ]
+    },
+    {
+      "id": 300,
+      "status": "部分满足",
+      "category": "Will Flag 条目语义与实现存在条件差异",
+      "risk_level": "medium",
+      "reason": "实现遵循“客户端声明 will 才置位”，与该条目字面条件存在差异。",
+      "variable_name": "Will Flag",
+      "change_action": "must equal",
+      "change_condition": "If the Connect request is accepted",
+      "source_index": 299,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "Will 处理逻辑在 Will Flag=1 时会存储并置位 has_will；但条目中的“Connect accepted => Will Flag=1”并非实现的普遍约束。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_broker.c:2789",
+        "wolfMQTT-master/src/mqtt_broker.c:2845"
+      ]
+    }
+  ]
+}

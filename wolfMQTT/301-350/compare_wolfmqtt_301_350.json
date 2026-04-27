@@ -1,0 +1,674 @@
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
+    "scope": "source_changes_index_300_to_335",
+    "display_scope": "301-336",
+    "method": "static_code_comparison",
+    "target": "wolfMQTT-master",
+    "generated_at": "2026-04-25T21:57:55",
+    "counts": {
+      "满足": 20,
+      "部分满足": 12,
+      "不满足": 4,
+      "不适用": 0,
+      "待确认": 0
+    },
+    "evidence_validation": {
+      "total_references": 108,
+      "missing_files": [],
+      "out_of_range": [],
+      "bad_format": [],
+      "all_locatable": true
+    }
+  },
+  "results": [
+    {
+      "id": 301,
+      "source_index": 300,
+      "variable_name": "Will Flag",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "CONNECT flag validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Flag=0 时解码侧 `enable_lwt` 为 0，编码侧也仅在启用时置位该标志。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:873",
+        "wolfMQTT-master/src/mqtt_packet.c:1000"
+      ]
+    },
+    {
+      "id": 302,
+      "source_index": 301,
+      "variable_name": "Will Flag",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "CONNECT payload and flag usage",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Flag=1 时可正确置位并在解码中读取为启用 LWT。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:873",
+        "wolfMQTT-master/src/mqtt_packet.c:1001"
+      ]
+    },
+    {
+      "id": 303,
+      "source_index": 302,
+      "variable_name": "Will Flag",
+      "change_action": "must equal",
+      "change_condition": "Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "CONNECT payload field presence",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Will Flag=1 时，CONNECT 载荷解析进入 LWT 字段分支。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1098"
+      ]
+    },
+    {
+      "id": 304,
+      "source_index": 303,
+      "variable_name": "Will Flag",
+      "change_action": "must equal 1",
+      "change_condition": "Will Flag is set to 1.",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "CONNECT processing",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "服务端 CONNECT 处理会依据解码得到的 `mc.enable_lwt` 执行 Will 逻辑。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1001",
+        "wolfMQTT-master/src/mqtt_broker.c:2739",
+        "wolfMQTT-master/src/mqtt_broker.c:2789"
+      ]
+    },
+    {
+      "id": 305,
+      "source_index": 304,
+      "variable_name": "Will Message",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "部分满足",
+      "comment": "Will Flag=0 时不解析 Will 字段，但未做“剩余载荷必须恰好消费完”的强校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 306,
+      "source_index": 305,
+      "variable_name": "Will Message",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID305：缺少对 Will Flag=0 且载荷仍含 Will 内容的显式拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 307,
+      "source_index": 306,
+      "variable_name": "Will Message",
+      "change_action": "must be present",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Flag=1 时必须进入 LWT 字段解析，字段缺失会触发越界/解码错误。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1090"
+      ]
+    },
+    {
+      "id": 308,
+      "source_index": 307,
+      "variable_name": "Will Message",
+      "change_action": "must be present / stored",
+      "change_condition": "If the Will Flag is set to 1 and the Connect request is accepted",
+      "old_value": "",
+      "new_value": "stored on the Server and associated with the Network Connection",
+      "related_state_or_step": "will message handling",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "CONNECT 被接受后，服务端会存储 Will Topic/Payload/QoS/Retain 并关联到客户端连接。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2789",
+        "wolfMQTT-master/src/mqtt_broker.c:2833",
+        "wolfMQTT-master/src/mqtt_broker.c:2845"
+      ]
+    },
+    {
+      "id": 309,
+      "source_index": 308,
+      "variable_name": "Will Message",
+      "change_action": "discard / clear without publishing",
+      "change_condition": "On receipt of DISCONNECT by the Server.",
+      "old_value": "associated with the current connection",
+      "new_value": "discarded",
+      "related_state_or_step": "DISCONNECT processing",
+      "source_chunk_id": "chunk_0011",
+      "status": "满足",
+      "comment": "收到 DISCONNECT 时清除 Will，不触发发布。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3579",
+        "wolfMQTT-master/src/mqtt_broker.c:3580",
+        "wolfMQTT-master/src/mqtt_broker.c:3588"
+      ]
+    },
+    {
+      "id": 310,
+      "source_index": 309,
+      "variable_name": "Will Message",
+      "change_action": "clear/remove",
+      "change_condition": "Once it has been published or the Server has received a DISCONNECT packet from the Client",
+      "old_value": "stored Session state in the Server",
+      "new_value": "removed",
+      "related_state_or_step": "server stored session cleanup",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will 发布后立即清除；正常 DISCONNECT 也清除。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2438",
+        "wolfMQTT-master/src/mqtt_broker.c:2441",
+        "wolfMQTT-master/src/mqtt_broker.c:3580"
+      ]
+    },
+    {
+      "id": 311,
+      "source_index": 310,
+      "variable_name": "Will Message",
+      "change_action": "removed/cleared from stored Session state",
+      "change_condition": "The Will Message has been published or the Server has received a DISCONNECT packet from the Client.",
+      "old_value": "stored Session state entry",
+      "new_value": "removed",
+      "related_state_or_step": "post-publish or DISCONNECT processing",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "同 ID310，Will 生命周期包含发布后/正常断开后清理。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2012",
+        "wolfMQTT-master/src/mqtt_broker.c:2417",
+        "wolfMQTT-master/src/mqtt_broker.c:3580"
+      ]
+    },
+    {
+      "id": 312,
+      "source_index": 311,
+      "variable_name": "Will Message",
+      "change_action": "must be present as next field",
+      "change_condition": "Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT payload field presence",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Will Flag=1 时，Will topic 与 Will payload 在 CONNECT 载荷中按顺序作为后续字段解析。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1098",
+        "wolfMQTT-master/src/mqtt_packet.c:1118"
+      ]
+    },
+    {
+      "id": 313,
+      "source_index": 312,
+      "variable_name": "Will Message",
+      "change_action": "must be present / stored",
+      "change_condition": "Will Flag is set to 1 and the Connect request is accepted.",
+      "old_value": "",
+      "new_value": "stored on the Server and associated with the Network Connection",
+      "related_state_or_step": "CONNECT acceptance",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "连接接受并启用 LWT 时会将 Will 持久于连接上下文（`bc->has_will=1`）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2789",
+        "wolfMQTT-master/src/mqtt_broker.c:2845",
+        "wolfMQTT-master/src/mqtt_broker.c:3043"
+      ]
+    },
+    {
+      "id": 314,
+      "source_index": 313,
+      "variable_name": "Will Message",
+      "change_action": "must be present",
+      "change_condition": "Will Flag is set to 1.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "Will Flag=1 的 CONNECT 解析必须包含 Will 字段路径。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1115"
+      ]
+    },
+    {
+      "id": 315,
+      "source_index": 314,
+      "variable_name": "Will QoS",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "CONNECT flag validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "部分满足",
+      "comment": "编码侧仅在 `enable_lwt` 时设置 Will QoS 位；但解码侧未验证 Will Flag=0 时 QoS 位必须为 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:875",
+        "wolfMQTT-master/src/mqtt_packet.c:1053"
+      ]
+    },
+    {
+      "id": 316,
+      "source_index": 315,
+      "variable_name": "Will QoS",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Connect Flags validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID315：缺少对 Will Flag=0 下 Will QoS 位非零的协议拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1053",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 317,
+      "source_index": 316,
+      "variable_name": "Will QoS",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0 (0x00)",
+      "related_state_or_step": "Connect Flags validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID315/316：未做 Will Flag=0 时 Will QoS=0 的强制验证。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1001",
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_packet.c:1142"
+      ]
+    },
+    {
+      "id": 318,
+      "source_index": 317,
+      "variable_name": "Will QoS",
+      "change_action": "validated range check",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "can be 0 (0x00), 1 (0x01), or 2 (0x02); must not be 3 (0x03)",
+      "related_state_or_step": "Will QoS validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "不满足",
+      "comment": "未发现对 Will QoS=3（保留值）的拒绝逻辑，解码直接取两位值。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1053",
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:323"
+      ]
+    },
+    {
+      "id": 319,
+      "source_index": 318,
+      "variable_name": "Will QoS",
+      "change_action": "validated membership check",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "0 (0x00), 1 (0x01), or 2 (0x02)",
+      "related_state_or_step": "Connect Flags validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "不满足",
+      "comment": "同 ID318：未限制 Will QoS 仅允许 {0,1,2}。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_broker.c:2833",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:335"
+      ]
+    },
+    {
+      "id": 320,
+      "source_index": 319,
+      "variable_name": "Will QoS",
+      "change_action": "must not equal",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "3 (0x03)",
+      "related_state_or_step": "Connect Flags validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "不满足",
+      "comment": "同 ID318/319：Will QoS=3 未被判定为错误。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_broker.c:2833",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 321,
+      "source_index": 320,
+      "variable_name": "Will QoS",
+      "change_action": "used/selected from Connect Flags",
+      "change_condition": "Will Flag is set to 1.",
+      "old_value": "",
+      "new_value": "used by the Server",
+      "related_state_or_step": "CONNECT processing",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "Will Flag=1 时，Will QoS 从 CONNECT flags 提取并被服务端保存使用。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1053",
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_broker.c:2833"
+      ]
+    },
+    {
+      "id": 322,
+      "source_index": 321,
+      "variable_name": "Will Retain",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "CONNECT flag validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "部分满足",
+      "comment": "编码侧可保证 Will Flag=0 时不会置位 Will Retain；但解码侧未显式拒绝违规置位。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:879",
+        "wolfMQTT-master/src/mqtt_packet.c:1056"
+      ]
+    },
+    {
+      "id": 323,
+      "source_index": 322,
+      "variable_name": "Will Retain",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Connect Flags validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID322：Will Flag=0 时 Will Retain 必为 0 的接收侧强校验不存在。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1056",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 324,
+      "source_index": 323,
+      "variable_name": "Will Retain",
+      "change_action": "must equal",
+      "change_condition": "When publishing the Will Message",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Will Message publication",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Retain=0 时不会写 retained 存储，Will 普通分发。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2453",
+        "wolfMQTT-master/src/mqtt_broker.c:2454",
+        "wolfMQTT-master/src/mqtt_broker.c:2490"
+      ]
+    },
+    {
+      "id": 325,
+      "source_index": 324,
+      "variable_name": "Will Retain",
+      "change_action": "must equal",
+      "change_condition": "When publishing the Will Message",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "Will Message publication",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Retain=1 时进入 retained 处理路径（存储/删除 retained）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2454",
+        "wolfMQTT-master/src/mqtt_broker.c:2459",
+        "wolfMQTT-master/src/mqtt_broker.c:2466"
+      ]
+    },
+    {
+      "id": 326,
+      "source_index": 325,
+      "variable_name": "Will Retain",
+      "change_action": "used/selected from Connect Flags",
+      "change_condition": "Will Flag is set to 1.",
+      "old_value": "",
+      "new_value": "used by the Server",
+      "related_state_or_step": "CONNECT processing",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "Will Retain 从 CONNECT flags 解码并写入连接状态。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1056",
+        "wolfMQTT-master/src/mqtt_broker.c:2834",
+        "wolfMQTT-master/src/mqtt_broker.c:2848"
+      ]
+    },
+    {
+      "id": 327,
+      "source_index": 326,
+      "variable_name": "Will topic",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "部分满足",
+      "comment": "Will Flag=0 时不解析 Will topic，但未严格拒绝多余 Will topic 载荷。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 328,
+      "source_index": 327,
+      "variable_name": "Will topic",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "同 ID327：缺乏对 Flag=0 且出现 Will topic 字段的显式无效判定。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1142"
+      ]
+    },
+    {
+      "id": 329,
+      "source_index": 328,
+      "variable_name": "Will topic",
+      "change_action": "must be present",
+      "change_condition": "If the Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "满足",
+      "comment": "Will Flag=1 时 CONNECT 解析会读取 Will topic。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1096"
+      ]
+    },
+    {
+      "id": 330,
+      "source_index": 329,
+      "variable_name": "Will topic",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "UTF-8 validation on packet reception",
+      "source_chunk_id": "chunk_0017",
+      "status": "部分满足",
+      "comment": "Will topic 仅做长度前缀字符串解码，无 UTF-8 语义合法性校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 331,
+      "source_index": 330,
+      "variable_name": "Will topic",
+      "change_action": "must be present as next field",
+      "change_condition": "Will Flag is set to 1",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT payload field presence",
+      "source_chunk_id": "chunk_0007",
+      "status": "满足",
+      "comment": "Will Flag=1 时，Will topic 是 CONNECT 中 Will 区段的首字段并先于 Will payload 解析。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1098",
+        "wolfMQTT-master/src/mqtt_packet.c:1118"
+      ]
+    },
+    {
+      "id": 332,
+      "source_index": 331,
+      "variable_name": "Will topic",
+      "change_action": "must be present",
+      "change_condition": "Will Flag is set to 1.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "满足",
+      "comment": "Will Flag=1 的解析路径会要求并消费 Will topic 字段。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1090"
+      ]
+    },
+    {
+      "id": 333,
+      "source_index": 332,
+      "variable_name": "Will topic",
+      "change_action": "must satisfy validity check",
+      "change_condition": "Will Topic field validation",
+      "old_value": "",
+      "new_value": "UTF-8 encoded string",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "部分满足",
+      "comment": "Will topic 采用长度前缀字符串格式，但未校验 UTF-8 码点合法性。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:366"
+      ]
+    },
+    {
+      "id": 334,
+      "source_index": 333,
+      "variable_name": "Will topic",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "Will topic contains UTF-8 character data",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "部分满足",
+      "comment": "同 ID330/333：Will topic 缺失 UTF-8 字符语义校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 335,
+      "source_index": 334,
+      "variable_name": "Will topic",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "Will topic contains encoding of null character U+0000",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "不满足",
+      "comment": "未发现对 Will topic 中 U+0000 的显式拒绝。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_broker.c:2803"
+      ]
+    },
+    {
+      "id": 336,
+      "source_index": 335,
+      "variable_name": "Will topic",
+      "change_action": "validated range check",
+      "change_condition": "Will topic is carried as a UTF-8 encoded string",
+      "old_value": "",
+      "new_value": "0 to 65535 bytes",
+      "related_state_or_step": "UTF-8 encoded string validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "满足",
+      "comment": "Will topic 字符串长度采用 2 字节长度字段，范围可覆盖 0..65535 并含边界校验。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:285",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    }
+  ]
+}

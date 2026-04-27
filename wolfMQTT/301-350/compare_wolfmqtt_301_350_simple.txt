@@ -1,0 +1,36 @@
+301	满足	Will Flag=0 时解码侧 `enable_lwt` 为 0，编码侧也仅在启用时置位该标志。
+302	满足	Will Flag=1 时可正确置位并在解码中读取为启用 LWT。
+303	满足	Will Flag=1 时，CONNECT 载荷解析进入 LWT 字段分支。
+304	满足	服务端 CONNECT 处理会依据解码得到的 `mc.enable_lwt` 执行 Will 逻辑。
+305	部分满足	Will Flag=0 时不解析 Will 字段，但未做“剩余载荷必须恰好消费完”的强校验。
+306	部分满足	同 ID305：缺少对 Will Flag=0 且载荷仍含 Will 内容的显式拒绝。
+307	满足	Will Flag=1 时必须进入 LWT 字段解析，字段缺失会触发越界/解码错误。
+308	满足	CONNECT 被接受后，服务端会存储 Will Topic/Payload/QoS/Retain 并关联到客户端连接。
+309	满足	收到 DISCONNECT 时清除 Will，不触发发布。
+310	满足	Will 发布后立即清除；正常 DISCONNECT 也清除。
+311	满足	同 ID310，Will 生命周期包含发布后/正常断开后清理。
+312	满足	Will Flag=1 时，Will topic 与 Will payload 在 CONNECT 载荷中按顺序作为后续字段解析。
+313	满足	连接接受并启用 LWT 时会将 Will 持久于连接上下文（`bc->has_will=1`）。
+314	满足	Will Flag=1 的 CONNECT 解析必须包含 Will 字段路径。
+315	部分满足	编码侧仅在 `enable_lwt` 时设置 Will QoS 位；但解码侧未验证 Will Flag=0 时 QoS 位必须为 0。
+316	部分满足	同 ID315：缺少对 Will Flag=0 下 Will QoS 位非零的协议拒绝。
+317	部分满足	同 ID315/316：未做 Will Flag=0 时 Will QoS=0 的强制验证。
+318	不满足	未发现对 Will QoS=3（保留值）的拒绝逻辑，解码直接取两位值。
+319	不满足	同 ID318：未限制 Will QoS 仅允许 {0,1,2}。
+320	不满足	同 ID318/319：Will QoS=3 未被判定为错误。
+321	满足	Will Flag=1 时，Will QoS 从 CONNECT flags 提取并被服务端保存使用。
+322	部分满足	编码侧可保证 Will Flag=0 时不会置位 Will Retain；但解码侧未显式拒绝违规置位。
+323	部分满足	同 ID322：Will Flag=0 时 Will Retain 必为 0 的接收侧强校验不存在。
+324	满足	Will Retain=0 时不会写 retained 存储，Will 普通分发。
+325	满足	Will Retain=1 时进入 retained 处理路径（存储/删除 retained）。
+326	满足	Will Retain 从 CONNECT flags 解码并写入连接状态。
+327	部分满足	Will Flag=0 时不解析 Will topic，但未严格拒绝多余 Will topic 载荷。
+328	部分满足	同 ID327：缺乏对 Flag=0 且出现 Will topic 字段的显式无效判定。
+329	满足	Will Flag=1 时 CONNECT 解析会读取 Will topic。
+330	部分满足	Will topic 仅做长度前缀字符串解码，无 UTF-8 语义合法性校验。
+331	满足	Will Flag=1 时，Will topic 是 CONNECT 中 Will 区段的首字段并先于 Will payload 解析。
+332	满足	Will Flag=1 的解析路径会要求并消费 Will topic 字段。
+333	部分满足	Will topic 采用长度前缀字符串格式，但未校验 UTF-8 码点合法性。
+334	部分满足	同 ID330/333：Will topic 缺失 UTF-8 字符语义校验。
+335	不满足	未发现对 Will topic 中 U+0000 的显式拒绝。
+336	满足	Will topic 字符串长度采用 2 字节长度字段，范围可覆盖 0..65535 并含边界校验。
