@@ -52,14 +52,15 @@
 
 | 83 | 82 | 不满足 | high | Fixed Header Flags校验缺失 | 仅校验 packet type，缺少 flags 合法值约束。 |
 | 84 | 83 | 不满足 | high | Fixed Header Flags校验缺失 | 缺少对非法 flags 的统一拒绝断链。 |
-| 85 | 84 | 不满足 | high | Fixed Header Flags校验缺失 | 保留位/非法位值缺少接收端严格校验。 |
+| 85 | 84 | 不满足 | high | Fixed Header Flags校验缺失 | 保留位/非法位值缺少接收端严格校验。 |  （前面已经描述，id4，5，8，9，11等）
+
 | 183 | 182 | 不满足 | high | PUBLISH QoS bits 非法值校验缺失 | QoS=3 可进入处理路径。 |
 | 184 | 183 | 不满足 | high | PUBLISH QoS bits 非法值校验缺失 | 固定头解析不校验 qos bits 合法性。 |
 | 185 | 184 | 不满足 | high | PUBLISH QoS bits 非法值校验缺失 | 缺少协议违规断开分支。 |
-| 186 | 185 | 不满足 | high | PUBLISH QoS bits 非法值校验缺失 | 缺少 QoS bits=3 的接收拒绝逻辑。 |
+| 186 | 185 | 不满足 | high | PUBLISH QoS bits 非法值校验缺失 | 缺少 QoS bits=3 的接收拒绝逻辑。 | （不满足）
 
 
 | 86 | 85 | 部分满足 | medium | KeepAlive客户端责任未自动保障 | 能力存在，依赖上层应用主动调用与调度。 |
-| 87 | 86 | 部分满足 | medium | KeepAlive客户端责任未自动保障 | 库未内建 keepalive 定时发送策略。 |
+| 87 | 86 | 部分满足 | medium | KeepAlive客户端责任未自动保障 | 库未内建 keepalive 定时发送策略。 |   (不满足)
 
 
