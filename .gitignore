@@ -1,6 +1,5 @@
 wolfssl-master/
 __pycache__/
-.claude/
 .vscode/
 .claude.vscode
 output/stage1_chunks/

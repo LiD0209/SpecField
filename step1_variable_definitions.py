@@ -200,8 +200,8 @@ def main() -> int:
     parser.add_argument("--chunks", default="output/preprocessed_chunks.json")
     parser.add_argument("--output", default="output/01_variable_definitions.json")
     parser.add_argument("--api-key", required=True)
-    parser.add_argument("--base-url", default="https://api.bltcy.ai/v1/")
-    parser.add_argument("--model", default="gpt-5.4")
+    parser.add_argument("--base-url", default="https://api.bltcy.ai/v1")
+    parser.add_argument("--model", default="gpt-5.5")
     parser.add_argument(
         "--domain-hint",
         default="Generic specification for structured messages/packets (protocol-agnostic)",

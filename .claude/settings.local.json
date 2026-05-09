@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude -p --help)",
+      "Bash(python -c \"import pdfplumber, pandas, tkinter; print\\('deps ok'\\)\")",
+      "Bash(pip install *)",
+      "Bash(pyinstaller --onefile --windowed --name getDeclareInfo getDeclareInfo.py)",
+      "Bash(timeout 5 ./getDeclareInfo.exe)",
+      "Bash(echo \"exit:$?\")"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Read(//c/Program Files/Git/**)",
+      "Read(//c/Program Files \\(x86\\)/Git/**)",
+      "Bash(where git *)",
+      "Bash(where bash *)",
+      "Read(//d/Application/Git/bin/**)",
+      "Bash(python -c \"import py_compile; py_compile.compile\\(r'd:\\\\project\\\\conditionFuzzingPaper\\\\utils\\\\recheck_not_satisfied_stage2_only_claude.py', doraise=True\\); print\\('OK'\\)\")",
+      "Bash(python utils/recheck_not_satisfied_stage2_only_claude.py --input result.json --output output/recheck_not_satisfied_final.json --codebase-path D:/project/conditionFuzzingPaper/wolfssl-master --standard-file D:/project/conditionFuzzingPaper/document/TLS1.3.txt --timeout-sec 300)"
+    ]
+  }
+}
