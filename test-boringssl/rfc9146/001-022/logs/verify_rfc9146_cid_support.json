@@ -1,0 +1,47 @@
+{
+  "test_program": "test-boringssl\\rfc9146\\001-022\\tests\\verify_rfc9146_cid_support.py",
+  "target_repo": "D:\\project\\conditionFuzzing\\boringssl-main",
+  "passed": true,
+  "tests": [
+    {
+      "name": "connection_id_extension_codepoint_absent",
+      "passed": true,
+      "details": "The supported extension table has no connection_id(54) entry and no connection_id handlers."
+    },
+    {
+      "name": "tls12_cid_content_type_absent",
+      "passed": true,
+      "details": "No public or internal TLS content-type constant/path for tls12_cid(25) was found."
+    },
+    {
+      "name": "dtls12_parser_has_no_cid_field",
+      "passed": true,
+      "details": "DTLS 1.2 records are parsed as type, version, epoch+sequence, length, body only."
+    },
+    {
+      "name": "dtls13_cid_bit_rejected",
+      "passed": true,
+      "details": "The only CID-bit handling is a DTLS 1.3 rejection path."
+    },
+    {
+      "name": "dtls_writer_never_sends_cid",
+      "passed": true,
+      "details": "DTLS 1.3 writer sets C=0; DTLS 1.2 writer emits the caller record type directly."
+    },
+    {
+      "name": "cid_aad_algorithm_absent",
+      "passed": true,
+      "details": "AEAD additional data uses the parsed record header, not the RFC 9146 CID AAD construction."
+    },
+    {
+      "name": "dtls_inner_plaintext_only_dtls13",
+      "passed": true,
+      "details": "Inner content type and zero padding exist only on the DTLS 1.3 encrypted-record path."
+    },
+    {
+      "name": "plaintext_limit_present_but_not_cid_specific",
+      "passed": true,
+      "details": "BoringSSL enforces generic plaintext limits but has no RFC 9146 CID-specific plaintext length field."
+    }
+  ]
+}

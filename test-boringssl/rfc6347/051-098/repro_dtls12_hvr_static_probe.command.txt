@@ -1,0 +1,2 @@
+g++ -std=c++17 -O2 -Wall -Wextra -o repro_dtls12_hvr_static_probe.exe repro_dtls12_hvr_static_probe.cpp
+.\repro_dtls12_hvr_static_probe.exe D:\project\conditionFuzzing\boringssl-main

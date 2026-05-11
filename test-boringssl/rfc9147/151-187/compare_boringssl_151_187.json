@@ -1,0 +1,1649 @@
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\DTLS_02_variable_changes.json",
+    "scope": "151-187_rules",
+    "requested_scope": "151-200_rules",
+    "clamped_end_id": 187,
+    "method": "static_code_comparison_plus_focused_verification",
+    "target": "boringssl-main",
+    "protocol": "DTLS 1.3",
+    "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+    "implementation": "boringssl-main",
+    "generated_at": "2026-05-09T22:10:56",
+    "counts": {
+      "??": 31,
+      "????": 2,
+      "???": 4
+    },
+    "evidence_validation_summary": {
+      "total": 111,
+      "ok": 111,
+      "failed": []
+    },
+    "phase2_per_round": true,
+    "skip_runtime_tests": false
+  },
+  "results": [
+    {
+      "id": 151,
+      "source_index": 150,
+      "variable_name": "Outer Content Type",
+      "change_condition": "OCT == 23",
+      "change_action": "must equal mapped constant for Application Data demultiplexing",
+      "old_value": "",
+      "new_value": "23",
+      "related_state_or_step": "packet demultiplexing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "OCT == 23   -+--> Application Data (DTLS <1.3)",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "BoringSSL ? 23 ??? application_data?DTLS 1.2/???????? DTLSPlaintext ???DTLS 1.3 ????????????? content type 23?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
+      "comparison_summary": "??? OCT 23 ? RFC ? 5 ??? DTLS <1.3 Application Data???? ssl3.h ?? SSL3_RT_APPLICATION_DATA=23?parse_dtls_record ?? 0x20..0x3f ? DTLSPlaintext/DTLS 1.2 ?????dtls1_open_app_data ?? type 23 ?????????DTLS 1.3 ???????????????????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/include/openssl/ssl3.h:110",
+        "boringssl-main/ssl/dtls_record.cc:267",
+        "boringssl-main/ssl/d1_pkt.cc:223"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/include/openssl/ssl3.h:110",
+          "ok": true,
+          "detail": "line_count=171"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:267",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:223",
+          "ok": true,
+          "detail": "line_count=322"
+        }
+      ]
+    },
+    {
+      "id": 152,
+      "source_index": 151,
+      "variable_name": "Outer Content Type",
+      "change_condition": "OCT == 24",
+      "change_action": "must equal mapped constant for Heartbeat demultiplexing",
+      "old_value": "",
+      "new_value": "24",
+      "related_state_or_step": "packet demultiplexing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "OCT == 24   -+--> Heartbeat (DTLS <1.3)",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "????",
+      "comment": "BoringSSL ?? Heartbeat content type/???????? Heartbeat ????/????????????? RFC ? 5 ? Heartbeat demux ?????????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
+      "comparison_summary": "???? OCT 24 ? DTLS <1.3 Heartbeat????? SSL3_RT_HEARTBEAT ??? Heartbeat ????type 24 ?? DTLSPlaintext ????????????????????? handshake/ACK/application_data/alert ???????? unexpected record ?????????????????? Heartbeat ??????????? Heartbeat ????????",
+      "category": "missing optional feature/path",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:267",
+        "boringssl-main/ssl/d1_both.cc:419",
+        "boringssl-main/ssl/d1_pkt.cc:223"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:267",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:419",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:223",
+          "ok": true,
+          "detail": "line_count=322"
+        }
+      ],
+      "verification_decision": "confirmed_partial",
+      "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is a separate optional TLS/DTLS feature rather than a mandatory DTLS 1.3 core handshake path.",
+      "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS record parsing accepts the outer shape, but d1_both.cc and d1_pkt.cc only dispatch handshake, ACK, application data, alert, and CCS-specific paths.",
+      "test_check": "focused_static_id152_153_185_187.py PASS: no heartbeat symbols were found and non-handshake dispatch paths do not route type 24 to a handler.",
+      "decision_reason": "Confirmed partial: unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if that feature were required by the deployment."
+    },
+    {
+      "id": 153,
+      "source_index": 152,
+      "variable_name": "Outer Content Type",
+      "change_condition": "OCT == 25",
+      "change_action": "must equal mapped constant for encrypted_record with CID demultiplexing",
+      "old_value": "",
+      "new_value": "25",
+      "related_state_or_step": "packet demultiplexing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2)",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0005",
+      "status": "???",
+      "comment": "BoringSSL ?? DTLS 1.2 CID/tls12_cid(25) ?????? CID demux?DTLS 1.3 ???????? C bit?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
+      "comparison_summary": "?? OCT 25 ??? DTLSCiphertext with CID (DTLS 1.2)????? tls12_cid ? connection_id ?????parse_dtls13_record ? C bit ??????? false??????? C=0??????? CID demux/?????",
+      "category": "missing feature/path",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ],
+      "verification_decision": "confirmed_unsatisfied",
+      "standard_check": "RFC 9147 Figure 5 reserves OCT 25 for DTLSCiphertext with CID (DTLS 1.2), and Section 4.1 describes mixed DTLS 1.2/1.3 demultiplexing when CIDs are in use.",
+      "code_check": "Static re-read found no tls12_cid/connection_id implementation. parse_dtls13_record returns false when the C bit is set, and the sender fixes C=0.",
+      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of CID symbols and presence of explicit C-bit rejection/fixed C=0 send header.",
+      "decision_reason": "Confirmed unsatisfied for CID-capable operation: the record layer has no DTLS 1.2 CID demux path and rejects DTLS 1.3 CID headers."
+    },
+    {
+      "id": 154,
+      "source_index": 153,
+      "variable_name": "Outer Content Type",
+      "change_condition": "OCT == 26",
+      "change_action": "must equal mapped constant for ACK demultiplexing",
+      "old_value": "",
+      "new_value": "26",
+      "related_state_or_step": "packet demultiplexing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "OCT == 26   -+--> ACK (DTLS 1.3, Plaintext)",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "BoringSSL ?? SSL3_RT_ACK=26?DTLS 1.3 ?????????????? ACK ??? dtls1_process_ack?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
+      "comparison_summary": "?? OCT 26 ?? DTLS 1.3 plaintext ACK??????? 26?? dtls1_open_handshake ? dtls1_open_app_data ??? SSL3_RT_ACK ??? dtls1_process_ack???????? DTLS 1.3 ???? ACK???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/include/openssl/ssl3.h:111",
+        "boringssl-main/ssl/d1_both.cc:419",
+        "boringssl-main/ssl/d1_pkt.cc:45"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/include/openssl/ssl3.h:111",
+          "ok": true,
+          "detail": "line_count=171"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:419",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:45",
+          "ok": true,
+          "detail": "line_count=322"
+        }
+      ]
+    },
+    {
+      "id": 155,
+      "source_index": 154,
+      "variable_name": "Outer Content Type",
+      "change_condition": "else",
+      "change_action": "invalid if value check fails; reject packet",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "packet demultiplexing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "else      | ... |  Reject |",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "BoringSSL ??????????????????? discard/error??? else reject ??????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
+      "comparison_summary": "?????? DTLS ?????? 001xxxxx ???????parse_dtls_record ????? dtls_open_record ???? packet?????????????/?????? unexpected_record???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:308",
+        "boringssl-main/ssl/d1_both.cc:430",
+        "boringssl-main/ssl/d1_pkt.cc:223"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:308",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:430",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:223",
+          "ok": true,
+          "detail": "line_count=322"
+        }
+      ]
+    },
+    {
+      "id": 156,
+      "source_index": 155,
+      "variable_name": "record_numbers",
+      "change_condition": "in ACK message format",
+      "change_action": "validated range check",
+      "old_value": "",
+      "new_value": "0..2^16-1",
+      "related_state_or_step": "ACK structure definition",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "RecordNumber record_numbers<0..2^16-1>;",
+      "note": "",
+      "source_chunk_id": "chunk_0016",
+      "status": "??",
+      "comment": "ACK record_numbers ?? 16-bit length-prefixed vector ??????????? 16 ?? RecordNumber ????????? epoch/sequence ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
+      "comparison_summary": "?? ACK.record_numbers ? 0..2^16-1 vector????? CBS_get_u16_length_prefixed????? CBB_add_u16_length_prefixed???????? uint64 epoch + uint64 sequence???? epoch<=UINT16_MAX?seq<=2^48-1???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/d1_pkt.cc:53",
+        "boringssl-main/ssl/d1_pkt.cc:63",
+        "boringssl-main/ssl/d1_both.cc:990"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:53",
+          "ok": true,
+          "detail": "line_count=322"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:63",
+          "ok": true,
+          "detail": "line_count=322"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:990",
+          "ok": true,
+          "detail": "line_count=1073"
+        }
+      ]
+    },
+    {
+      "id": 157,
+      "source_index": 156,
+      "variable_name": "record_numbers",
+      "change_condition": "in some cases it may be necessary to send an ACK which does not contain any record numbers",
+      "change_action": "set to empty / absent",
+      "old_value": "",
+      "new_value": "no record numbers",
+      "related_state_or_step": "sending ACKs",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "it may be necessary to send an ACK which does not contain any record numbers.",
+      "note": "",
+      "source_chunk_id": "chunk_0017",
+      "status": "????",
+      "comment": "BoringSSL ?? ACK ????? vector???????? records_to_ack ?????????? RFC ??????? ACK ?????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
+      "comparison_summary": "???????????? record number ? ACK?CBB ?????? vector?? dtls1_schedule_ack ? sending_ack ??? !records_to_ack.empty()?send_ack ?????? ACK ?? MTU?????? ACK ?????????????",
+      "category": "incomplete ACK behavior",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/d1_both.cc:956",
+        "boringssl-main/ssl/d1_both.cc:969",
+        "boringssl-main/ssl/d1_both.cc:990"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:956",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:969",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:990",
+          "ok": true,
+          "detail": "line_count=1073"
+        }
+      ],
+      "verification_decision": "confirmed_partial",
+      "standard_check": "RFC 9147 Section 7.1 says some cases may require an ACK with no record numbers, such as receiving EncryptedExtensions before ServerHello.",
+      "code_check": "ACK encoding could represent an empty vector, but dtls1_schedule_ack only sets sending_ack when records_to_ack is non-empty. send_ack also assumes room for at least one 16-byte RecordNumber.",
+      "test_check": "focused_static_id157_empty_ack.py PASS: confirmed sending_ack is gated by !records_to_ack.empty() and no empty-ACK scheduling path exists.",
+      "decision_reason": "Confirmed partial: regular ACK generation works, but the special empty ACK shortcut is not implemented."
+    },
+    {
+      "id": 158,
+      "source_index": 157,
+      "variable_name": "record_numbers",
+      "change_condition": "when included in an ACK",
+      "change_action": "must be in numerically increasing order",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "ACK content",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "record_numbers:  A list of the records containing handshake messages in the current flight which the endpoint has received and either processed or buffered, in numerically increasing order.",
+      "note": "",
+      "source_chunk_id": "chunk_0016",
+      "status": "??",
+      "comment": "?? ACK ????????? std::sort??? record_numbers ?????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
+      "comparison_summary": "?? ACK ? record_numbers numerically increasing?send_ack ? records_to_ack ????????? sorted ??? std::sort????????? epoch/sequence???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/d1_both.cc:976",
+        "boringssl-main/ssl/d1_both.cc:980",
+        "boringssl-main/ssl/d1_both.cc:985"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:976",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:980",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:985",
+          "ok": true,
+          "detail": "line_count=1073"
+        }
+      ]
+    },
+    {
+      "id": 159,
+      "source_index": 158,
+      "variable_name": "Sequence Number",
+      "change_condition": "if the S bit is 0",
+      "change_action": "must equal",
+      "old_value": "",
+      "new_value": "8 bits",
+      "related_state_or_step": "record field parsing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "This value is 16 bits if the S bit is set to 1, and 8 bits if the S bit is 0.",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "????? S bit ?? 1 ?????????????? 16-bit????? 8-bit ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? S=0 ? Sequence Number ? 8 bits?parse_dtls13_record ?? seq_len = (type & 0x08) ? 2 : 1?S=0 ??? 1 ????? mask ????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:181",
+        "boringssl-main/ssl/dtls_record.cc:227",
+        "boringssl-main/ssl/internal.h:621"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:181",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:227",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:621",
+          "ok": true,
+          "detail": "line_count=4439"
+        }
+      ]
+    },
+    {
+      "id": 160,
+      "source_index": 159,
+      "variable_name": "Sequence Number",
+      "change_condition": "if the S bit is set to 1",
+      "change_action": "must equal",
+      "old_value": "",
+      "new_value": "16 bits",
+      "related_state_or_step": "record field parsing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Sequence Number:  The low-order 8 or 16 bits of the record sequence number.  This value is 16 bits if the S bit is set to 1",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "????? S bit ?? 2 ??????????? S=1 ?? 16-bit ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? S=1 ? Sequence Number ? 16 bits?parse_dtls13_record ? S bit ????? 2 ????????? 0x2c|epoch??? S=1???? u16 sequence???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:181",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:544"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:181",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:544",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 161,
+      "source_index": 160,
+      "variable_name": "Sequence Number",
+      "change_condition": "when records are encrypted",
+      "change_action": "derived/computed from another field",
+      "old_value": "",
+      "new_value": "encrypted by XOR with a generated mask",
+      "related_state_or_step": "Record Number Encryption",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "record sequence numbers are also encrypted.  The basic pattern is that the underlying encryption algorithm used with the AEAD algorithm is used to generate a mask which is then XORed with the sequence number.",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "DTLS 1.3 ??????????? RecordNumberEncrypter ?? mask?? XOR ??????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "??????? sequence number ?? mask XOR ?????? GenerateMask ???? XOR???? GenerateMask ? XOR out[1]/out[2]???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:211",
+        "boringssl-main/ssl/dtls_record.cc:223",
+        "boringssl-main/ssl/dtls_record.cc:563"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:211",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:223",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:563",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 162,
+      "source_index": 161,
+      "variable_name": "Sequence Number",
+      "change_condition": "when the S bit is 0",
+      "change_action": "validated range check",
+      "old_value": "",
+      "new_value": "8-bit sequence number",
+      "related_state_or_step": "unified header interpretation",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "S:  The S bit (0x08) indicates the size of the sequence number. 0 means an 8-bit sequence number",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "S=0 ? 8-bit wire sequence ?? 0xff mask ?????????? DTLSRecordNumber::kMaxSequence ??",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? S=0 ?? 8-bit sequence number ???????????? 1 ???mask ? (1 << 8)-1?reconstruct_seqnum ??/??????? 2^48-1???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:181",
+        "boringssl-main/ssl/dtls_record.cc:227",
+        "boringssl-main/ssl/dtls_record.cc:118"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:181",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:227",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:118",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 163,
+      "source_index": 162,
+      "variable_name": "Sequence Number",
+      "change_condition": "when the S bit is 1",
+      "change_action": "validated range check",
+      "old_value": "",
+      "new_value": "16-bit sequence number",
+      "related_state_or_step": "unified header interpretation",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "S:  The S bit (0x08) indicates the size of the sequence number. 0 means an 8-bit sequence number, 1 means 16-bit.",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "S=1 ? 16-bit wire sequence ?? 0xffff mask ????????? 16-bit ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? S=1 ?? 16-bit sequence number ???????????? 2 ???? 0xffff mask ? reconstruct_seqnum??????? u16???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:181",
+        "boringssl-main/ssl/dtls_record.cc:227",
+        "boringssl-main/ssl/dtls_record.cc:544"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:181",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:227",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:544",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 164,
+      "source_index": 163,
+      "variable_name": "sequence_number",
+      "change_condition": "Any data is received after a valid received closure alert",
+      "change_action": "must be compared as part of an epoch/sequence number pair; data with a pair after that of the valid received closure alert must be ignored",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "processing received data after closure alert",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Any data received with an epoch/sequence number pair after that of a valid received closure alert MUST be ignored.",
+      "note": "",
+      "source_chunk_id": "chunk_0015",
+      "status": "??",
+      "comment": "?? close_notify ? dtls_open_record ???? close_notify?????????????? epoch/sequence pair ????????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 5.10, Alert Messages and close_notify handling",
+      "comparison_summary": "???? closure alert ???? epoch/sequence pair ????????BoringSSL ? read_shutdown==close_notify ?????????????????????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:297",
+        "boringssl-main/ssl/ssl_lib.cc:2600",
+        "boringssl-main/ssl/internal.h:2775"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:297",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/ssl_lib.cc:2600",
+          "ok": true,
+          "detail": "line_count=3754"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:2775",
+          "ok": true,
+          "detail": "line_count=4439"
+        }
+      ]
+    },
+    {
+      "id": 165,
+      "source_index": 164,
+      "variable_name": "sequence_number",
+      "change_condition": "For DTLSPlaintext serialization",
+      "change_action": "derived/computed from another field",
+      "old_value": "",
+      "new_value": "low order 48 bits of the 64 bit sequence number",
+      "related_state_or_step": "4. The DTLS Record Layer",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "The sequence number is set to be the low order 48 bits of the 64 bit sequence number.",
+      "note": "",
+      "source_chunk_id": "chunk_0003",
+      "status": "??",
+      "comment": "DTLSRecordNumber ? 16-bit epoch ? 48-bit sequence ???DTLSPlaintext ?? combined()?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? DTLSPlaintext.sequence_number ? 64-bit sequence ?? 48 bit?DTLSRecordNumber::sequence ? kMaxSequence ?? 48 ??DTLSPlaintext ??? combined()????? 48 ?? sequence???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:639",
+        "boringssl-main/ssl/internal.h:659",
+        "boringssl-main/ssl/dtls_record.cc:551"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:639",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:659",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:551",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 166,
+      "source_index": 165,
+      "variable_name": "sequence_number",
+      "change_condition": "When sending plaintext records",
+      "change_action": "must not exceed upper bound",
+      "old_value": "",
+      "new_value": "MUST NOT be sent with sequence numbers that would exceed 2^48-1",
+      "related_state_or_step": "4. The DTLS Record Layer",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Plaintext records MUST NOT be sent with sequence numbers that would exceed 2^48-1, so the upper 16 bits will always be 0.",
+      "note": "",
+      "source_chunk_id": "chunk_0003",
+      "status": "??",
+      "comment": "????? DTLSRecordNumber::HasNext??? 2^48-1 ?????????????? overflow?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? plaintext records ?????? 2^48-1 ? sequence number?DTLSRecordNumber::kMaxSequence ??? 2^48-1?dtls_seal_record ?????? HasNext???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:639",
+        "boringssl-main/ssl/internal.h:661",
+        "boringssl-main/ssl/dtls_record.cc:499"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:639",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:661",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:499",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 167,
+      "source_index": 166,
+      "variable_name": "sequence_number",
+      "change_condition": "after selecting the most recent past epoch with matching bits",
+      "change_action": "derived/computed from another field",
+      "old_value": "",
+      "new_value": "reconstruct the sequence number for that epoch as described above",
+      "related_state_or_step": "reconstructing the Sequence Number and Epoch",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "and then reconstruct the sequence number for that epoch as described above.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "????? epoch bits ???????/next ?? epoch ??????? current/next/prev read epoch ????? key?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "????????????? epoch ??? sequence?reconstruct_epoch ?? low bits ?????? max_epoch ? epoch?dtls_get_read_epoch ??? current?next ? prev epoch?????? epoch ? bitmap ?? sequence???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:80",
+        "boringssl-main/ssl/dtls_record.cc:176",
+        "boringssl-main/ssl/dtls_record.cc:122"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:80",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:176",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:122",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 168,
+      "source_index": 167,
+      "variable_name": "sequence_number",
+      "change_condition": "before a received record has been deprotected successfully",
+      "change_action": "must not update validation window state based on this sequence number",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "anti-replay processing",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "The window MUST NOT be updated due to a received record until that record has been deprotected successfully.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "BoringSSL ? Open ??????? bitmap.Record ???????????????????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "???????????? sequence ?? validation window????? Open ?? ShouldDiscard ???????? Record ???? Open ????????????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:316",
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:366"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:316",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:366",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 169,
+      "source_index": 168,
+      "variable_name": "sequence_number",
+      "change_condition": "for AEAD computation in DTLS 1.3",
+      "change_action": "must equal",
+      "old_value": "",
+      "new_value": "64-bit sequence number used as the sequence number for the AEAD computation",
+      "related_state_or_step": "AEAD computation",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "In DTLS 1.3 the 64-bit sequence_number is used as the sequence number for the AEAD computation; unlike DTLS 1.2, the epoch is not included.",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "DTLS 1.3 ? AEAD sequence ???? num.sequence()?DTLS 1.2 ??? combined epoch+sequence?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? DTLS 1.3 AEAD computation ?? 64-bit sequence_number ???? epoch?dtls_aead_sequence ? protocol >= TLS1_3_VERSION ??? num.sequence()???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:71",
+        "boringssl-main/ssl/dtls_record.cc:75",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:71",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:75",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 170,
+      "source_index": 169,
+      "variable_name": "sequence_number",
+      "change_condition": "for each epoch",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "initialization",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "with each sequence_number initially being 0 for each epoch",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "? write epoch ? next_record ???? DTLSRecordNumber(epoch, 0)?read epoch ? replay bitmap ?? max_seq_num ? 0?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "???? epoch ? sequence_number ??? 0????????? next_record=(epoch,0)???? bitmap ??? 0 ?? epoch ???????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_method.cc:119",
+        "boringssl-main/ssl/dtls_method.cc:121",
+        "boringssl-main/ssl/internal.h:616"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_method.cc:119",
+          "ok": true,
+          "detail": "line_count=216"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_method.cc:121",
+          "ok": true,
+          "detail": "line_count=216"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:616",
+          "ok": true,
+          "detail": "line_count=4439"
+        }
+      ]
+    },
+    {
+      "id": 171,
+      "source_index": 170,
+      "variable_name": "sequence_number",
+      "change_condition": "for each received record in an epoch",
+      "change_action": "must not equal any other received sequence number in that epoch during the lifetime of the association",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver verification",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "For each received record, the receiver MUST verify that the record contains a sequence number that does not duplicate the sequence number of any other record received in that epoch during the lifetime of the association.",
+      "note": "",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "?? DTLSReadEpoch ??? DTLSReplayBitmap?????? sequence ?? ShouldDiscard ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "???? epoch ??????????? sequence???? epoch ?? bitmap?ShouldDiscard ??? bit ????????? true?dtls_open_record ?????????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:690",
+        "boringssl-main/ssl/dtls_record.cc:29",
+        "boringssl-main/ssl/dtls_record.cc:316"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:690",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:29",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:316",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 172,
+      "source_index": 171,
+      "variable_name": "sequence_number",
+      "change_condition": "if a record contains a sequence number lower than the left edge of the receive window",
+      "change_action": "invalid if value check fails",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "anti-replay receive window check",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Records that contain sequence numbers lower than the \"left\" edge of the window are rejected.",
+      "note": "",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "???????? sequence ? idx>=window size ??? stale ????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "???? receive window ??????????ShouldDiscard ? max_seq_num_-seq_num ????????????? true?dtls_open_record ?????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:29",
+        "boringssl-main/ssl/dtls_record.cc:35",
+        "boringssl-main/ssl/dtls_record.cc:316"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:29",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:35",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:316",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 173,
+      "source_index": 172,
+      "variable_name": "sequence_number",
+      "change_condition": "if the epoch bits match those of the current epoch",
+      "change_action": "derived/computed from another field",
+      "old_value": "",
+      "new_value": "the full sequence number which is numerically closest to one plus the sequence number of the highest successfully deprotected record in the current epoch",
+      "related_state_or_step": "reconstructing the Sequence Number and Epoch",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "implementations SHOULD reconstruct the sequence number by computing the full sequence number which is numerically closest to one plus the sequence number of the highest successfully deprotected record in the current epoch.",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "reconstruct_seqnum ??????????????????+1??????? ssl_internal_test ?????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "???? epoch ????????? highest successfully deprotected + 1 ?????? max_valid_seqnum+1 ????? diff/step ?????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:92",
+        "boringssl-main/ssl/dtls_record.cc:102",
+        "boringssl-main/ssl/ssl_internal_test.cc:27"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:92",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:102",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/ssl_internal_test.cc:27",
+          "ok": true,
+          "detail": "line_count=606"
+        }
+      ]
+    },
+    {
+      "id": 174,
+      "source_index": 173,
+      "variable_name": "sequence_number",
+      "change_condition": "if the received record falls within the window",
+      "change_action": "must be checked against a list of received records within the window",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "anti-replay receive window check",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Records falling within the window are checked against a list of received records within the window.",
+      "note": "",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "?????? bitset ???????bit i ?? max_seq_num-i?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "????????? received list?BoringSSL ?? std::bitset<256> ?? received list?ShouldDiscard ?? map_[idx]???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:611",
+        "boringssl-main/ssl/dtls_record.cc:35",
+        "boringssl-main/ssl/dtls_record.cc:36"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:611",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:35",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:36",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 175,
+      "source_index": 174,
+      "variable_name": "sequence_number",
+      "change_condition": "if the received record falls within the window and is new, or if the record is to the right of the window",
+      "change_action": "validated as new",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "anti-replay receive window check",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "If the received record falls within the window and is new, or if the record is to the right of the window, then the record is new.",
+      "note": "",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "???????????? sequence ?? ShouldDiscard ??????????? Record ?????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "????????????????? new?ShouldDiscard ? seq>max_seq_num ?? false?Record ? seq ?????????? bit???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:32",
+        "boringssl-main/ssl/dtls_record.cc:39",
+        "boringssl-main/ssl/dtls_record.cc:43"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:32",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:39",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:43",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 176,
+      "source_index": 175,
+      "variable_name": "sequence_number",
+      "change_condition": "prior to allowing the sequence number to wrap",
+      "change_action": "must not wrap; invalid if wrap would occur without abandoning association or rekeying",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "sequence number management",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Implementations MUST either abandon an association or rekey prior to allowing the sequence number to wrap.",
+      "note": "",
+      "source_chunk_id": "chunk_0005",
+      "status": "??",
+      "comment": "?? record ?? sequence ?????HasNext ????? overflow???? wrap ??? epoch?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? sequence number wrap ?????? rekey?BoringSSL ???? wrap?????? dtls_seal_record ????????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:661",
+        "boringssl-main/ssl/dtls_record.cc:499",
+        "boringssl-main/ssl/dtls_record.cc:502"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:661",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:499",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:502",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 177,
+      "source_index": 176,
+      "variable_name": "sequence_number",
+      "change_condition": "when a message is retransmitted as a new record",
+      "change_action": "set to new value",
+      "old_value": "",
+      "new_value": "new DTLSPlaintext.sequence_number value",
+      "related_state_or_step": "record-layer retransmission",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "From the perspective of the DTLS record layer, the retransmission is a new record.  This record will have a new DTLSPlaintext.sequence_number value.",
+      "note": "",
+      "source_chunk_id": "chunk_0010",
+      "status": "??",
+      "comment": "????? seal_next_packet/dtls_seal_record ??? DTLS record number?ACK ????????? record number?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 5.2, DTLS Handshake Message Format",
+      "comparison_summary": "??? record layer ?????????? DTLSPlaintext.sequence_number??? flight ?????? dtls_seal_record?????? next_record=record_number.Next()???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/d1_both.cc:825",
+        "boringssl-main/ssl/dtls_record.cc:578",
+        "boringssl-main/ssl/dtls_record.cc:579"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:825",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:578",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:579",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 178,
+      "source_index": 177,
+      "variable_name": "sequence_number",
+      "change_condition": "when an epoch is first used",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "zero",
+      "related_state_or_step": "received record counter initialization for an epoch",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "The received record counter for an epoch MUST be initialized to zero when that epoch is first used.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0007",
+      "status": "??",
+      "comment": "?? epoch ???? DTLSReplayBitmap?? epoch ??? sequence 0 ???SSL_get_dtls_read_sequence ?? bitmap ?? 0?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4.5.1, Anti-Replay",
+      "comparison_summary": "?? epoch ????? received record counter ???? zero?? DTLSReadEpoch ??? bitmap ?? max_seq_num=0??????? bitmap ??? 0???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_method.cc:81",
+        "boringssl-main/ssl/internal.h:616",
+        "boringssl-main/ssl/ssl_lib.cc:3039"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_method.cc:81",
+          "ok": true,
+          "detail": "line_count=216"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:616",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/ssl_lib.cc:3039",
+          "ok": true,
+          "detail": "line_count=3754"
+        }
+      ]
+    },
+    {
+      "id": 179,
+      "source_index": 178,
+      "variable_name": "sequence_number",
+      "change_condition": "when applying sequence number encryption",
+      "change_action": "must be present / must be absent",
+      "old_value": "sequence number in DTLSPlaintext structure",
+      "new_value": "encryption applied only to DTLSCiphertext sequence number",
+      "related_state_or_step": "scope of sequence number encryption",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Note that sequence number encryption is only applied to the DTLSCiphertext structure and not to the DTLSPlaintext structure, even though it also contains a sequence number.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0006",
+      "status": "??",
+      "comment": "record number encryption ?? use_dtls13_record_header ??????? plaintext/epoch 0 ?? DTLSPlaintext ???? sequence?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? sequence number encryption ???? DTLSCiphertext????? DTLSPlaintext?use_dtls13_record_header ?? DTLS 1.3 ? epoch>0???/?? XOR ???????????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:163",
+        "boringssl-main/ssl/dtls_record.cc:563",
+        "boringssl-main/ssl/dtls_record.cc:548"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:163",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:563",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 180,
+      "source_index": 179,
+      "variable_name": "sequence_number",
+      "change_condition": "when computing the encrypted sequence number",
+      "change_action": "derived/computed from another field",
+      "old_value": "on-the-wire representation of the sequence number",
+      "new_value": "XOR of the on-the-wire representation of the sequence number with the leading bytes of the mask",
+      "related_state_or_step": "sequence number encryption",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "The encrypted sequence number is computed by XORing the leading bytes of the mask with the on-the-wire representation of the sequence number.",
+      "note": "",
+      "source_chunk_id": "chunk_0006",
+      "status": "??",
+      "comment": "???? mask leading bytes XOR wire sequence bytes out[1]/out[2]?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? encrypted sequence number = on-the-wire sequence XOR leading mask bytes??????? mask ? XOR ?? sequence ?????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:563",
+        "boringssl-main/ssl/dtls_record.cc:570",
+        "boringssl-main/ssl/dtls_record.cc:574"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:563",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:570",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:574",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 181,
+      "source_index": 180,
+      "variable_name": "sequence_number",
+      "change_condition": "when decrypting the encrypted sequence number",
+      "change_action": "derived/computed from another field",
+      "old_value": "encrypted sequence number",
+      "new_value": "decrypted by the same XOR process",
+      "related_state_or_step": "sequence number decryption",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Decryption is accomplished by the same process.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0006",
+      "status": "??",
+      "comment": "?????? GenerateMask ????? XOR ???? sequence bytes ??? wire sequence?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "???????? XOR process ??????? seq_bytes ? GenerateMask ???? XOR ??? seq???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:211",
+        "boringssl-main/ssl/dtls_record.cc:221",
+        "boringssl-main/ssl/dtls_record.cc:224"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:211",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:221",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:224",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ]
+    },
+    {
+      "id": 182,
+      "source_index": 181,
+      "variable_name": "sequence_number",
+      "change_condition": "when expanded into RecordNumber",
+      "change_action": "derived/computed from another field",
+      "old_value": "",
+      "new_value": "combined with epoch into an unpacked RecordNumber structure",
+      "related_state_or_step": "RecordNumber expansion",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "When expanded, the epoch and sequence number can be combined into an unpacked RecordNumber structure",
+      "note": "",
+      "source_chunk_id": "chunk_0004",
+      "status": "??",
+      "comment": "DTLSRecordNumber ?? epoch ? sequence ??? combined ???ACK ?????? uint64 epoch + uint64 sequence?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Sections 4.1-4.2.3, DTLS record layer / sequence number and epoch",
+      "comparison_summary": "?? expanded RecordNumber ?? epoch ? sequence number???? epoch()/sequence()/combined()?ACK ????? CBB_add_u64(epoch) ? CBB_add_u64(sequence)???????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/internal.h:637",
+        "boringssl-main/ssl/internal.h:657",
+        "boringssl-main/ssl/d1_both.cc:991"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/internal.h:637",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:657",
+          "ok": true,
+          "detail": "line_count=4439"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:991",
+          "ok": true,
+          "detail": "line_count=1073"
+        }
+      ]
+    },
+    {
+      "id": 183,
+      "source_index": 182,
+      "variable_name": "server_hello",
+      "change_condition": "EncryptedExtensions is received prior to receiving a ServerHello",
+      "change_action": "must not treat EncryptedExtensions as safely acknowledgeable before ServerHello is received",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "sending ACKs",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "a client might receive an EncryptedExtensions message prior to receiving a ServerHello. Because it cannot decrypt the EncryptedExtensions, it cannot safely acknowledge it",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0017",
+      "status": "??",
+      "comment": "ServerHello ?????? EncryptedExtensions ???? records_to_ack???????????????",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
+      "comparison_summary": "??? ServerHello ??? EncryptedExtensions ?????????? ACK?BoringSSL ???/??? epoch ??? read_epoch ? null ?????? dtls1_process_handshake_fragments ???????? handshake record ? PushBack ? ACK ?????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:316",
+        "boringssl-main/ssl/d1_both.cc:327",
+        "boringssl-main/ssl/d1_both.cc:353"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:316",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:327",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:353",
+          "ok": true,
+          "detail": "line_count=1073"
+        }
+      ]
+    },
+    {
+      "id": 184,
+      "source_index": 183,
+      "variable_name": "type",
+      "change_condition": "record content type is other than handshake",
+      "change_action": "ACK must not be sent",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "sending ACKs",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "ACKs MUST NOT be sent for records of any content type other than handshake",
+      "note": "",
+      "source_chunk_id": "chunk_0017",
+      "status": "??",
+      "comment": "ACK ???? dtls1_process_handshake_fragments ????????/ACK/alert ?????? records_to_ack?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
+      "comparison_summary": "??? handshake content type ??? ACK??????? handshake fragments ? PushBack(record_number)???????????/??/ACK???????? ACK ?????????",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/d1_both.cc:255",
+        "boringssl-main/ssl/d1_both.cc:353",
+        "boringssl-main/ssl/d1_pkt.cc:219"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:255",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:353",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_pkt.cc:219",
+          "ok": true,
+          "detail": "line_count=322"
+        }
+      ]
+    },
+    {
+      "id": 185,
+      "source_index": 184,
+      "variable_name": "usage",
+      "change_condition": "If it is set to \"cid_spare\"",
+      "change_action": "must equal / selected behavior",
+      "old_value": "",
+      "new_value": "cid_spare",
+      "related_state_or_step": "NewConnectionId handling for CID use",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "If it is set to \"cid_spare\", then either an existing or new CID MAY be used.",
+      "note": "",
+      "source_chunk_id": "chunk_0019",
+      "status": "???",
+      "comment": "BoringSSL ?? NewConnectionId/ConnectionIdUsage ?????????????? cid_spare ???",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
+      "comparison_summary": "?? NewConnectionId.usage=cid_spare ??????? CID ???? CID????? RequestConnectionId/NewConnectionId/ConnectionIdUsage ???DTLS 1.3 ???????? CID ??? C bit????????",
+      "category": "missing CID update feature/path",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ],
+      "verification_decision": "confirmed_unsatisfied",
+      "standard_check": "RFC 9147 Section 9 defines NewConnectionId.usage=cid_spare and says either an existing or new CID may be used.",
+      "code_check": "No NewConnectionId or ConnectionIdUsage parser/state exists. The DTLS 1.3 sender never sends CID and the receiver rejects C bit.",
+      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of NewConnectionId/RequestConnectionId/cid_spare symbols and CID-capable record support.",
+      "decision_reason": "Confirmed unsatisfied: BoringSSL cannot process cid_spare because DTLS CID update support is absent."
+    },
+    {
+      "id": 186,
+      "source_index": 185,
+      "variable_name": "usage",
+      "change_condition": "If usage is set to \"cid_immediate\"",
+      "change_action": "must equal / selected behavior",
+      "old_value": "",
+      "new_value": "cid_immediate",
+      "related_state_or_step": "NewConnectionId handling for future records",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "If usage is set to \"cid_immediate\", then one of the new CIDs MUST be used immediately for all future records.",
+      "note": "",
+      "source_chunk_id": "chunk_0019",
+      "status": "???",
+      "comment": "BoringSSL ?? cid_immediate ????????? usage ??????? CID?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
+      "comparison_summary": "?? usage=cid_immediate ???????????? CID??????? C=0 no Connection ID??? NewConnectionId ???? CID ????????????",
+      "category": "missing CID update feature/path",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ],
+      "verification_decision": "confirmed_unsatisfied",
+      "standard_check": "RFC 9147 Section 9 says usage=cid_immediate means one of the new CIDs MUST be used immediately for all future records.",
+      "code_check": "No CID selection or immediate-switch state exists. The sender writes C=0 and no Connection ID in every DTLS 1.3 encrypted record.",
+      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed fixed C=0 header and no cid_immediate symbol/path.",
+      "decision_reason": "Confirmed unsatisfied: there is no mechanism to switch future records to a new CID immediately."
+    },
+    {
+      "id": 187,
+      "source_index": 186,
+      "variable_name": "usage",
+      "change_condition": "Responding to RequestConnectionId",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "cid_spare",
+      "related_state_or_step": "Sending NewConnectionId in response to RequestConnectionId",
+      "explicit_or_inferred": "explicit",
+      "evidence_from_input": "Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.",
+      "note": "",
+      "source_chunk_id": "chunk_0019",
+      "status": "???",
+      "comment": "BoringSSL ?? RequestConnectionId ?????????? cid_spare NewConnectionId?",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
+      "comparison_summary": "??? RequestConnectionId ???? usage=cid_spare ? NewConnectionId?????? request_connection_id/new_connection_id handshake type ????????????? CID????????",
+      "category": "missing CID update feature/path",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/d1_both.cc:784",
+        "boringssl-main/ssl/dtls_record.cc:533"
+      ],
+      "evidence_validation": [
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "ok": true,
+          "detail": "line_count=585"
+        },
+        {
+          "evidence": "boringssl-main/ssl/d1_both.cc:784",
+          "ok": true,
+          "detail": "line_count=1073"
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "ok": true,
+          "detail": "line_count=585"
+        }
+      ],
+      "verification_decision": "confirmed_unsatisfied",
+      "standard_check": "RFC 9147 Section 9 says endpoints SHOULD respond to RequestConnectionId by sending NewConnectionId with usage cid_spare containing num_cids CIDs as soon as possible.",
+      "code_check": "No RequestConnectionId handshake type handling or NewConnectionId response generation exists in the DTLS handshake code.",
+      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absent request_connection_id/new_connection_id handling symbols.",
+      "decision_reason": "Confirmed unsatisfied: RequestConnectionId cannot trigger a cid_spare NewConnectionId response."
+    }
+  ]
+}

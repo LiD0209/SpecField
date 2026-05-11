@@ -1,0 +1,318 @@
+{
+  "meta": {
+    "chunk_count": 6,
+    "start_chunk": 1,
+    "processed_chunk_count": 6,
+    "model": "gpt-5.4",
+    "base_url": "https://api.bltcy.ai/v1/",
+    "record_count": 22,
+    "generated_at": "2026-05-09 22:52:19",
+    "chunk_output_dir": "output\\stage2_chunks",
+    "domain_hint": "Generic protocol change rules for structured messages/packets (protocol-agnostic)",
+    "clear_existing": false
+  },
+  "changes": [
+    {
+      "variable_name": "cid",
+      "change_condition": "for payloads sent from the client to the server in the example",
+      "change_action": "must be present only for record layer payloads containing the Finished message or application data",
+      "old_value": "",
+      "new_value": "included",
+      "related_state_or_step": "client-to-server encrypted record payload selection",
+      "explicit_or_inferred": "explicit",
+      "evidence": "only the record layer payloads containing the Finished message or application data include a CID.",
+      "note": "",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "cid",
+      "change_condition": "if implementation chooses to receive CIDs of different lengths",
+      "change_action": "must be self-delineating",
+      "old_value": "",
+      "new_value": "self-delineating CID value",
+      "related_state_or_step": "CID length handling",
+      "explicit_or_inferred": "explicit",
+      "evidence": "If, however, an implementation chooses to receive CIDs of different lengths, the assigned CID values must be self-delineating",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "cid",
+      "change_condition": "in the example ServerHello extension",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "100",
+      "related_state_or_step": "ServerHello example",
+      "explicit_or_inferred": "explicit",
+      "evidence": "ServerHello (connection_id=100)",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "cid",
+      "change_condition": "in the example exchange, to indicate that a zero-length CID is present in the \"connection_id\" extension",
+      "change_action": "set to empty",
+      "old_value": "",
+      "new_value": "empty",
+      "related_state_or_step": "ClientHello example",
+      "explicit_or_inferred": "explicit",
+      "evidence": "To indicate that a zero-length CID is present in the \"connection_id\" extension, we use the notation 'connection_id=empty'.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "cid",
+      "change_condition": "once encryption is enabled in the example exchange",
+      "change_action": "must be present",
+      "old_value": "",
+      "new_value": "included in the record layer",
+      "related_state_or_step": "record layer after encryption is enabled",
+      "explicit_or_inferred": "explicit",
+      "evidence": "In the example exchange, the CID is included in the record layer once encryption is enabled.",
+      "note": "",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "cid",
+      "change_condition": "when the extension has been negotiated",
+      "change_action": "set to the negotiated CID value; length is cid_length bytes",
+      "old_value": "",
+      "new_value": "negotiated CID value",
+      "related_state_or_step": "DTLSCiphertext CID field",
+      "explicit_or_inferred": "explicit",
+      "evidence": "cid:  The CID value, cid_length bytes long, as agreed at the time the extension has been negotiated.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "DTLS-Only",
+      "change_condition": "for all the pre-existing entries in the registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "\"N\"",
+      "related_state_or_step": "IANA registry update",
+      "explicit_or_inferred": "explicit",
+      "evidence": "All the pre-existing entries are given the value \"N\".",
+      "note": "",
+      "source_chunk_id": "chunk_0005"
+    },
+    {
+      "variable_name": "DTLS-Only",
+      "change_condition": "for the connection_id(54) entry in the TLS ExtensionType Values registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "\"Y\"",
+      "related_state_or_step": "new registry entry allocation",
+      "explicit_or_inferred": "explicit",
+      "evidence": "| 54    |connection_id  | CH, | Y         | N           | RFC 9146  |",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0005"
+    },
+    {
+      "variable_name": "DTLS-Only",
+      "change_condition": "for the new registry column added to the \"TLS ExtensionType Values\" registry",
+      "change_action": "must equal valid entries \"Y\" or \"N\"",
+      "old_value": "",
+      "new_value": "\"Y\" if the extension is only applicable to DTLS, \"N\" otherwise",
+      "related_state_or_step": "IANA registry update",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The valid entries are \"Y\" if the extension is only applicable to DTLS, \"N\" otherwise.",
+      "note": "",
+      "source_chunk_id": "chunk_0005"
+    },
+    {
+      "variable_name": "enc_content",
+      "change_condition": "after DTLSInnerPlaintext is serialized",
+      "change_action": "set to encrypted form of the serialized DTLSInnerPlaintext",
+      "old_value": "",
+      "new_value": "encrypted serialized DTLSInnerPlaintext",
+      "related_state_or_step": "DTLSCiphertext construction",
+      "explicit_or_inferred": "explicit",
+      "evidence": "enc_content:  The encrypted form of the serialized DTLSInnerPlaintext structure.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "epoch",
+      "change_condition": "when determining whether a received datagram can trigger a peer address change",
+      "change_action": "must be newer than the newest datagram received",
+      "old_value": "epoch of the newest datagram received",
+      "new_value": "a greater/newer epoch in the received datagram",
+      "related_state_or_step": "peer address change decision",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The received datagram is \"newer\" (in terms of both epoch and sequence number) than the newest datagram received.",
+      "note": "",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "length_of_DTLSInnerPlaintext",
+      "change_condition": "validation",
+      "change_action": "must not exceed 2^14",
+      "old_value": "",
+      "new_value": "≤ 2^14",
+      "related_state_or_step": "record payload protection",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The length MUST NOT exceed 2^14.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "length_of_DTLSInnerPlaintext",
+      "change_condition": "when DTLSInnerPlaintext is serialized",
+      "change_action": "set to the length in bytes of the serialized DTLSInnerPlaintext",
+      "old_value": "",
+      "new_value": "serialized DTLSInnerPlaintext length",
+      "related_state_or_step": "record payload protection",
+      "explicit_or_inferred": "explicit",
+      "evidence": "length_of_DTLSInnerPlaintext:  The length (in bytes) of the serialized DTLSInnerPlaintext (two-byte integer).",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "outer_type",
+      "change_condition": "MAC/additional_data construction for records carrying a CID",
+      "change_action": "used as tls12_cid in the constructed input",
+      "old_value": "",
+      "new_value": "tls12_cid",
+      "related_state_or_step": "MAC input / additional data",
+      "explicit_or_inferred": "explicit",
+      "evidence": "seq_num_placeholder + tls12_cid + cid_length + tls12_cid + DTLSCiphertext.version + epoch + sequence_number + cid + length_of_DTLSInnerPlaintext;",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "outer_type",
+      "change_condition": "for a DTLSCiphertext record carrying a CID",
+      "change_action": "set to constant tls12_cid(25)",
+      "old_value": "",
+      "new_value": "tls12_cid(25)",
+      "related_state_or_step": "DTLSCiphertext construction",
+      "explicit_or_inferred": "explicit",
+      "evidence": "outer_type:  The outer content type of a DTLSCiphertext record carrying a CID is always set to tls12_cid(25).",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "seq_num_placeholder",
+      "change_condition": "for MAC/additional_data construction",
+      "change_action": "set to 8 bytes of 0xff",
+      "old_value": "",
+      "new_value": "0xff repeated 8 times",
+      "related_state_or_step": "MAC input / additional data",
+      "explicit_or_inferred": "explicit",
+      "evidence": "seq_num_placeholder:  8 bytes of 0xff.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "sequence_number",
+      "change_condition": "when determining whether a received datagram can trigger a peer address change",
+      "change_action": "must be newer than the newest datagram received",
+      "old_value": "sequence number of the newest datagram received",
+      "new_value": "a greater/newer sequence number in the received datagram",
+      "related_state_or_step": "peer address change decision",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The received datagram is \"newer\" (in terms of both epoch and sequence number) than the newest datagram received.",
+      "note": "",
+      "source_chunk_id": "chunk_0004"
+    },
+    {
+      "variable_name": "tls12_cid",
+      "change_condition": "for applicability of this content type",
+      "change_action": "must be present only for DTLS 1.2",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "content type applicability constraint",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The tls12_cid content type is only applicable to DTLS 1.2.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0005"
+    },
+    {
+      "variable_name": "tls12_cid",
+      "change_condition": "when registered in the \"TLS ContentType\" registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "25",
+      "related_state_or_step": "IANA allocation",
+      "explicit_or_inferred": "explicit",
+      "evidence": "IANA has allocated tls12_cid(25) in the \"TLS ContentType\" registry.",
+      "note": "",
+      "source_chunk_id": "chunk_0005"
+    },
+    {
+      "variable_name": "type",
+      "change_condition": "when the record does not carry a CID",
+      "change_action": "must not be tls12_cid; records with other content types are excluded from the modified algorithm",
+      "old_value": "",
+      "new_value": "not tls12_cid",
+      "related_state_or_step": "record payload protection applicability",
+      "explicit_or_inferred": "explicit",
+      "evidence": "The modified algorithm MUST NOT be applied to records that do not carry a CID, i.e., records with content type other than tls12_cid.",
+      "note": "incomplete information",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "zeros",
+      "change_condition": "may appear after the type field in cleartext",
+      "change_action": "set to an arbitrary-length run of zero-valued bytes",
+      "old_value": "",
+      "new_value": "zero-valued bytes",
+      "related_state_or_step": "DTLSInnerPlaintext cleartext padding",
+      "explicit_or_inferred": "explicit",
+      "evidence": "zeros:  An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    },
+    {
+      "variable_name": "zeros",
+      "change_condition": "used as DTLSInnerPlaintext padding",
+      "change_action": "must be zero-valued bytes",
+      "old_value": "",
+      "new_value": "0x00 bytes",
+      "related_state_or_step": "DTLSInnerPlaintext padding before encryption",
+      "explicit_or_inferred": "explicit",
+      "evidence": "An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.",
+      "note": "",
+      "source_chunk_id": "chunk_0003"
+    }
+  ],
+  "logs": [
+    {
+      "chunk_id": "chunk_0001",
+      "parsed_count": 0,
+      "raw_response": "[]",
+      "attempts": 1
+    },
+    {
+      "chunk_id": "chunk_0002",
+      "parsed_count": 0,
+      "raw_response": "[]",
+      "attempts": 1
+    },
+    {
+      "chunk_id": "chunk_0003",
+      "parsed_count": 11,
+      "raw_response": "```json\n[\n  {\n    \"variable_name\": \"zeros\",\n    \"change_condition\": \"may appear after the type field in cleartext\",\n    \"change_action\": \"set to an arbitrary-length run of zero-valued bytes\",\n    \"old_value\": \"\",\n    \"new_value\": \"zero-valued bytes\",\n    \"related_state_or_step\": \"DTLSInnerPlaintext cleartext padding\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"zeros:  An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"zeros\",\n    \"change_condition\": \"used as DTLSInnerPlaintext padding\",\n    \"change_action\": \"must be zero-valued bytes\",\n    \"old_value\": \"\",\n    \"new_value\": \"0x00 bytes\",\n    \"related_state_or_step\": \"DTLSInnerPlaintext padding before encryption\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"outer_type\",\n    \"change_condition\": \"for a DTLSCiphertext record carrying a CID\",\n    \"change_action\": \"set to constant tls12_cid(25)\",\n    \"old_value\": \"\",\n    \"new_value\": \"tls12_cid(25)\",\n    \"related_state_or_step\": \"DTLSCiphertext construction\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"outer_type:  The outer content type of a DTLSCiphertext record carrying a CID is always set to tls12_cid(25).\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"when the extension has been negotiated\",\n    \"change_action\": \"set to the negotiated CID value; length is cid_length bytes\",\n    \"old_value\": \"\",\n    \"new_value\": \"negotiated CID value\",\n    \"related_state_or_step\": \"DTLSCiphertext CID field\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"cid:  The CID value, cid_length bytes long, as agreed at the time the extension has been negotiated.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"if implementation chooses to receive CIDs of different lengths\",\n    \"change_action\": \"must be self-delineating\",\n    \"old_value\": \"\",\n    \"new_value\": \"self-delineating CID value\",\n    \"related_state_or_step\": \"CID length handling\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"If, however, an implementation chooses to receive CIDs of different lengths, the assigned CID values must be self-delineating\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"enc_content\",\n    \"change_condition\": \"after DTLSInnerPlaintext is serialized\",\n    \"change_action\": \"set to encrypted form of the serialized DTLSInnerPlaintext\",\n    \"old_value\": \"\",\n    \"new_value\": \"encrypted serialized DTLSInnerPlaintext\",\n    \"related_state_or_step\": \"DTLSCiphertext construction\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"enc_content:  The encrypted form of the serialized DTLSInnerPlaintext structure.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"length_of_DTLSInnerPlaintext\",\n    \"change_condition\": \"when DTLSInnerPlaintext is serialized\",\n    \"change_action\": \"set to the length in bytes of the serialized DTLSInnerPlaintext\",\n    \"old_value\": \"\",\n    \"new_value\": \"serialized DTLSInnerPlaintext length\",\n    \"related_state_or_step\": \"record payload protection\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"length_of_DTLSInnerPlaintext:  The length (in bytes) of the serialized DTLSInnerPlaintext (two-byte integer).\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"length_of_DTLSInnerPlaintext\",\n    \"change_condition\": \"validation\",\n    \"change_action\": \"must not exceed 2^14\",\n    \"old_value\": \"\",\n    \"new_value\": \"≤ 2^14\",\n    \"related_state_or_step\": \"record payload protection\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The length MUST NOT exceed 2^14.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"seq_num_placeholder\",\n    \"change_condition\": \"for MAC/additional_data construction\",\n    \"change_action\": \"set to 8 bytes of 0xff\",\n    \"old_value\": \"\",\n    \"new_value\": \"0xff repeated 8 times\",\n    \"related_state_or_step\": \"MAC input / additional data\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"seq_num_placeholder:  8 bytes of 0xff.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"type\",\n    \"change_condition\": \"when the record does not carry a CID\",\n    \"change_action\": \"must not be tls12_cid; records with other content types are excluded from the modified algorithm\",\n    \"old_value\": \"\",\n    \"new_value\": \"not tls12_cid\",\n    \"related_state_or_step\": \"record payload protection applicability\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The modified algorithm MUST NOT be applied to records that do not carry a CID, i.e., records with content type other than tls12_cid.\",\n    \"note\": \"incomplete information\"\n  },\n  {\n    \"variable_name\": \"outer_type\",\n    \"change_condition\": \"MAC/additional_data construction for records carrying a CID\",\n    \"change_action\": \"used as tls12_cid in the constructed input\",\n    \"old_value\": \"\",\n    \"new_value\": \"tls12_cid\",\n    \"related_state_or_step\": \"MAC input / additional data\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"seq_num_placeholder + tls12_cid + cid_length + tls12_cid + DTLSCiphertext.version + epoch + sequence_number + cid + length_of_DTLSInnerPlaintext;\",\n    \"note\": \"\"\n  }\n]\n```",
+      "attempts": 1
+    },
+    {
+      "chunk_id": "chunk_0004",
+      "parsed_count": 6,
+      "raw_response": "[\n  {\n    \"variable_name\": \"epoch\",\n    \"change_condition\": \"when determining whether a received datagram can trigger a peer address change\",\n    \"change_action\": \"must be newer than the newest datagram received\",\n    \"old_value\": \"epoch of the newest datagram received\",\n    \"new_value\": \"a greater/newer epoch in the received datagram\",\n    \"related_state_or_step\": \"peer address change decision\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The received datagram is \\\"newer\\\" (in terms of both epoch and sequence number) than the newest datagram received.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"sequence_number\",\n    \"change_condition\": \"when determining whether a received datagram can trigger a peer address change\",\n    \"change_action\": \"must be newer than the newest datagram received\",\n    \"old_value\": \"sequence number of the newest datagram received\",\n    \"new_value\": \"a greater/newer sequence number in the received datagram\",\n    \"related_state_or_step\": \"peer address change decision\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The received datagram is \\\"newer\\\" (in terms of both epoch and sequence number) than the newest datagram received.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"in the example exchange, to indicate that a zero-length CID is present in the \\\"connection_id\\\" extension\",\n    \"change_action\": \"set to empty\",\n    \"old_value\": \"\",\n    \"new_value\": \"empty\",\n    \"related_state_or_step\": \"ClientHello example\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"To indicate that a zero-length CID is present in the \\\"connection_id\\\" extension, we use the notation 'connection_id=empty'.\",\n    \"note\": \"incomplete information\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"in the example ServerHello extension\",\n    \"change_action\": \"set to constant\",\n    \"old_value\": \"\",\n    \"new_value\": \"100\",\n    \"related_state_or_step\": \"ServerHello example\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"ServerHello (connection_id=100)\",\n    \"note\": \"incomplete information\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"once encryption is enabled in the example exchange\",\n    \"change_action\": \"must be present\",\n    \"old_value\": \"\",\n    \"new_value\": \"included in the record layer\",\n    \"related_state_or_step\": \"record layer after encryption is enabled\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"In the example exchange, the CID is included in the record layer once encryption is enabled.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"cid\",\n    \"change_condition\": \"for payloads sent from the client to the server in the example\",\n    \"change_action\": \"must be present only for record layer payloads containing the Finished message or application data\",\n    \"old_value\": \"\",\n    \"new_value\": \"included\",\n    \"related_state_or_step\": \"client-to-server encrypted record payload selection\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"only the record layer payloads containing the Finished message or application data include a CID.\",\n    \"note\": \"\"\n  }\n]",
+      "attempts": 1
+    },
+    {
+      "chunk_id": "chunk_0005",
+      "parsed_count": 5,
+      "raw_response": "[\n  {\n    \"variable_name\": \"DTLS-Only\",\n    \"change_condition\": \"for the new registry column added to the \\\"TLS ExtensionType Values\\\" registry\",\n    \"change_action\": \"must equal valid entries \\\"Y\\\" or \\\"N\\\"\",\n    \"old_value\": \"\",\n    \"new_value\": \"\\\"Y\\\" if the extension is only applicable to DTLS, \\\"N\\\" otherwise\",\n    \"related_state_or_step\": \"IANA registry update\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The valid entries are \\\"Y\\\" if the extension is only applicable to DTLS, \\\"N\\\" otherwise.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"DTLS-Only\",\n    \"change_condition\": \"for all the pre-existing entries in the registry\",\n    \"change_action\": \"set to constant\",\n    \"old_value\": \"\",\n    \"new_value\": \"\\\"N\\\"\",\n    \"related_state_or_step\": \"IANA registry update\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"All the pre-existing entries are given the value \\\"N\\\".\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"DTLS-Only\",\n    \"change_condition\": \"for the connection_id(54) entry in the TLS ExtensionType Values registry\",\n    \"change_action\": \"set to constant\",\n    \"old_value\": \"\",\n    \"new_value\": \"\\\"Y\\\"\",\n    \"related_state_or_step\": \"new registry entry allocation\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"| 54    |connection_id  | CH, | Y         | N           | RFC 9146  |\",\n    \"note\": \"incomplete information\"\n  },\n  {\n    \"variable_name\": \"tls12_cid\",\n    \"change_condition\": \"when registered in the \\\"TLS ContentType\\\" registry\",\n    \"change_action\": \"set to constant\",\n    \"old_value\": \"\",\n    \"new_value\": \"25\",\n    \"related_state_or_step\": \"IANA allocation\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"IANA has allocated tls12_cid(25) in the \\\"TLS ContentType\\\" registry.\",\n    \"note\": \"\"\n  },\n  {\n    \"variable_name\": \"tls12_cid\",\n    \"change_condition\": \"for applicability of this content type\",\n    \"change_action\": \"must be present only for DTLS 1.2\",\n    \"old_value\": \"\",\n    \"new_value\": \"\",\n    \"related_state_or_step\": \"content type applicability constraint\",\n    \"explicit_or_inferred\": \"explicit\",\n    \"evidence\": \"The tls12_cid content type is only applicable to DTLS 1.2.\",\n    \"note\": \"incomplete information\"\n  }\n]",
+      "attempts": 1
+    },
+    {
+      "chunk_id": "chunk_0006",
+      "parsed_count": 0,
+      "raw_response": "[]",
+      "attempts": 1
+    }
+  ]
+}

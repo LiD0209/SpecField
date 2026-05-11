@@ -1,0 +1,227 @@
+{
+  "scope": "boringssl-main DTLS 1.3 101-150 partial+unsatisfied",
+  "total_reviewed": 6,
+  "status_summary": {
+    "不满足": 4,
+    "部分满足": 2
+  },
+  "risk_summary": {
+    "medium": 4,
+    "low": 2
+  },
+  "category_summary": {
+    "missing validation": {
+      "count": 1,
+      "unsatisfied": 1,
+      "partial": 0
+    },
+    "API/client-side support only": {
+      "count": 1,
+      "unsatisfied": 0,
+      "partial": 1
+    },
+    "incomplete validation": {
+      "count": 1,
+      "unsatisfied": 1,
+      "partial": 0
+    },
+    "compatibility validation stricter than RFC wording": {
+      "count": 1,
+      "unsatisfied": 0,
+      "partial": 1
+    },
+    "missing feature/path": {
+      "count": 2,
+      "unsatisfied": 2,
+      "partial": 0
+    }
+  },
+  "results": [
+    {
+      "id": 102,
+      "source_index": 101,
+      "variable_name": "legacy_cookie",
+      "change_action": "invalid if value check fails; terminate handshake",
+      "change_condition": "If a server receives a ClientHello with an invalid cookie.",
+      "old_value": "invalid cookie",
+      "new_value": "",
+      "related_state_or_step": "server processing of ClientHello",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0009",
+      "status": "不满足",
+      "comment": "DTLS 1.3 non-zero or invalid legacy_cookie is parsed but no server-side DTLS 1.3 illegal_parameter rejection path was found",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion",
+      "comparison_summary": "需求：If a server receives a ClientHello with an invalid cookie. 时 legacy_cookie invalid if value check fails; terminate handshake。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：If a server receives a ClientHello with an invalid cookie, it MUST terminate the handshake with an \"illegal_parameter\" alert.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：DTLS 1.3 non-zero or invalid legacy_cookie is parsed but no server-side DTLS 1.3 illegal_parameter rejection path was found。",
+      "category": "missing validation",
+      "risk": "medium",
+      "evidence_in_boringssl_main": [
+        "ssl/extensions.cc:138",
+        "ssl/extensions.cc:144",
+        "ssl/handshake_client.cc:203",
+        "ssl/handshake_client.cc:517",
+        "ssl/test/runner/state_machine_tests.go:1439"
+      ],
+      "standard_check": "复核 RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/extensions.cc:138; ssl/extensions.cc:144; ssl/handshake_client.cc:203; ssl/handshake_client.cc:517; ssl/test/runner/state_machine_tests.go:1439。结论与 Phase 1 一致。",
+      "test_check": "Static test confirmed legacy_cookie parsing exists and runner negative HVR tests exist, but no DTLS 1.3 server non-zero legacy_cookie validation path was found; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "需求：If a server receives a ClientHello with an invalid cookie. 时 legacy_cookie invalid if value check fails; terminate handshake。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：If a server receives a ClientHello with an invalid cookie, it MUST terminate the handshake with an \"illegal_parameter\" alert.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：DTLS 1.3 non-zero or invalid legacy_cookie is parsed but no server-side DTLS 1.3 illegal_parameter rejection path was found。"
+    },
+    {
+      "id": 106,
+      "source_index": 105,
+      "variable_name": "legacy_cookie",
+      "change_action": "must be validated",
+      "change_condition": "When the second ClientHello is received.",
+      "old_value": "",
+      "new_value": "valid",
+      "related_state_or_step": "server processing of second ClientHello",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0009",
+      "status": "部分满足",
+      "comment": "client-side HRR cookie extension support exists, but BoringSSL's DTLS 1.3 server never sends/verifies HRR cookies and the legacy_cookie server field is not validated",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion",
+      "comparison_summary": "需求：When the second ClientHello is received. 时 legacy_cookie must be validated。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：When the second ClientHello is received, the server can verify that the cookie is valid and that the client can receive packets at the given IP address.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：client-side HRR cookie extension support exists, but BoringSSL's DTLS 1.3 server never sends/verifies HRR cookies and the legacy_cookie server field is not validated。",
+      "category": "API/client-side support only",
+      "risk": "low",
+      "evidence_in_boringssl_main": [
+        "ssl/extensions.cc:138",
+        "ssl/extensions.cc:144",
+        "ssl/handshake_client.cc:203",
+        "ssl/handshake_client.cc:517",
+        "ssl/test/runner/state_machine_tests.go:1439"
+      ],
+      "standard_check": "复核 RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/extensions.cc:138; ssl/extensions.cc:144; ssl/handshake_client.cc:203; ssl/handshake_client.cc:517; ssl/test/runner/state_machine_tests.go:1439。结论与 Phase 1 一致。",
+      "test_check": "Static test confirmed client-side cookie extension support and no server HRR cookie generation/verification path; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_partial",
+      "decision_reason": "需求：When the second ClientHello is received. 时 legacy_cookie must be validated。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：When the second ClientHello is received, the server can verify that the cookie is valid and that the client can receive packets at the given IP address.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：client-side HRR cookie extension support exists, but BoringSSL's DTLS 1.3 server never sends/verifies HRR cookies and the legacy_cookie server field is not validated。"
+    },
+    {
+      "id": 108,
+      "source_index": 107,
+      "variable_name": "legacy_cookie",
+      "change_action": "invalid if value check fails",
+      "change_condition": "server receives a DTLS 1.3 ClientHello with any other value in this field",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "ClientHello validation",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0010",
+      "status": "不满足",
+      "comment": "server parses legacy_cookie but no DTLS 1.3 check rejects non-zero values with illegal_parameter",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion",
+      "comparison_summary": "需求：server receives a DTLS 1.3 ClientHello with any other value in this field 时 legacy_cookie invalid if value check fails。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：If a DTLS 1.3 ClientHello is received with any other value in this field, the server MUST abort the handshake with an \"illegal_parameter\" alert.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：server parses legacy_cookie but no DTLS 1.3 check rejects non-zero values with illegal_parameter。",
+      "category": "incomplete validation",
+      "risk": "medium",
+      "evidence_in_boringssl_main": [
+        "ssl/extensions.cc:138",
+        "ssl/extensions.cc:144",
+        "ssl/handshake_client.cc:203",
+        "ssl/handshake_client.cc:517",
+        "ssl/test/runner/state_machine_tests.go:1439"
+      ],
+      "standard_check": "复核 RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/extensions.cc:138; ssl/extensions.cc:144; ssl/handshake_client.cc:203; ssl/handshake_client.cc:517; ssl/test/runner/state_machine_tests.go:1439。结论与 Phase 1 一致。",
+      "test_check": "Static test confirmed legacy_cookie parsing exists and runner negative HVR tests exist, but no DTLS 1.3 server non-zero legacy_cookie validation path was found; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "需求：server receives a DTLS 1.3 ClientHello with any other value in this field 时 legacy_cookie invalid if value check fails。标准：RFC 9147 Section 5.3, ClientHello Message; Section 5.2/5.3 cookie exchange discussion；原始抽取依据为：If a DTLS 1.3 ClientHello is received with any other value in this field, the server MUST abort the handshake with an \"illegal_parameter\" alert.。代码：DTLS 1.3 ClientHello carries a DTLS legacy_cookie field for wire compatibility, but the RFC requires a DTLS 1.3-only ClientHello to use a zero-length legacy_cookie and requires aborting on any other value. BoringSSL serializes an empty field for its own initial DTLS 1.3 ClientHello and rejects DTLS 1.3 HelloVerifyRequest in runner tests, but the server parse path only stores client_hello.dtls_cookie and no DTLS 1.3 server path validates non-zero legacy_cookie or maps it to illegal_parameter. 结论：server parses legacy_cookie but no DTLS 1.3 check rejects non-zero values with illegal_parameter。"
+    },
+    {
+      "id": 109,
+      "source_index": 108,
+      "variable_name": "legacy_record_version",
+      "change_action": "must be ignored",
+      "change_condition": "For all purposes",
+      "old_value": "",
+      "new_value": "ignored",
+      "related_state_or_step": "DTLSPlaintext field rules",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "status": "部分满足",
+      "comment": "outgoing DTLS 1.3 record version is compatible, but inbound DTLSPlaintext version is still checked rather than ignored for all purposes",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 4, record layer compatibility fields",
+      "comparison_summary": "需求：For all purposes 时 legacy_record_version must be ignored。标准：RFC 9147 Section 4, record layer compatibility fields；原始抽取依据为：It MUST be ignored for all purposes.。代码：BoringSSL writes DTLS1_VERSION before version negotiation and freezes DTLS 1.3 nonzero-epoch record headers at DTLS 1.2. On receive, however, the legacy record version is not purely ignored: epoch 0 must have the DTLS major byte and later DTLSPlaintext records must match dtls_record_version. 结论：outgoing DTLS 1.3 record version is compatible, but inbound DTLSPlaintext version is still checked rather than ignored for all purposes。",
+      "category": "compatibility validation stricter than RFC wording",
+      "risk": "low",
+      "evidence_in_boringssl_main": [
+        "ssl/dtls_record.cc:59",
+        "ssl/dtls_record.cc:65",
+        "ssl/dtls_record.cc:235",
+        "ssl/dtls_record.cc:245",
+        "ssl/dtls_record.cc:251"
+      ],
+      "standard_check": "复核 RFC 9147 Section 4, record layer compatibility fields，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/dtls_record.cc:59; ssl/dtls_record.cc:65; ssl/dtls_record.cc:235; ssl/dtls_record.cc:245; ssl/dtls_record.cc:251。结论与 Phase 1 一致。",
+      "test_check": "Static test confirmed record writer freezes version but parser still checks DTLSPlaintext version; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_partial",
+      "decision_reason": "需求：For all purposes 时 legacy_record_version must be ignored。标准：RFC 9147 Section 4, record layer compatibility fields；原始抽取依据为：It MUST be ignored for all purposes.。代码：BoringSSL writes DTLS1_VERSION before version negotiation and freezes DTLS 1.3 nonzero-epoch record headers at DTLS 1.2. On receive, however, the legacy record version is not purely ignored: epoch 0 must have the DTLS major byte and later DTLSPlaintext records must match dtls_record_version. 结论：outgoing DTLS 1.3 record version is compatible, but inbound DTLSPlaintext version is still checked rather than ignored for all purposes。"
+    },
+    {
+      "id": 145,
+      "source_index": 144,
+      "variable_name": "num_cids",
+      "change_action": "validated upper-bound exception / may return fewer than requested",
+      "change_condition": "Handling a request considered excessive",
+      "old_value": "requested num_cids",
+      "new_value": "fewer than num_cids CIDs, including no CIDs at all",
+      "related_state_or_step": "Sending NewConnectionId in response to excessive RequestConnectionId",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0019",
+      "status": "不满足",
+      "comment": "no DTLS 1.3 Connection ID request state machine or NewConnectionId response path was found",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension",
+      "comparison_summary": "需求：Handling a request considered excessive 时 num_cids validated upper-bound exception / may return fewer than requested。标准：RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension；原始抽取依据为：An endpoint MAY handle requests which it considers excessive by responding with a NewConnectionId message containing fewer than num_cids CIDs, including no CIDs at all.。代码：BoringSSL explicitly never sends Connection ID in DTLS 1.3 record headers and rejects inbound records with the CID bit set. Searches found no RequestConnectionId, NewConnectionId, cid_spare, num_cids, or connection_id extension state machine in the library, so CID request/response requirements are not implemented. 结论：no DTLS 1.3 Connection ID request state machine or NewConnectionId response path was found。",
+      "category": "missing feature/path",
+      "risk": "medium",
+      "evidence_in_boringssl_main": [
+        "ssl/dtls_record.cc:170",
+        "ssl/dtls_record.cc:171",
+        "ssl/dtls_record.cc:431",
+        "ssl/dtls_record.cc:533",
+        "ssl/dtls_record.cc:540"
+      ],
+      "standard_check": "复核 RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/dtls_record.cc:170; ssl/dtls_record.cc:171; ssl/dtls_record.cc:431; ssl/dtls_record.cc:533; ssl/dtls_record.cc:540。结论与 Phase 1 一致。",
+      "test_check": "phase2_dtls13_static_runtime_checks.py confirmed absence of CID management symbols and record code rejects CID bit; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "需求：Handling a request considered excessive 时 num_cids validated upper-bound exception / may return fewer than requested。标准：RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension；原始抽取依据为：An endpoint MAY handle requests which it considers excessive by responding with a NewConnectionId message containing fewer than num_cids CIDs, including no CIDs at all.。代码：BoringSSL explicitly never sends Connection ID in DTLS 1.3 record headers and rejects inbound records with the CID bit set. Searches found no RequestConnectionId, NewConnectionId, cid_spare, num_cids, or connection_id extension state machine in the library, so CID request/response requirements are not implemented. 结论：no DTLS 1.3 Connection ID request state machine or NewConnectionId response path was found。"
+    },
+    {
+      "id": 146,
+      "source_index": 145,
+      "variable_name": "num_cids",
+      "change_action": "copy from requested value",
+      "change_condition": "Responding to RequestConnectionId",
+      "old_value": "",
+      "new_value": "num_cids CIDs",
+      "related_state_or_step": "Sending NewConnectionId in response to RequestConnectionId",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0019",
+      "status": "不满足",
+      "comment": "no RequestConnectionId parser/handler or cid_spare NewConnectionId generator was found",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "standard_section": "RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension",
+      "comparison_summary": "需求：Responding to RequestConnectionId 时 num_cids copy from requested value。标准：RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension；原始抽取依据为：Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.。代码：BoringSSL explicitly never sends Connection ID in DTLS 1.3 record headers and rejects inbound records with the CID bit set. Searches found no RequestConnectionId, NewConnectionId, cid_spare, num_cids, or connection_id extension state machine in the library, so CID request/response requirements are not implemented. 结论：no RequestConnectionId parser/handler or cid_spare NewConnectionId generator was found。",
+      "category": "missing feature/path",
+      "risk": "medium",
+      "evidence_in_boringssl_main": [
+        "ssl/dtls_record.cc:170",
+        "ssl/dtls_record.cc:171",
+        "ssl/dtls_record.cc:431",
+        "ssl/dtls_record.cc:533",
+        "ssl/dtls_record.cc:540"
+      ],
+      "standard_check": "复核 RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension，条件和原始抽取文本一致；可选 MAY/alternative 条目未升级为缺陷，强制 MUST/SHOULD 条目按条件判断。",
+      "code_check": "复核代码路径：ssl/dtls_record.cc:170; ssl/dtls_record.cc:171; ssl/dtls_record.cc:431; ssl/dtls_record.cc:533; ssl/dtls_record.cc:540。结论与 Phase 1 一致。",
+      "test_check": "phase2_dtls13_static_runtime_checks.py confirmed absence of CID management symbols and record code rejects CID bit; runtime binary execution was blocked by missing build tools/prebuilt binaries.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "需求：Responding to RequestConnectionId 时 num_cids copy from requested value。标准：RFC 9147 Section 9, Connection ID Updates; RFC 9146 connection_id extension；原始抽取依据为：Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.。代码：BoringSSL explicitly never sends Connection ID in DTLS 1.3 record headers and rejects inbound records with the CID bit set. Searches found no RequestConnectionId, NewConnectionId, cid_spare, num_cids, or connection_id extension state machine in the library, so CID request/response requirements are not implemented. 结论：no RequestConnectionId parser/handler or cid_spare NewConnectionId generator was found。"
+    }
+  ]
+}

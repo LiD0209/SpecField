@@ -1,8 +1,15 @@
+
+
+
+
+
+
 Internet Engineering Task Force (IETF)                       E. Rescorla
 Request for Comments: 6347                                    RTFM, Inc.
 Obsoletes: 4347                                              N. Modadugu
 Category: Standards Track                                   Google, Inc.
 ISSN: 2070-1721                                             January 2012
+
 
              Datagram Transport Layer Security Version 1.2
 
@@ -30,10 +37,28 @@ Status of This Memo
 
    Information about the current status of this document, any errata,
    and how to provide feedback on it may be obtained at
+   http://www.rfc-editor.org/info/rfc6347.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Rescorla & Modadugu          Standards Track                    [Page 1]
-
+
 RFC 6347                          DTLS                      January 2012
+
 
 Copyright Notice
 
@@ -62,9 +87,36 @@ Copyright Notice
    it for publication as an RFC or to translate it into languages other
    than English.
 
-Rescorla & Modadugu          Standards Track                    [Page 2]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rescorla & Modadugu          Standards Track                    [Page 2]
+
 RFC 6347                          DTLS                      January 2012
+
+
+Table of Contents
 
    1. Introduction ....................................................4
       1.1. Requirements Terminology ...................................5
@@ -110,9 +162,15 @@ RFC 6347                          DTLS                      January 2012
       9.1. Normative References ......................................30
       9.2. Informative References ....................................31
 
-Rescorla & Modadugu          Standards Track                    [Page 3]
 
+
+
+
+
+Rescorla & Modadugu          Standards Track                    [Page 3]
+
 RFC 6347                          DTLS                      January 2012
+
 
 1.  Introduction
 
@@ -163,9 +221,12 @@ RFC 6347                          DTLS                      January 2012
    with the exception that there is no DTLS version of SSLv2 or SSLv3,
    so backward compatibility issues for those protocols do not apply.
 
-Rescorla & Modadugu          Standards Track                    [Page 4]
 
+
+Rescorla & Modadugu          Standards Track                    [Page 4]
+
 RFC 6347                          DTLS                      January 2012
+
 
 1.1. Requirements Terminology
 
@@ -216,9 +277,12 @@ RFC 6347                          DTLS                      January 2012
    The rest of this section describes the approach that DTLS uses to
    solve these problems.
 
-Rescorla & Modadugu          Standards Track                    [Page 5]
 
+
+Rescorla & Modadugu          Standards Track                    [Page 5]
+
 RFC 6347                          DTLS                      January 2012
+
 
 3.1.  Loss-Insensitive Messaging
 
@@ -269,9 +333,12 @@ RFC 6347                          DTLS                      January 2012
    ClientHello or the HelloVerifyRequest has been lost and retransmits.
    When the server receives the retransmission, it knows to retransmit.
 
-Rescorla & Modadugu          Standards Track                    [Page 6]
 
+
+Rescorla & Modadugu          Standards Track                    [Page 6]
+
 RFC 6347                          DTLS                      January 2012
+
 
    The server also maintains a retransmission timer and retransmits when
    that timer expires.
@@ -321,9 +388,13 @@ RFC 6347                          DTLS                      January 2012
    it as a series of deltas from TLS 1.2 [TLS12].  Where we do not
    explicitly call out differences, DTLS is the same as in [TLS12].
 
-Rescorla & Modadugu          Standards Track                    [Page 7]
 
+
+
+Rescorla & Modadugu          Standards Track                    [Page 7]
+
 RFC 6347                          DTLS                      January 2012
+
 
 4.1.  Record Layer
 
@@ -374,9 +445,12 @@ RFC 6347                          DTLS                      January 2012
    message from epoch 0 is retransmitted, it might have a sequence
    number after a message from epoch 1, even if the message from epoch 1
 
-Rescorla & Modadugu          Standards Track                    [Page 8]
 
+
+Rescorla & Modadugu          Standards Track                    [Page 8]
+
 RFC 6347                          DTLS                      January 2012
+
 
    was transmitted first.  Note that some care needs to be taken during
    the handshake to ensure that retransmitted messages use the right
@@ -427,9 +501,12 @@ RFC 6347                          DTLS                      January 2012
    As in TLS, implementations MUST either abandon an association or
    rehandshake prior to allowing the sequence number to wrap.
 
-Rescorla & Modadugu          Standards Track                    [Page 9]
 
+
+Rescorla & Modadugu          Standards Track                    [Page 9]
+
 RFC 6347                          DTLS                      January 2012
+
 
    Similarly, implementations MUST NOT allow the epoch to wrap, but
    instead MUST establish a new association, terminating the old
@@ -480,9 +557,12 @@ RFC 6347                          DTLS                      January 2012
    application.  However, DTLS cannot completely ignore PMTU for three
    reasons:
 
-Rescorla & Modadugu          Standards Track                   [Page 10]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 10]
+
 RFC 6347                          DTLS                      January 2012
+
 
    -  The DTLS record framing expands the datagram size, thus lowering
       the effective PMTU from the application's perspective.
@@ -533,9 +613,12 @@ RFC 6347                          DTLS                      January 2012
       request PMTU probing (e.g., DCCP), the DTLS record layer should
       honor this request.
 
-Rescorla & Modadugu          Standards Track                   [Page 11]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 11]
+
 RFC 6347                          DTLS                      January 2012
+
 
    The final issue is the DTLS handshake protocol.  From the perspective
    of the DTLS record layer, this is merely another upper layer
@@ -586,9 +669,12 @@ RFC 6347                          DTLS                      January 2012
    DTLS implementation chooses to generate an alert when it receives a
    message with an invalid MAC, it MUST generate a bad_record_mac alert
 
-Rescorla & Modadugu          Standards Track                   [Page 12]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 12]
+
 RFC 6347                          DTLS                      January 2012
+
 
    with level fatal and terminate its connection state.  Note that
    because errors do not cause connection termination, DTLS stacks are
@@ -639,9 +725,12 @@ RFC 6347                          DTLS                      January 2012
    text describes the functionality that the implementation must
    exhibit.)  A minimum window size of 32 MUST be supported, but a
 
-Rescorla & Modadugu          Standards Track                   [Page 13]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 13]
+
 RFC 6347                          DTLS                      January 2012
+
 
    window size of 64 is preferred and SHOULD be employed as the default.
    Another window size (larger than the minimum) MAY be chosen by the
@@ -689,9 +778,15 @@ RFC 6347                          DTLS                      January 2012
       1. A stateless cookie exchange has been added to prevent denial-
          of-service attacks.
 
-Rescorla & Modadugu          Standards Track                   [Page 14]
 
+
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 14]
+
 RFC 6347                          DTLS                      January 2012
+
 
       2. Modifications to the handshake header to handle message loss,
          reordering, and DTLS message fragmentation (in order to avoid
@@ -730,9 +825,24 @@ RFC 6347                          DTLS                      January 2012
    addresses difficult.  This mechanism does not provide any defense
    against DoS attacks mounted from valid IP addresses.
 
-Rescorla & Modadugu          Standards Track                   [Page 15]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 15]
+
 RFC 6347                          DTLS                      January 2012
+
 
    The exchange is shown below:
 
@@ -783,9 +893,12 @@ RFC 6347                          DTLS                      January 2012
    the HelloVerifyRequest that the server is not DTLS 1.2 or that it
    will eventually negotiate DTLS 1.0 rather than DTLS 1.2.
 
-Rescorla & Modadugu          Standards Track                   [Page 16]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 16]
+
 RFC 6347                          DTLS                      January 2012
+
 
    When responding to a HelloVerifyRequest, the client MUST use the same
    parameter values (version, random, session_id, cipher_suites,
@@ -836,9 +949,12 @@ RFC 6347                          DTLS                      January 2012
    configured not to perform a cookie exchange.  The default SHOULD be
    that the exchange is performed, however.  In addition, the server MAY
 
-Rescorla & Modadugu          Standards Track                   [Page 17]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 17]
+
 RFC 6347                          DTLS                      January 2012
+
 
    choose not to do a cookie exchange when a session is resumed.
    Clients MUST be prepared to do a cookie exchange with every
@@ -889,9 +1005,12 @@ RFC 6347                          DTLS                      January 2012
    message_seq = 0.  Whenever each new message is generated, the
    message_seq value is incremented by one.  Note that in the case of a
 
-Rescorla & Modadugu          Standards Track                   [Page 18]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 18]
+
 RFC 6347                          DTLS                      January 2012
+
 
    rehandshake, this implies that the HelloRequest will have message_seq
    = 0 and the ServerHello will have message_seq = 1.  When a message is
@@ -942,9 +1061,12 @@ RFC 6347                          DTLS                      January 2012
    number of records, each of which can be transmitted separately, thus
    avoiding IP fragmentation.
 
-Rescorla & Modadugu          Standards Track                   [Page 19]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 19]
+
 RFC 6347                          DTLS                      January 2012
+
 
    When transmitting the handshake message, the sender divides the
    message into a series of N contiguous data ranges.  These ranges MUST
@@ -977,9 +1099,30 @@ RFC 6347                          DTLS                      January 2012
    of a number of messages, they should be viewed as monolithic for the
    purpose of timeout and retransmission.
 
-Rescorla & Modadugu          Standards Track                   [Page 20]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 20]
+
 RFC 6347                          DTLS                      January 2012
+
 
    Client                                          Server
    ------                                          ------
@@ -1007,6 +1150,7 @@ RFC 6347                          DTLS                      January 2012
 
                Figure 1. Message Flights for Full Handshake
 
+
    Client                                           Server
    ------                                           ------
 
@@ -1027,9 +1171,14 @@ RFC 6347                          DTLS                      January 2012
    (ClientHello), they start in the PREPARING state.  DTLS servers start
    in the WAITING state, but with empty buffers and no retransmit timer.
 
-Rescorla & Modadugu          Standards Track                   [Page 21]
 
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 21]
+
 RFC 6347                          DTLS                      January 2012
+
 
                       +-----------+
                       | PREPARING |
@@ -1080,9 +1229,12 @@ RFC 6347                          DTLS                      January 2012
 
           Figure 3. DTLS Timeout and Retransmission State Machine
 
-Rescorla & Modadugu          Standards Track                   [Page 22]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 22]
+
 RFC 6347                          DTLS                      January 2012
+
 
    The state machine has three basic states.
 
@@ -1133,9 +1285,12 @@ RFC 6347                          DTLS                      January 2012
    (the server in an ordinary handshake or the client in a resumed
    handshake) MUST respond to a retransmit of the peer's last flight
 
-Rescorla & Modadugu          Standards Track                   [Page 23]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 23]
+
 RFC 6347                          DTLS                      January 2012
+
 
    with a retransmit of the last flight.  This avoids deadlock
    conditions if the last flight gets lost.  This requirement applies to
@@ -1181,9 +1336,17 @@ RFC 6347                          DTLS                      January 2012
    timer to the initial value.  One situation where this might occur is
    when a rehandshake is used after substantial data transfer.
 
-Rescorla & Modadugu          Standards Track                   [Page 24]
 
+
+
+
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 24]
+
 RFC 6347                          DTLS                      January 2012
+
 
 4.2.5.  ChangeCipherSpec
 
@@ -1234,9 +1397,12 @@ RFC 6347                          DTLS                      January 2012
    association until the client has demonstrated reachability either by
    completing a cookie exchange or by completing a complete handshake
 
-Rescorla & Modadugu          Standards Track                   [Page 25]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 25]
+
 RFC 6347                          DTLS                      January 2012
+
 
    including delivering a verifiable Finished message.  After a correct
    Finished message is received, the server MUST abandon the previous
@@ -1283,9 +1449,16 @@ RFC 6347                          DTLS                      January 2012
         } fragment;
       } DTLSCiphertext;
 
-Rescorla & Modadugu          Standards Track                   [Page 26]
 
+
+
+
+
+
+Rescorla & Modadugu          Standards Track                   [Page 26]
+
 RFC 6347                          DTLS                      January 2012
+
 
 4.3.2.  Handshake Protocol
 
@@ -1335,9 +1508,13 @@ RFC 6347                          DTLS                      January 2012
    security considerations are the same as those of TLS 1.2 [TLS12],
    described in Appendices D, E, and F.
 
-Rescorla & Modadugu          Standards Track                   [Page 27]
 
+
+
+Rescorla & Modadugu          Standards Track                   [Page 27]
+
 RFC 6347                          DTLS                      January 2012
+
 
    The primary additional security consideration raised by DTLS is that
    of denial of service.  DTLS includes a cookie exchange designed to
@@ -1388,9 +1565,12 @@ RFC 6347                          DTLS                      January 2012
       0x00,0x05 TLS_RSA_WITH_RC4_128_SHA              [RFC5246]
       0x00,0x17 TLS_DH_anon_EXPORT_WITH_RC4_40_MD5    [RFC4346]
 
-Rescorla & Modadugu          Standards Track                   [Page 28]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 28]
+
 RFC 6347                          DTLS                      January 2012
+
 
       0x00,0x18 TLS_DH_anon_WITH_RC4_128_MD5          [RFC5246]
       0x00,0x20 TLS_KRB5_WITH_RC4_128_SHA             [RFC2712]
@@ -1440,9 +1620,13 @@ RFC 6347                          DTLS                      January 2012
    -  A new paragraph describing handling of invalid cookies at the end
       of Section 4.2.1.
 
-Rescorla & Modadugu          Standards Track                   [Page 29]
 
+
+
+Rescorla & Modadugu          Standards Track                   [Page 29]
+
 RFC 6347                          DTLS                      January 2012
+
 
    -  Some new text describing how to avoid handshake deadlock
       conditions at the end of Section 4.2.4.
@@ -1493,9 +1677,12 @@ RFC 6347                          DTLS                      January 2012
    [TCP]       Postel, J., "Transmission Control Protocol", STD 7, RFC
                793, September 1981.
 
-Rescorla & Modadugu          Standards Track                   [Page 30]
 
+
+Rescorla & Modadugu          Standards Track                   [Page 30]
+
 RFC 6347                          DTLS                      January 2012
+
 
    [TLS12]     Dierks, T. and E. Rescorla, "The Transport Layer Security
                (TLS) Protocol Version 1.2", RFC 5246, August 2008.
@@ -1525,6 +1712,7 @@ RFC 6347                          DTLS                      January 2012
                4303, December 2005.
 
    [IANA]      IANA, "Transport Layer Security (TLS) Parameters",
+               http://www.iana.org/assignments/tls-parameters.
 
    [IKEv2]     Kaufman, C., Hoffman, P., Nir, Y., and P. Eronen,
                "Internet Key Exchange Protocol Version 2 (IKEv2)", RFC
@@ -1544,9 +1732,13 @@ RFC 6347                          DTLS                      January 2012
                Schooler, "SIP: Session Initiation Protocol", RFC 3261,
                June 2002.
 
-Rescorla & Modadugu          Standards Track                   [Page 31]
 
+
+
+Rescorla & Modadugu          Standards Track                   [Page 31]
+
 RFC 6347                          DTLS                      January 2012
+
 
    [TLS]       Dierks, T. and C. Allen, "The TLS Protocol Version 1.0",
                RFC 2246, January 1999.
@@ -1566,9 +1758,38 @@ Authors' Addresses
 
    EMail: ekr@rtfm.com
 
+
    Nagendra Modadugu
    Google, Inc.
 
    EMail: nagendra@cs.stanford.edu
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Rescorla & Modadugu          Standards Track                   [Page 32]
+

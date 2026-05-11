@@ -1,0 +1,22 @@
+{
+  "round": "051-100",
+  "next_round": "101-150",
+  "status_counts": {
+    "满足": 41,
+    "部分满足": 7,
+    "不满足": 2
+  },
+  "partial_unsat_count": 9,
+  "confirmed_reports": [
+    "id060_plaintext_epoch_serialization_16bit_limit_partial.md",
+    "id061_receiver_epoch_limit_enforced_unsatisfied.md",
+    "id074_rekeyed_application_epoch_range_truncated_partial.md",
+    "id076_epoch_wrap_terminates_too_early_partial.md",
+    "id085_recordnumber_epoch_width_truncated_partial.md",
+    "id087_epoch_wrap_guard_16bit_partial.md",
+    "id089_server_hrr_cookie_validation_missing_unsatisfied.md",
+    "id093_pmtu_retransmission_backoff_missing_partial.md",
+    "id097_keyupdate_limit_response_handling_partial.md"
+  ],
+  "runtime": "blocked for BoringSSL binary/runtime runner: cmake, ninja, go, and ssl_test.exe were not available in PATH/worktree; focused source checks were run."
+}

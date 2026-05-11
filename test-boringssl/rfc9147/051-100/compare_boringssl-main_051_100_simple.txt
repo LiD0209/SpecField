@@ -1,0 +1,50 @@
+ID 051: 满足 - BoringSSL 的 DTLS 1.3 记录层、握手层或 KeyUpdate/ACK 状态路径覆盖了该变量变化；结论来自标准语义与实际读写/解析/状态迁移路径的对照。
+ID 052: 满足 - BoringSSL 的 DTLS 1.3 记录层、握手层或 KeyUpdate/ACK 状态路径覆盖了该变量变化；结论来自标准语义与实际读写/解析/状态迁移路径的对照。
+ID 053: 满足 - BoringSSL does not expose DTLS 1.3 TLS_AES_128_CCM_8_SHA256 or other short-tag DTLS 1.3 ciphers in the searched TLS cipher configuration, while the DTLS record writer appends the encrypted inner content type and uses AEAD tag lengths from the selected cipher. For supported suites, ciphertext is not shorter than 16 bytes; no active padding gap was confirmed.
+ID 054: 满足 - The record parser accepts DTLSPlaintext epoch 0 for ClientHello-style unprotected records, and the DTLS method initializes read/write null-cipher epochs at construction.
+ID 055: 满足 - DTLS KeyUpdate send-key rotation is explicitly deferred until ACK processing marks the outgoing flight fully ACKed; then dtls1_process_ack calls tls13_rotate_traffic_key for evp_aead_seal.
+ID 056: 满足 - BoringSSL reconstructs the two-bit wire epoch against the newest active read epoch and keeps previous/current/next read epoch state, which implements the recommended matching-past-epoch behavior within its uint16 epoch model.
+ID 057: 满足 - After close_notify is processed, dtls_open_record returns ssl_open_record_close_notify before processing further input, so subsequent records are ignored at the record layer.
+ID 058: 满足 - During the handshake, dtls1_open_handshake discards application_data records; the RFC permits discarding epoch 3+ application data before the peer Finished is received.
+ID 059: 满足 - The read path retains prev_read_epoch for a timeout after moving next_read_epoch to current, and dtls_get_read_epoch can find previous, current, or next epoch states.
+ID 060: 部分满足 - RFC 9147 describes the connection epoch as an 8-octet counter whose low two octets appear in DTLSPlaintext. BoringSSL serializes and stores DTLS epochs as uint16_t/DTLSRecordNumber epochs, so it implements the low-two-octet wire form but not the full 64-bit connection epoch model.
+ID 061: 不满足 - RFC 9147 says receiving implementations MUST NOT enforce the sending-side epoch limit. BoringSSL reconstructs and tracks epochs in uint16_t and rejects ACK RecordNumber epochs above UINT16_MAX, so the receiver cannot represent or accept the RFC 9147 64-bit epoch space.
+ID 062: 满足 - The sender never exceeds the RFC 2^48-1 sending limit because BoringSSL stops much earlier at uint16 epoch exhaustion. This is conservative for the narrow MUST NOT exceed requirement, though related wider epoch support is classified separately.
+ID 063: 满足 - Epoch-zero unencrypted records use DTLSPlaintext and the initial DTLS read/write epochs are null-cipher epoch 0.
+ID 064: 满足 - The relevant RFC behavior is MAY-level. BoringSSL discards early application data during handshake, which is permitted.
+ID 065: 满足 - send_ack seals ACK records with ssl->d1->write_epoch.epoch(), i.e. the current/highest available write epoch.
+ID 066: 满足 - During the handshake, BoringSSL's current write epoch advances to handshake epoch 2 before sending ACKs for encrypted server flight records, and send_ack uses that write epoch.
+ID 067: 满足 - BoringSSL sends ACKs from the current write epoch and rejects ACKs that acknowledge a newer epoch than the ACK record during the handshake.
+ID 068: 满足 - send_ack uses the current write epoch rather than a lower stored epoch.
+ID 069: 满足 - dtls_method.cc increments application epochs with next_epoch and installs the new write/read epoch on key changes.
+ID 070: 满足 - dtls_aead_sequence returns only num.sequence() for DTLS 1.3, excluding epoch from the AEAD sequence number.
+ID 071: 满足 - next_epoch maps ssl_encryption_handshake to epoch 2.
+ID 072: 满足 - next_epoch maps ssl_encryption_early_data to epoch 1, although DTLS 1.3 0-RTT support is intentionally limited elsewhere.
+ID 073: 满足 - next_epoch maps initial application traffic to epoch 3.
+ID 074: 部分满足 - RFC 9147 reserves epochs 4 through 2^64-1 for rekeyed application traffic, with a sending safety limit of 2^48-1. BoringSSL's DTLS epoch state is uint16_t and next_epoch fails at 0xffff, so it covers only a prefix of the specified application epoch space.
+ID 075: 满足 - reconstruct_epoch uses the current epoch high bits and wire low bits; if the low bits match current, this yields the current epoch.
+ID 076: 部分满足 - BoringSSL does not allow epoch wrap, but the wrap/too-many-key-updates condition is tied to 0xffff rather than the RFC 9147 64-bit epoch with a 2^48-1 sending limit. The no-wrap property is implemented, but at a much lower boundary.
+ID 077: 满足 - Duplicate of the DTLSPlaintext epoch-zero structure requirement; BoringSSL uses plaintext DTLS record headers for epoch 0.
+ID 078: 满足 - dtls_seal_record writes out[0] = 0x2c | (epoch & 0x3), carrying the low two epoch bits in the unified header.
+ID 079: 满足 - dtls1_new initializes read_epoch and write_epoch with null cipher, and DTLSRecordNumber defaults begin at epoch/sequence zero.
+ID 080: 满足 - Outgoing handshake messages store msg.epoch at creation, retransmission walks the stored message list, and extra write epochs are retained while incomplete messages reference them.
+ID 081: 满足 - Each DTLSReadEpoch owns a DTLSReplayBitmap; record lookup chooses the epoch before duplicate checks.
+ID 082: 满足 - tls13_add_key_update sets key_update_pending and DTLS rotates the write traffic key only after the KeyUpdate flight is ACKed.
+ID 083: 满足 - Records for which dtls_get_read_epoch cannot determine a cipher state are silently discarded, matching failed deprotection handling.
+ID 084: 满足 - Each DTLSReadEpoch/DTLSWriteEpoch constructs a RecordNumberEncrypter from that epoch's AEAD cipher and traffic secret.
+ID 085: 部分满足 - RFC 9147 expands RecordNumber to uint64 epoch plus uint64 sequence_number for ACK and AEAD inputs. BoringSSL encodes ACK fields as u64, but the source values come from DTLSRecordNumber with a 16-bit epoch and 48-bit sequence.
+ID 086: 满足 - Unencrypted messages use epoch 0/null cipher before encrypted epochs are installed.
+ID 087: 部分满足 - The implementation prevents wrap but its guard is prev == 0xffff, not an implementation of the RFC 9147 64-bit epoch non-wrapping model.
+ID 088: 满足 - The client parses non-empty HRR cookie extension into hs->cookie and ext_cookie_add_clienthello adds it to the second ClientHello.
+ID 089: 不满足 - The DTLS 1.3 client path stores a HelloRetryRequest cookie and adds it to the next ClientHello. The BoringSSL server path contains comments that it could request a cookie but does not implement a DTLS 1.3 HRR cookie issuance/verification path.
+ID 090: 满足 - DTLS 1.3 unified header construction sets the high bits to 001 via 0x2c.
+ID 091: 满足 - Incoming first bytes outside the DTLS 1.3 001 range are parsed as legacy records and malformed/invalid records are discarded as failed deprotection.
+ID 092: 满足 - parse_dtls_record only dispatches to parse_dtls13_record when (type & 0xe0) == 0x20, i.e. leading bits 001.
+ID 093: 部分满足 - BoringSSL fragments handshake messages to fit the current MTU, but repeated retransmission only doubles the timer and resends the same flight. I did not find logic that backs off to a smaller record size when PMTU is unknown after repeated non-response.
+ID 094: 满足 - The normal handshake sender fragments messages according to the active MTU via max_in_len and DTLS1_HM_HEADER_LENGTH accounting.
+ID 095: 满足 - dtls1_parse_fragment reads fragment_length and dtls1_finish_message writes it into every DTLSHandshake header.
+ID 096: 满足 - dtls1_parse_fragment reads fragment_offset and seal_next_record writes the fragment range offset into each fragment header.
+ID 097: 部分满足 - BoringSSL avoids sending beyond its epoch limit, but the failure path is a too-many-key-updates error from next_epoch rather than ignoring update_requested while continuing the connection as RFC 9147 specifies near the sending limit.
+ID 098: 满足 - A KeyUpdate response is encoded as a handshake message and does not itself mark the earlier KeyUpdate record as ACKed; ACK processing remains separate.
+ID 099: 满足 - Client-side HRR cookie state is reset at new handshake setup and no code path was found that stores DTLS 1.3 HRR cookies for future handshakes.
+ID 100: 满足 - BoringSSL's DTLS 1.3 ClientHello tests assert zero legacy_cookie and the parser exposes nonzero legacy cookie separately for rejection checks.

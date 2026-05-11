@@ -1,0 +1,2072 @@
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\DTLSCID_02_variable_changes.json",
+    "scope": "001-022_rules",
+    "requested_scope": "001-050_rules",
+    "clamped_reason": "input_json contains 22 changes, so overall_end_id=050 was clamped to 022",
+    "method": "static_code_comparison_plus_focused_runtime_audit_test",
+    "target": "boringssl-main",
+    "protocol": "DTLS",
+    "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+    "counts": {
+      "不适用": 8,
+      "不满足": 10,
+      "部分满足": 3,
+      "满足": 1
+    },
+    "phase2_runtime_tests": {
+      "compiled_upstream_tests": false,
+      "blocker": "cmake, ninja, and cl are not available in PATH in this environment.",
+      "focused_test_source": "tests/verify_rfc9146_cid_support.py",
+      "focused_test_log": "logs/verify_rfc9146_cid_support.log",
+      "focused_test_result_json": "logs/verify_rfc9146_cid_support.json"
+    },
+    "evidence_validation": {
+      "ok": true,
+      "details": [
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:235",
+          "valid": true,
+          "file_exists": true,
+          "line": 235,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:237",
+          "valid": true,
+          "file_exists": true,
+          "line": 237,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:238",
+          "valid": true,
+          "file_exists": true,
+          "line": 238,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:239",
+          "valid": true,
+          "file_exists": true,
+          "line": 239,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:257",
+          "valid": true,
+          "file_exists": true,
+          "line": 257,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:235",
+          "valid": true,
+          "file_exists": true,
+          "line": 235,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:237",
+          "valid": true,
+          "file_exists": true,
+          "line": 237,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:238",
+          "valid": true,
+          "file_exists": true,
+          "line": 238,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:239",
+          "valid": true,
+          "file_exists": true,
+          "line": 239,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:257",
+          "valid": true,
+          "file_exists": true,
+          "line": 257,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:235",
+          "valid": true,
+          "file_exists": true,
+          "line": 235,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:237",
+          "valid": true,
+          "file_exists": true,
+          "line": 237,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:238",
+          "valid": true,
+          "file_exists": true,
+          "line": 238,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:239",
+          "valid": true,
+          "file_exists": true,
+          "line": 239,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:257",
+          "valid": true,
+          "file_exists": true,
+          "line": 257,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:25",
+          "valid": true,
+          "file_exists": true,
+          "line": 25,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:31",
+          "valid": true,
+          "file_exists": true,
+          "line": 31,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:42",
+          "valid": true,
+          "file_exists": true,
+          "line": 42,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:366",
+          "valid": true,
+          "file_exists": true,
+          "line": 366,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/internal.h:3013",
+          "valid": true,
+          "file_exists": true,
+          "line": 3013,
+          "line_count": 4439
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:235",
+          "valid": true,
+          "file_exists": true,
+          "line": 235,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:237",
+          "valid": true,
+          "file_exists": true,
+          "line": 237,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:238",
+          "valid": true,
+          "file_exists": true,
+          "line": 238,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:239",
+          "valid": true,
+          "file_exists": true,
+          "line": 239,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:257",
+          "valid": true,
+          "file_exists": true,
+          "line": 257,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:3951",
+          "valid": true,
+          "file_exists": true,
+          "line": 3951,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4074",
+          "valid": true,
+          "file_exists": true,
+          "line": 4074,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/extensions.cc:4172",
+          "valid": true,
+          "file_exists": true,
+          "line": 4172,
+          "line_count": 5258
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:25",
+          "valid": true,
+          "file_exists": true,
+          "line": 25,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:31",
+          "valid": true,
+          "file_exists": true,
+          "line": 31,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:42",
+          "valid": true,
+          "file_exists": true,
+          "line": 42,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:366",
+          "valid": true,
+          "file_exists": true,
+          "line": 366,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "valid": true,
+          "file_exists": true,
+          "line": 170,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:171",
+          "valid": true,
+          "file_exists": true,
+          "line": 171,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:172",
+          "valid": true,
+          "file_exists": true,
+          "line": 172,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:173",
+          "valid": true,
+          "file_exists": true,
+          "line": 173,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
+          "valid": true,
+          "file_exists": true,
+          "line": 170,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:171",
+          "valid": true,
+          "file_exists": true,
+          "line": 171,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:172",
+          "valid": true,
+          "file_exists": true,
+          "line": 172,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:173",
+          "valid": true,
+          "file_exists": true,
+          "line": 173,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:327",
+          "valid": true,
+          "file_exists": true,
+          "line": 327,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:328",
+          "valid": true,
+          "file_exists": true,
+          "line": 328,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:329",
+          "valid": true,
+          "file_exists": true,
+          "line": 329,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:330",
+          "valid": true,
+          "file_exists": true,
+          "line": 330,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:343",
+          "valid": true,
+          "file_exists": true,
+          "line": 343,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:347",
+          "valid": true,
+          "file_exists": true,
+          "line": 347,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:427",
+          "valid": true,
+          "file_exists": true,
+          "line": 427,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
+          "valid": true,
+          "file_exists": true,
+          "line": 431,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
+          "valid": true,
+          "file_exists": true,
+          "line": 533,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
+          "valid": true,
+          "file_exists": true,
+          "line": 540,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:548",
+          "valid": true,
+          "file_exists": true,
+          "line": 548,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:556",
+          "valid": true,
+          "file_exists": true,
+          "line": 556,
+          "line_count": 585
+        },
+        {
+          "evidence": "boringssl-main/ssl/dtls_record.cc:558",
+          "valid": true,
+          "file_exists": true,
+          "line": 558,
+          "line_count": 585
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "id": 1,
+      "source_index": 0,
+      "variable_name": "cid",
+      "change_condition": "for payloads sent from the client to the server in the example",
+      "change_action": "must be present only for record layer payloads containing the Finished message or application data",
+      "old_value": "",
+      "new_value": "included",
+      "related_state_or_step": "client-to-server encrypted record payload selection",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "only the record layer payloads containing the Finished message or application data include a CID.",
+      "input_note": "",
+      "status": "不适用",
+      "comment": "该条来自 RFC 示例交换，只说明示例中 client-to-server 方向哪些 payload 带 CID；不是独立实现约束。BoringSSL 未实现 RFC 9146 CID，不能用示例常量判断满足性。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 7 Example",
+      "comparison_summary": "要求 -> 示例说明；标准含义 -> 解释单向 CID 使用；代码行为 -> 无 connection_id 扩展和 tls12_cid 路径；结论 -> 信息性示例，不列为缺陷。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172",
+        "boringssl-main/ssl/dtls_record.cc:235",
+        "boringssl-main/ssl/dtls_record.cc:237",
+        "boringssl-main/ssl/dtls_record.cc:238",
+        "boringssl-main/ssl/dtls_record.cc:239",
+        "boringssl-main/ssl/dtls_record.cc:257"
+      ]
+    },
+    {
+      "id": 2,
+      "source_index": 1,
+      "variable_name": "cid",
+      "change_condition": "if implementation chooses to receive CIDs of different lengths",
+      "change_action": "must be self-delineating",
+      "old_value": "",
+      "new_value": "self-delineating CID value",
+      "related_state_or_step": "CID length handling",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "If, however, an implementation chooses to receive CIDs of different lengths, the assigned CID values must be self-delineating",
+      "input_note": "",
+      "status": "不适用",
+      "comment": "条件是实现选择接收不同长度的 CID。BoringSSL 没有 RFC 9146 CID 接收功能，因此该条件未被触发；缺失的基础 CID 功能在其他条目中记录。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 3 The connection_id Extension",
+      "comparison_summary": "要求 -> 可变长度 CID 必须可自分界；标准含义 -> 因记录中没有 cid_length，接收方需能确定长度；代码行为 -> 没有 CID 接收路径；结论 -> 条件未触发。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172",
+        "boringssl-main/ssl/dtls_record.cc:235",
+        "boringssl-main/ssl/dtls_record.cc:237",
+        "boringssl-main/ssl/dtls_record.cc:238",
+        "boringssl-main/ssl/dtls_record.cc:239",
+        "boringssl-main/ssl/dtls_record.cc:257"
+      ]
+    },
+    {
+      "id": 3,
+      "source_index": 2,
+      "variable_name": "cid",
+      "change_condition": "in the example ServerHello extension",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "100",
+      "related_state_or_step": "ServerHello example",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "ServerHello (connection_id=100)",
+      "input_note": "incomplete information",
+      "status": "不适用",
+      "comment": "ServerHello(connection_id=100) 是 RFC 示例值，不是固定常量要求。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 7 Example",
+      "comparison_summary": "要求 -> 示例常量；标准含义 -> 仅演示服务器希望客户端使用的 CID；代码行为 -> 无 ServerHello connection_id 扩展；结论 -> 示例不适合作为实现缺陷。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172"
+      ]
+    },
+    {
+      "id": 4,
+      "source_index": 3,
+      "variable_name": "cid",
+      "change_condition": "in the example exchange, to indicate that a zero-length CID is present in the \"connection_id\" extension",
+      "change_action": "set to empty",
+      "old_value": "",
+      "new_value": "empty",
+      "related_state_or_step": "ClientHello example",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "To indicate that a zero-length CID is present in the \"connection_id\" extension, we use the notation 'connection_id=empty'.",
+      "input_note": "incomplete information",
+      "status": "不适用",
+      "comment": "ClientHello(connection_id=empty) 是 RFC 示例中的零长度 CID 表示法，不是固定行为要求。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 7 Example",
+      "comparison_summary": "要求 -> 示例表示法；标准含义 -> 零长度 CID 表示一方向不希望收到 CID；代码行为 -> 无 ClientHello connection_id 扩展；结论 -> 示例不适用。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172"
+      ]
+    },
+    {
+      "id": 5,
+      "source_index": 4,
+      "variable_name": "cid",
+      "change_condition": "once encryption is enabled in the example exchange",
+      "change_action": "must be present",
+      "old_value": "",
+      "new_value": "included in the record layer",
+      "related_state_or_step": "record layer after encryption is enabled",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "In the example exchange, the CID is included in the record layer once encryption is enabled.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 要求非零 CID 协商后、加密启用后用 CID-enhanced record format 和 tls12_cid 发送。BoringSSL DTLS 1.2 写路径仍写普通 DTLSPlaintext header，没有 CID 字段或 tls12_cid。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 3 and Section 7",
+      "comparison_summary": "要求 -> 非零 CID 方向加密后必须带 CID；标准含义 -> Finished 和应用数据等加密记录进入新记录格式；代码行为 -> DTLS 1.2 写出 out[0]=type, version, epoch+seq, length；结论 -> 不满足。",
+      "category": "missing DTLS 1.2 CID record format",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 6,
+      "source_index": 5,
+      "variable_name": "cid",
+      "change_condition": "when the extension has been negotiated",
+      "change_action": "set to the negotiated CID value; length is cid_length bytes",
+      "old_value": "",
+      "new_value": "negotiated CID value",
+      "related_state_or_step": "DTLSCiphertext CID field",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "cid:  The CID value, cid_length bytes long, as agreed at the time the extension has been negotiated.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 的 DTLSCiphertext.cid 字段应等于协商 CID，长度为 cid_length。BoringSSL 没有 negotiation state，也没有在 DTLS 1.2 record header 中解析或写入 CID 字段。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 4 Record Layer Extensions",
+      "comparison_summary": "要求 -> 记录携带协商 CID；标准含义 -> CID 位于 sequence_number 与 length 之间；代码行为 -> parse_dtls12_record 直接读取 length-prefixed body；结论 -> 不满足。",
+      "category": "missing DTLS 1.2 CID record format",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172",
+        "boringssl-main/ssl/dtls_record.cc:235",
+        "boringssl-main/ssl/dtls_record.cc:237",
+        "boringssl-main/ssl/dtls_record.cc:238",
+        "boringssl-main/ssl/dtls_record.cc:239",
+        "boringssl-main/ssl/dtls_record.cc:257",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 7,
+      "source_index": 6,
+      "variable_name": "DTLS-Only",
+      "change_condition": "for all the pre-existing entries in the registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "\"N\"",
+      "related_state_or_step": "IANA registry update",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0005",
+      "input_evidence": "All the pre-existing entries are given the value \"N\".",
+      "input_note": "",
+      "status": "不适用",
+      "comment": "IANA 对既有注册表条目的 DTLS-Only 列赋值不是库实现行为。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 10.1 IANA Considerations",
+      "comparison_summary": "要求 -> 注册表元数据；标准含义 -> IANA 维护内容；代码行为 -> BoringSSL 不维护 TLS ExtensionType 注册表完整镜像；结论 -> 不适用。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": []
+    },
+    {
+      "id": 8,
+      "source_index": 7,
+      "variable_name": "DTLS-Only",
+      "change_condition": "for the connection_id(54) entry in the TLS ExtensionType Values registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "\"Y\"",
+      "related_state_or_step": "new registry entry allocation",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0005",
+      "input_evidence": "| 54    |connection_id  | CH, | Y         | N           | RFC 9146  |",
+      "input_note": "incomplete information",
+      "status": "不适用",
+      "comment": "connection_id(54) 的 IANA 注册表项本身不是实现义务；实际扩展协商缺失在 CID 功能条目中记录。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 10.2 New Entry",
+      "comparison_summary": "要求 -> IANA 分配；标准含义 -> codepoint 为 54；代码行为 -> kExtensions 无 connection_id 处理器；结论 -> 注册表条目不适用。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172"
+      ]
+    },
+    {
+      "id": 9,
+      "source_index": 8,
+      "variable_name": "DTLS-Only",
+      "change_condition": "for the new registry column added to the \"TLS ExtensionType Values\" registry",
+      "change_action": "must equal valid entries \"Y\" or \"N\"",
+      "old_value": "",
+      "new_value": "\"Y\" if the extension is only applicable to DTLS, \"N\" otherwise",
+      "related_state_or_step": "IANA registry update",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0005",
+      "input_evidence": "The valid entries are \"Y\" if the extension is only applicable to DTLS, \"N\" otherwise.",
+      "input_note": "",
+      "status": "不适用",
+      "comment": "DTLS-Only 列取值规则属于 IANA 注册表维护，不是 BoringSSL 协议状态机行为。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 10.1 IANA Considerations",
+      "comparison_summary": "要求 -> 注册表列有效值；标准含义 -> IANA 使用 Y/N；代码行为 -> 不相关；结论 -> 不适用。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": []
+    },
+    {
+      "id": 10,
+      "source_index": 9,
+      "variable_name": "enc_content",
+      "change_condition": "after DTLSInnerPlaintext is serialized",
+      "change_action": "set to encrypted form of the serialized DTLSInnerPlaintext",
+      "old_value": "",
+      "new_value": "encrypted serialized DTLSInnerPlaintext",
+      "related_state_or_step": "DTLSCiphertext construction",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "enc_content:  The encrypted form of the serialized DTLSInnerPlaintext structure.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 要求 enc_content 是序列化 DTLSInnerPlaintext 的加密结果。BoringSSL 仅在 DTLS 1.3 路径附加内部 content type；DTLS 1.2 CID 路径不存在。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 4 Record Layer Extensions",
+      "comparison_summary": "要求 -> 先构造 DTLSInnerPlaintext 再加密；标准含义 -> real_type 与 zero padding 进入加密包络；代码行为 -> DTLS 1.2 SealScatter 直接加密输入 payload；结论 -> 不满足。",
+      "category": "missing DTLSInnerPlaintext for RFC 9146",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 11,
+      "source_index": 10,
+      "variable_name": "epoch",
+      "change_condition": "when determining whether a received datagram can trigger a peer address change",
+      "change_action": "must be newer than the newest datagram received",
+      "old_value": "epoch of the newest datagram received",
+      "new_value": "a greater/newer epoch in the received datagram",
+      "related_state_or_step": "peer address change decision",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "The received datagram is \"newer\" (in terms of both epoch and sequence number) than the newest datagram received.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 对 CID 记录源地址变化要求验证后且 epoch/sequence 更新。BoringSSL 有 replay bitmap，但没有 CID 到连接查找和 peer address update 状态机，因此没有该地址更新门控。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 6 Peer Address Update",
+      "comparison_summary": "要求 -> CID 记录可触发受限 peer address update；标准含义 -> 必须同时满足认证、新 epoch/sequence、地址可达策略；代码行为 -> 只做记录重放窗口，不处理 CID 源地址迁移；结论 -> 不满足。",
+      "category": "missing CID peer address update",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:25",
+        "boringssl-main/ssl/dtls_record.cc:31",
+        "boringssl-main/ssl/dtls_record.cc:42",
+        "boringssl-main/ssl/dtls_record.cc:366",
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347"
+      ]
+    },
+    {
+      "id": 12,
+      "source_index": 11,
+      "variable_name": "length_of_DTLSInnerPlaintext",
+      "change_condition": "validation",
+      "change_action": "must not exceed 2^14",
+      "old_value": "",
+      "new_value": "≤ 2^14",
+      "related_state_or_step": "record payload protection",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "The length MUST NOT exceed 2^14.",
+      "input_note": "",
+      "status": "部分满足",
+      "comment": "BoringSSL 对普通/DTLS 1.3 plaintext 有 SSL3_RT_MAX_PLAIN_LENGTH 限制，但没有 RFC 9146 length_of_DTLSInnerPlaintext 字段和 CID-specific 检查。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 5 Record Payload Protection",
+      "comparison_summary": "要求 -> serialized DTLSInnerPlaintext 长度不得超过 2^14；标准含义 -> CID 记录的内部明文长度参与 MAC/AAD；代码行为 -> generic plaintext limit 存在，CID-specific field 不存在；结论 -> 部分满足。",
+      "category": "generic limit only, no CID-specific field",
+      "risk": "low",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/internal.h:3013"
+      ]
+    },
+    {
+      "id": 13,
+      "source_index": 12,
+      "variable_name": "length_of_DTLSInnerPlaintext",
+      "change_condition": "when DTLSInnerPlaintext is serialized",
+      "change_action": "set to the length in bytes of the serialized DTLSInnerPlaintext",
+      "old_value": "",
+      "new_value": "serialized DTLSInnerPlaintext length",
+      "related_state_or_step": "record payload protection",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "length_of_DTLSInnerPlaintext:  The length (in bytes) of the serialized DTLSInnerPlaintext (two-byte integer).",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 要求 length_of_DTLSInnerPlaintext 是序列化 DTLSInnerPlaintext 的两字节长度。BoringSSL DTLS 1.2 记录长度表示 ciphertext/body 长度，没有 CID 内部明文长度字段。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 5 Record Payload Protection",
+      "comparison_summary": "要求 -> CID MAC/AAD 使用内部明文长度；标准含义 -> 与 DTLSCiphertext.length 区分；代码行为 -> parse/write 只使用标准 DTLS length；结论 -> 不满足。",
+      "category": "missing DTLSInnerPlaintext for RFC 9146",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:235",
+        "boringssl-main/ssl/dtls_record.cc:237",
+        "boringssl-main/ssl/dtls_record.cc:238",
+        "boringssl-main/ssl/dtls_record.cc:239",
+        "boringssl-main/ssl/dtls_record.cc:257",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 14,
+      "source_index": 13,
+      "variable_name": "outer_type",
+      "change_condition": "MAC/additional_data construction for records carrying a CID",
+      "change_action": "used as tls12_cid in the constructed input",
+      "old_value": "",
+      "new_value": "tls12_cid",
+      "related_state_or_step": "MAC input / additional data",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "seq_num_placeholder + tls12_cid + cid_length + tls12_cid + DTLSCiphertext.version + epoch + sequence_number + cid + length_of_DTLSInnerPlaintext;",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 MAC/AAD 构造以 tls12_cid、cid_length、CID 和内部长度作为输入。BoringSSL AEAD Open/SealScatter 只使用 record.header 作为 AAD，没有 CID AAD 构造。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 5.1 and 5.3",
+      "comparison_summary": "要求 -> CID 记录使用 modified MAC/AAD；标准含义 -> tls12_cid 在 AAD 中出现并隔离非 CID MAC 输入；代码行为 -> additional data 是解析/写出的 record.header；结论 -> 不满足。",
+      "category": "missing CID MAC/AAD construction",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 15,
+      "source_index": 14,
+      "variable_name": "outer_type",
+      "change_condition": "for a DTLSCiphertext record carrying a CID",
+      "change_action": "set to constant tls12_cid(25)",
+      "old_value": "",
+      "new_value": "tls12_cid(25)",
+      "related_state_or_step": "DTLSCiphertext construction",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "outer_type:  The outer content type of a DTLSCiphertext record carrying a CID is always set to tls12_cid(25).",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 要求携带 CID 的 DTLSCiphertext.outer_type 固定为 tls12_cid(25)。BoringSSL 无 tls12_cid 常量，DTLS 1.2 写路径直接使用调用方 type。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 4 Record Layer Extensions",
+      "comparison_summary": "要求 -> CID record outer_type 为 25；标准含义 -> 真实类型移入 DTLSInnerPlaintext.real_type；代码行为 -> out[0]=type；结论 -> 不满足。",
+      "category": "missing tls12_cid content type",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558",
+        "boringssl-main/ssl/extensions.cc:3951",
+        "boringssl-main/ssl/extensions.cc:4074",
+        "boringssl-main/ssl/extensions.cc:4172"
+      ]
+    },
+    {
+      "id": 16,
+      "source_index": 15,
+      "variable_name": "seq_num_placeholder",
+      "change_condition": "for MAC/additional_data construction",
+      "change_action": "set to 8 bytes of 0xff",
+      "old_value": "",
+      "new_value": "0xff repeated 8 times",
+      "related_state_or_step": "MAC input / additional data",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "seq_num_placeholder:  8 bytes of 0xff.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "RFC 9146 modified MAC/AAD 使用 8 字节 0xff seq_num_placeholder。BoringSSL 没有该字段或等价构造。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 5 Record Payload Protection",
+      "comparison_summary": "要求 -> MAC/AAD 前缀包含 8 bytes 0xff；标准含义 -> 将 CID 与非 CID MAC 输入分离；代码行为 -> 使用 DTLSRecordNumber combined/sequence 和 record.header；结论 -> 不满足。",
+      "category": "missing CID MAC/AAD construction",
+      "risk": "high",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 17,
+      "source_index": 16,
+      "variable_name": "sequence_number",
+      "change_condition": "when determining whether a received datagram can trigger a peer address change",
+      "change_action": "must be newer than the newest datagram received",
+      "old_value": "sequence number of the newest datagram received",
+      "new_value": "a greater/newer sequence number in the received datagram",
+      "related_state_or_step": "peer address change decision",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0004",
+      "input_evidence": "The received datagram is \"newer\" (in terms of both epoch and sequence number) than the newest datagram received.",
+      "input_note": "",
+      "status": "不满足",
+      "comment": "与 epoch 条件相同，BoringSSL 记录层跟踪 sequence replay，但没有 CID peer address update 逻辑，因此不存在用于地址更新的 newest datagram sequence 检查。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 6 Peer Address Update",
+      "comparison_summary": "要求 -> 地址更新只能由更新的 epoch/sequence 触发；标准含义 -> 防止乱序或重放回滚地址；代码行为 -> replay bitmap 只决定记录接受/丢弃；结论 -> 不满足。",
+      "category": "missing CID peer address update",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:25",
+        "boringssl-main/ssl/dtls_record.cc:31",
+        "boringssl-main/ssl/dtls_record.cc:42",
+        "boringssl-main/ssl/dtls_record.cc:366",
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347"
+      ]
+    },
+    {
+      "id": 18,
+      "source_index": 17,
+      "variable_name": "tls12_cid",
+      "change_condition": "for applicability of this content type",
+      "change_action": "must be present only for DTLS 1.2",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "content type applicability constraint",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0005",
+      "input_evidence": "The tls12_cid content type is only applicable to DTLS 1.2.",
+      "input_note": "incomplete information",
+      "status": "不满足",
+      "comment": "RFC 9146 分配 tls12_cid(25)，且仅适用于 DTLS 1.2。BoringSSL 没有 tls12_cid content type；DTLS 1.3 的 CID bit 反而被显式拒绝。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 10.3 New Entry in TLS ContentType Registry",
+      "comparison_summary": "要求 -> tls12_cid(25) 仅用于 DTLS 1.2；标准含义 -> 不能误用于 TLS 或 DTLS 1.3；代码行为 -> 无 tls12_cid，DTLS 1.3 CID bit return false；结论 -> 不满足该内容类型支持。",
+      "category": "missing tls12_cid content type",
+      "risk": "medium",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/dtls_record.cc:171",
+        "boringssl-main/ssl/dtls_record.cc:172",
+        "boringssl-main/ssl/dtls_record.cc:173",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 19,
+      "source_index": 18,
+      "variable_name": "tls12_cid",
+      "change_condition": "when registered in the \"TLS ContentType\" registry",
+      "change_action": "set to constant",
+      "old_value": "",
+      "new_value": "25",
+      "related_state_or_step": "IANA allocation",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0005",
+      "input_evidence": "IANA has allocated tls12_cid(25) in the \"TLS ContentType\" registry.",
+      "input_note": "",
+      "status": "不适用",
+      "comment": "tls12_cid(25) 的 IANA 分配本身不是代码实现项；实际 content type 支持缺失已在适用性条目中记录。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 10.3 New Entry in TLS ContentType Registry",
+      "comparison_summary": "要求 -> IANA 分配 codepoint 25；标准含义 -> 注册表元数据；代码行为 -> 无 tls12_cid 常量；结论 -> 注册表动作不适用。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:170",
+        "boringssl-main/ssl/dtls_record.cc:171",
+        "boringssl-main/ssl/dtls_record.cc:172",
+        "boringssl-main/ssl/dtls_record.cc:173"
+      ]
+    },
+    {
+      "id": 20,
+      "source_index": 19,
+      "variable_name": "type",
+      "change_condition": "when the record does not carry a CID",
+      "change_action": "must not be tls12_cid; records with other content types are excluded from the modified algorithm",
+      "old_value": "",
+      "new_value": "not tls12_cid",
+      "related_state_or_step": "record payload protection applicability",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "The modified algorithm MUST NOT be applied to records that do not carry a CID, i.e., records with content type other than tls12_cid.",
+      "input_note": "incomplete information",
+      "status": "满足",
+      "comment": "BoringSSL 没有实现 modified CID MAC/AAD，因此普通非 CID 记录不会错误应用该算法；DTLS 1.2 普通记录仍走 RFC 6347 header/AAD。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 5 Record Payload Protection",
+      "comparison_summary": "要求 -> 非 tls12_cid 记录不得使用 modified algorithm；标准含义 -> CID 算法只作用于 CID records；代码行为 -> no-CID 记录使用 record.header；结论 -> 对无 CID 记录满足。",
+      "category": "",
+      "risk": "",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 21,
+      "source_index": 20,
+      "variable_name": "zeros",
+      "change_condition": "may appear after the type field in cleartext",
+      "change_action": "set to an arbitrary-length run of zero-valued bytes",
+      "old_value": "",
+      "new_value": "zero-valued bytes",
+      "related_state_or_step": "DTLSInnerPlaintext cleartext padding",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "zeros:  An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.",
+      "input_note": "",
+      "status": "部分满足",
+      "comment": "BoringSSL DTLS 1.3 路径支持 encrypted inner type 后的零填充剥离，但 RFC 9146 要求的是 DTLS 1.2 CID 的 DTLSInnerPlaintext padding；该路径不存在。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 4 Record Layer Extensions",
+      "comparison_summary": "要求 -> DTLSInnerPlaintext.real_type 后可有 zero-valued padding；标准含义 -> CID 记录内部明文可填充；代码行为 -> 仅 DTLS 1.3 has_padding 路径处理 trailing zeros；结论 -> 部分满足。",
+      "category": "DTLS 1.3 padding only, no RFC 9146 DTLS 1.2 CID padding",
+      "risk": "low",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    },
+    {
+      "id": 22,
+      "source_index": 21,
+      "variable_name": "zeros",
+      "change_condition": "used as DTLSInnerPlaintext padding",
+      "change_action": "must be zero-valued bytes",
+      "old_value": "",
+      "new_value": "0x00 bytes",
+      "related_state_or_step": "DTLSInnerPlaintext padding before encryption",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0003",
+      "input_evidence": "An arbitrary-length run of zero-valued bytes may appear in the cleartext after the type field.",
+      "input_note": "",
+      "status": "部分满足",
+      "comment": "零填充值要求在 BoringSSL 的 DTLS 1.3 trailing zero 逻辑中体现，但没有 RFC 9146 DTLS 1.2 CID DTLSInnerPlaintext 构造，因此只部分满足。",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9146",
+      "standard_section": "Section 4 Record Layer Extensions",
+      "comparison_summary": "要求 -> padding bytes must be 0x00；标准含义 -> real_type 后只能是零值填充；代码行为 -> DTLS 1.3 while(record.type==0) 剥离零；结论 -> 部分满足。",
+      "category": "DTLS 1.3 padding only, no RFC 9146 DTLS 1.2 CID padding",
+      "risk": "low",
+      "evidence_in_boringssl": [
+        "boringssl-main/ssl/dtls_record.cc:327",
+        "boringssl-main/ssl/dtls_record.cc:328",
+        "boringssl-main/ssl/dtls_record.cc:329",
+        "boringssl-main/ssl/dtls_record.cc:330",
+        "boringssl-main/ssl/dtls_record.cc:343",
+        "boringssl-main/ssl/dtls_record.cc:347",
+        "boringssl-main/ssl/dtls_record.cc:427",
+        "boringssl-main/ssl/dtls_record.cc:431",
+        "boringssl-main/ssl/dtls_record.cc:533",
+        "boringssl-main/ssl/dtls_record.cc:540",
+        "boringssl-main/ssl/dtls_record.cc:548",
+        "boringssl-main/ssl/dtls_record.cc:556",
+        "boringssl-main/ssl/dtls_record.cc:558"
+      ]
+    }
+  ]
+}

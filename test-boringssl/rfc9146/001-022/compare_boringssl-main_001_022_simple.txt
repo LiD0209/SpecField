@@ -1,0 +1,22 @@
+001	不适用	cid	该条来自 RFC 示例交换，只说明示例中 client-to-server 方向哪些 payload 带 CID；不是独立实现约束。BoringSSL 未实现 RFC 9146 CID，不能用示例常量判断满足性。
+002	不适用	cid	条件是实现选择接收不同长度的 CID。BoringSSL 没有 RFC 9146 CID 接收功能，因此该条件未被触发；缺失的基础 CID 功能在其他条目中记录。
+003	不适用	cid	ServerHello(connection_id=100) 是 RFC 示例值，不是固定常量要求。
+004	不适用	cid	ClientHello(connection_id=empty) 是 RFC 示例中的零长度 CID 表示法，不是固定行为要求。
+005	不满足	cid	RFC 9146 要求非零 CID 协商后、加密启用后用 CID-enhanced record format 和 tls12_cid 发送。BoringSSL DTLS 1.2 写路径仍写普通 DTLSPlaintext header，没有 CID 字段或 tls12_cid。
+006	不满足	cid	RFC 9146 的 DTLSCiphertext.cid 字段应等于协商 CID，长度为 cid_length。BoringSSL 没有 negotiation state，也没有在 DTLS 1.2 record header 中解析或写入 CID 字段。
+007	不适用	DTLS-Only	IANA 对既有注册表条目的 DTLS-Only 列赋值不是库实现行为。
+008	不适用	DTLS-Only	connection_id(54) 的 IANA 注册表项本身不是实现义务；实际扩展协商缺失在 CID 功能条目中记录。
+009	不适用	DTLS-Only	DTLS-Only 列取值规则属于 IANA 注册表维护，不是 BoringSSL 协议状态机行为。
+010	不满足	enc_content	RFC 9146 要求 enc_content 是序列化 DTLSInnerPlaintext 的加密结果。BoringSSL 仅在 DTLS 1.3 路径附加内部 content type；DTLS 1.2 CID 路径不存在。
+011	不满足	epoch	RFC 9146 对 CID 记录源地址变化要求验证后且 epoch/sequence 更新。BoringSSL 有 replay bitmap，但没有 CID 到连接查找和 peer address update 状态机，因此没有该地址更新门控。
+012	部分满足	length_of_DTLSInnerPlaintext	BoringSSL 对普通/DTLS 1.3 plaintext 有 SSL3_RT_MAX_PLAIN_LENGTH 限制，但没有 RFC 9146 length_of_DTLSInnerPlaintext 字段和 CID-specific 检查。
+013	不满足	length_of_DTLSInnerPlaintext	RFC 9146 要求 length_of_DTLSInnerPlaintext 是序列化 DTLSInnerPlaintext 的两字节长度。BoringSSL DTLS 1.2 记录长度表示 ciphertext/body 长度，没有 CID 内部明文长度字段。
+014	不满足	outer_type	RFC 9146 MAC/AAD 构造以 tls12_cid、cid_length、CID 和内部长度作为输入。BoringSSL AEAD Open/SealScatter 只使用 record.header 作为 AAD，没有 CID AAD 构造。
+015	不满足	outer_type	RFC 9146 要求携带 CID 的 DTLSCiphertext.outer_type 固定为 tls12_cid(25)。BoringSSL 无 tls12_cid 常量，DTLS 1.2 写路径直接使用调用方 type。
+016	不满足	seq_num_placeholder	RFC 9146 modified MAC/AAD 使用 8 字节 0xff seq_num_placeholder。BoringSSL 没有该字段或等价构造。
+017	不满足	sequence_number	与 epoch 条件相同，BoringSSL 记录层跟踪 sequence replay，但没有 CID peer address update 逻辑，因此不存在用于地址更新的 newest datagram sequence 检查。
+018	不满足	tls12_cid	RFC 9146 分配 tls12_cid(25)，且仅适用于 DTLS 1.2。BoringSSL 没有 tls12_cid content type；DTLS 1.3 的 CID bit 反而被显式拒绝。
+019	不适用	tls12_cid	tls12_cid(25) 的 IANA 分配本身不是代码实现项；实际 content type 支持缺失已在适用性条目中记录。
+020	满足	type	BoringSSL 没有实现 modified CID MAC/AAD，因此普通非 CID 记录不会错误应用该算法；DTLS 1.2 普通记录仍走 RFC 6347 header/AAD。
+021	部分满足	zeros	BoringSSL DTLS 1.3 路径支持 encrypted inner type 后的零填充剥离，但 RFC 9146 要求的是 DTLS 1.2 CID 的 DTLSInnerPlaintext padding；该路径不存在。
+022	部分满足	zeros	零填充值要求在 BoringSSL 的 DTLS 1.3 trailing zero 逻辑中体现，但没有 RFC 9146 DTLS 1.2 CID DTLSInnerPlaintext 构造，因此只部分满足。

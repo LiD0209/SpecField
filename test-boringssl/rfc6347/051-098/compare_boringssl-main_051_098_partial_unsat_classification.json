@@ -1,0 +1,193 @@
+{
+  "scope": "boringssl-main 051-098 partial+unsatisfied",
+  "total_reviewed": 7,
+  "status_summary": {
+    "部分满足": 3,
+    "不满足": 4
+  },
+  "risk_summary": {
+    "low": 3,
+    "medium": 4
+  },
+  "category_summary": {
+    "DTLS 1.2 renegotiation not implemented": {
+      "count": 2,
+      "unsatisfied": 0,
+      "partial": 2
+    },
+    "HelloVerifyRequest server generation path missing": {
+      "count": 4,
+      "unsatisfied": 4,
+      "partial": 0
+    },
+    "HelloVerifyRequest receive-only syntax support": {
+      "count": 1,
+      "unsatisfied": 0,
+      "partial": 1
+    }
+  },
+  "phase2": {
+    "test_source": "repro_dtls12_hvr_static_probe.cpp",
+    "test_binary": "repro_dtls12_hvr_static_probe.exe",
+    "test_log": "repro_dtls12_hvr_static_probe.log",
+    "runtime_build_note": "Focused probe was compiled with local g++ because no cmake/ninja/cl or prebuilt BoringSSL test runner was available on PATH."
+  },
+  "results": [
+    {
+      "id": 53,
+      "status": "部分满足",
+      "category": "DTLS 1.2 renegotiation not implemented",
+      "risk_level": "low",
+      "reason": "BoringSSL initializes and increments DTLS handshake message_seq for supported initial handshakes, but DTLS renegotiation is explicitly unsupported, so the HelloRequest rehandshake-specific message_seq=0 behavior is not implemented as an executable DTLS path.",
+      "variable_name": "message_seq",
+      "change_action": "set to constant",
+      "change_condition": "in the case of a rehandshake for HelloRequest",
+      "evidence_in_boringssl": [
+        "ssl/d1_both.cc:550",
+        "ssl/d1_both.cc:555",
+        "ssl/d1_both.cc:599",
+        "ssl/d1_pkt.cc:184",
+        "ssl/d1_pkt.cc:215",
+        "include/openssl/ssl.h:5124"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.2 defines message_seq reset behavior for each handshake and gives rehandshake examples for HelloRequest=0 and ServerHello=1.",
+      "code_check": "ssl/d1_both.cc implements general handshake sequence counters, but ssl/d1_pkt.cc treats post-handshake DTLS 1.2 handshake records as unsupported renegotiation.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms d1_pkt.cc contains the unsupported-renegotiation path. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_partial",
+      "decision_reason": "The generic mechanism or receive-side syntax exists, but the exact condition is unsupported or only partially implemented."
+    },
+    {
+      "id": 54,
+      "status": "部分满足",
+      "category": "DTLS 1.2 renegotiation not implemented",
+      "risk_level": "low",
+      "reason": "The general handshake_write_seq counter can produce increasing message numbers, but BoringSSL rejects DTLS renegotiation traffic, so the rehandshake ServerHello message_seq=1 case is not a supported runtime behavior.",
+      "variable_name": "message_seq",
+      "change_action": "set to constant",
+      "change_condition": "in the case of a rehandshake for ServerHello",
+      "evidence_in_boringssl": [
+        "ssl/d1_both.cc:550",
+        "ssl/d1_both.cc:555",
+        "ssl/d1_both.cc:599",
+        "ssl/d1_pkt.cc:184",
+        "ssl/d1_pkt.cc:215",
+        "include/openssl/ssl.h:5124"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.2 defines message_seq reset behavior for each handshake and gives rehandshake examples for HelloRequest=0 and ServerHello=1.",
+      "code_check": "ssl/d1_both.cc implements general handshake sequence counters, but ssl/d1_pkt.cc treats post-handshake DTLS 1.2 handshake records as unsupported renegotiation.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms d1_pkt.cc contains the unsupported-renegotiation path. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_partial",
+      "decision_reason": "The generic mechanism or receive-side syntax exists, but the exact condition is unsupported or only partially implemented."
+    },
+    {
+      "id": 64,
+      "status": "不满足",
+      "category": "HelloVerifyRequest server generation path missing",
+      "risk_level": "medium",
+      "reason": "BoringSSL implements client-side parsing of HelloVerifyRequest, but the server implementation contains no HelloVerifyRequest generation/cookie-exchange path, so it cannot copy the ClientHello record sequence number into an outgoing HelloVerifyRequest.",
+      "variable_name": "sequence_number",
+      "change_action": "copy from client's ClientHello record sequence number",
+      "change_condition": "Server sends HelloVerifyRequest",
+      "evidence_in_boringssl": [
+        "ssl/handshake_client.cc:517",
+        "ssl/handshake_client.cc:526",
+        "ssl/handshake_client.cc:534",
+        "ssl/handshake_server.cc:334",
+        "ssl/dtls_record.cc:500",
+        "ssl/dtls_record.cc:579"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.1 defines HelloVerifyRequest, cookie retransmission, HVR record-sequence copying, and HVR server_version guidance.",
+      "code_check": "handshake_client.cc parses HVR and retransmits ClientHello with the cookie; focused probe found no server-side DTLS1_MT_HELLO_VERIFY_REQUEST generation or SSL_OP_COOKIE_EXCHANGE-equivalent API.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms client HVR handling is present, server HVR generation/API is absent, and DTLS 1.2 renegotiation is unsupported. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required server-side behavior is absent from the implementation and the focused probe confirms the missing path."
+    },
+    {
+      "id": 72,
+      "status": "不满足",
+      "category": "HelloVerifyRequest server generation path missing",
+      "risk_level": "medium",
+      "reason": "The RFC rule avoiding sequence-number duplication across multiple cookie exchanges depends on actually sending HelloVerifyRequest records. BoringSSL has no server-side HVR send path and only assigns normal fresh record numbers when sealing records.",
+      "variable_name": "sequence_number",
+      "change_action": "must equal / copied from another field",
+      "change_condition": "to avoid sequence number duplication in case of multiple cookie exchanges",
+      "evidence_in_boringssl": [
+        "ssl/handshake_client.cc:517",
+        "ssl/handshake_server.cc:334",
+        "ssl/dtls_record.cc:480",
+        "ssl/dtls_record.cc:500",
+        "ssl/dtls_record.cc:579"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.1 defines HelloVerifyRequest, cookie retransmission, HVR record-sequence copying, and HVR server_version guidance.",
+      "code_check": "handshake_client.cc parses HVR and retransmits ClientHello with the cookie; focused probe found no server-side DTLS1_MT_HELLO_VERIFY_REQUEST generation or SSL_OP_COOKIE_EXCHANGE-equivalent API.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms client HVR handling is present, server HVR generation/API is absent, and DTLS 1.2 renegotiation is unsupported. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required server-side behavior is absent from the implementation and the focused probe confirms the missing path."
+    },
+    {
+      "id": 77,
+      "status": "不满足",
+      "category": "HelloVerifyRequest server generation path missing",
+      "risk_level": "medium",
+      "reason": "The client can parse a HelloVerifyRequest.server_version field, but no BoringSSL DTLS server code emits HelloVerifyRequest, so the DTLS 1.2 server SHOULD-send-DTLS-1.0-HVR-version behavior is absent.",
+      "variable_name": "server_version",
+      "change_action": "set to constant",
+      "change_condition": "DTLS 1.2 server implementations send HelloVerifyRequest",
+      "evidence_in_boringssl": [
+        "ssl/handshake_client.cc:517",
+        "ssl/handshake_client.cc:526",
+        "include/openssl/ssl.h:551",
+        "include/openssl/ssl.h:552",
+        "ssl/handshake_server.cc:334"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.1 defines HelloVerifyRequest, cookie retransmission, HVR record-sequence copying, and HVR server_version guidance.",
+      "code_check": "handshake_client.cc parses HVR and retransmits ClientHello with the cookie; focused probe found no server-side DTLS1_MT_HELLO_VERIFY_REQUEST generation or SSL_OP_COOKIE_EXCHANGE-equivalent API.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms client HVR handling is present, server HVR generation/API is absent, and DTLS 1.2 renegotiation is unsupported. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required server-side behavior is absent from the implementation and the focused probe confirms the missing path."
+    },
+    {
+      "id": 78,
+      "status": "部分满足",
+      "category": "HelloVerifyRequest receive-only syntax support",
+      "risk_level": "low",
+      "reason": "BoringSSL parses HelloVerifyRequest as uint16 server_version plus uint8-length-prefixed cookie on the client side, but because the server never generates the message, syntax support is receive-only.",
+      "variable_name": "server_version",
+      "change_action": "validated by syntax equivalence",
+      "change_condition": "HelloVerifyRequest structure definition",
+      "evidence_in_boringssl": [
+        "ssl/handshake_client.cc:517",
+        "ssl/handshake_client.cc:526",
+        "ssl/handshake_client.cc:527",
+        "ssl/handshake_client.cc:528",
+        "include/openssl/ssl3.h:156"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.1 defines HelloVerifyRequest, cookie retransmission, HVR record-sequence copying, and HVR server_version guidance.",
+      "code_check": "handshake_client.cc parses HVR and retransmits ClientHello with the cookie; focused probe found no server-side DTLS1_MT_HELLO_VERIFY_REQUEST generation or SSL_OP_COOKIE_EXCHANGE-equivalent API.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms client HVR handling is present, server HVR generation/API is absent, and DTLS 1.2 renegotiation is unsupported. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_partial",
+      "decision_reason": "The generic mechanism or receive-side syntax exists, but the exact condition is unsupported or only partially implemented."
+    },
+    {
+      "id": 80,
+      "status": "不满足",
+      "category": "HelloVerifyRequest server generation path missing",
+      "risk_level": "medium",
+      "reason": "The requirement that a server use in HelloVerifyRequest the same version it would use in ServerHello cannot be exercised because BoringSSL does not implement server-side HelloVerifyRequest generation.",
+      "variable_name": "server_version",
+      "change_action": "must equal value that would be used in ServerHello",
+      "change_condition": "Server sends HelloVerifyRequest",
+      "evidence_in_boringssl": [
+        "ssl/handshake_client.cc:517",
+        "ssl/handshake_client.cc:526",
+        "ssl/handshake_client.cc:620",
+        "ssl/handshake_server.cc:334"
+      ],
+      "standard_check": "RFC 6347 Section 4.2.1 defines HelloVerifyRequest, cookie retransmission, HVR record-sequence copying, and HVR server_version guidance.",
+      "code_check": "handshake_client.cc parses HVR and retransmits ClientHello with the cookie; focused probe found no server-side DTLS1_MT_HELLO_VERIFY_REQUEST generation or SSL_OP_COOKIE_EXCHANGE-equivalent API.",
+      "test_check": "repro_dtls12_hvr_static_probe.exe confirms client HVR handling is present, server HVR generation/API is absent, and DTLS 1.2 renegotiation is unsupported. Build and run succeeded with exit code 0.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required server-side behavior is absent from the implementation and the focused probe confirms the missing path."
+    }
+  ]
+}

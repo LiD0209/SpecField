@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "scope": "001-050_rules",
+    "target": "boringssl-main",
+    "counts": {
+      "total": 10,
+      "部分满足": 3,
+      "不满足": 7
+    },
+    "risk_counts": {
+      "low": 1,
+      "medium": 9
+    },
+    "phase2_status": "completed"
+  },
+  "groups": {
+    "missing server HelloVerifyRequest cookie generation/validation path": {
+      "count": 7,
+      "items": [
+        {
+          "id": 21,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "invalid if value check fails",
+          "change_condition": "Server processes retransmitted ClientHello",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 22,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "must be present",
+          "change_condition": "When the server responds to the client's ClientHello with a HelloVerifyRequest",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 24,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "membership check",
+          "change_condition": "during a limited transition window after Secret changes",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 26,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "invalid if value check fails",
+          "change_condition": "if a server receives a ClientHello with an invalid cookie",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 29,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "derived/computed from another field",
+          "change_condition": "when generating cookies",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 30,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "validity check",
+          "change_condition": "when the second ClientHello is received",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        },
+        {
+          "id": 31,
+          "status": "不满足",
+          "variable_name": "cookie",
+          "change_action": "invalid if value check fails",
+          "change_condition": "when the server changes the Secret value frequently",
+          "category": "missing server HelloVerifyRequest cookie generation/validation path",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "libssl 产品代码中未发现 DTLS 1.2 服务端生成 HelloVerifyRequest、计算/验证 stateless cookie、无效 cookie 当作无 cookie 重新挑战、或 secret 轮换接受窗口的实现路径；这些逻辑只在 runner 测试服务端中出现。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_server.cc:334",
+            "boringssl-main/include/openssl/ssl.h:5243",
+            "boringssl-main/ssl/test/runner/handshake_server.go:299",
+            "boringssl-main/ssl/test/runner/handshake_server.go:326"
+          ],
+          "standard_check": "RFC 6347 Section 4.2.1 defines server-side HelloVerifyRequest cookie generation, validation, invalid-cookie handling, and secret rotation guidance.",
+          "code_check": "Production libssl contains client-side HelloVerifyRequest handling but no server-side DTLSv1_listen/cookie callback, HelloVerifyRequest generation, HMAC-style cookie computation, or cookie verification path. The only server cookie implementation found is in ssl/test/runner.",
+          "test_check": "verify_dtls12_cookie_paths.py searched product and runner paths and confirmed the absence in ssl/ and include/openssl while finding only runner-side generation/validation.",
+          "decision_reason": "The RFC requirement is server behavior. BoringSSL's production server path does not implement the HelloVerifyRequest cookie exchange; therefore this item is confirmed unsatisfied.",
+          "phase2_decision": "confirmed_unsatisfied"
+        }
+      ]
+    },
+    "test runner parser keeps obsolete 32-byte HelloVerifyRequest limit": {
+      "count": 1,
+      "items": [
+        {
+          "id": 23,
+          "status": "部分满足",
+          "variable_name": "cookie",
+          "change_action": "validated range check",
+          "change_condition": "current specification",
+          "category": "test runner parser keeps obsolete 32-byte HelloVerifyRequest limit",
+          "risk": "low",
+          "standard_section": "RFC 6347 Section 4.2.1 and Section 4.2.2",
+          "comment": "libssl 客户端解析 HelloVerifyRequest 使用 u8-length-prefixed，可接受 255 字节；但 BoringSSL runner 的 helloVerifyRequestMsg.unmarshal 仍拒绝 cookieLen > 32，与 DTLS 1.2 的 255 字节上限不一致。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/handshake_client.cc:517",
+            "boringssl-main/ssl/handshake_client.cc:524",
+            "boringssl-main/ssl/handshake_client.cc:534",
+            "boringssl-main/ssl/handshake_client.cc:542",
+            "boringssl-main/ssl/handshake_client.cc:547",
+            "boringssl-main/ssl/test/runner/handshake_messages.go:2980",
+            "boringssl-main/ssl/test/runner/handshake_messages.go:3007",
+            "boringssl-main/ssl/test/runner/handshake_messages.go:3008"
+          ],
+          "standard_check": "RFC 6347 raises the HelloVerifyRequest/ClientHello cookie vector to opaque cookie<0..2^8-1>, so a 255-byte cookie is valid in DTLS 1.2.",
+          "code_check": "libssl client parsing uses CBS_get_u8_length_prefixed and therefore accepts 0..255 bytes; ssl/test/runner/handshake_messages.go still rejects helloVerifyRequestMsg cookieLen > 32.",
+          "test_check": "verify_dtls12_cookie_paths.py confirmed the libssl u8-length parser and the runner cookieLen > 32 guard. No compiled shim was present, so the runtime check is source-executed and logged.",
+          "decision_reason": "The production client path satisfies the 255-byte requirement, but the in-repo DTLS peer runner contradicts it. This is a confirmed partial conformance issue for repository test/interoperability behavior, not for the shipped client parser.",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    },
+    "DTLS 1.2 old epoch retention not implemented": {
+      "count": 2,
+      "items": [
+        {
+          "id": 40,
+          "status": "部分满足",
+          "variable_name": "epoch",
+          "change_action": "must accept old epoch packets until handshake completes",
+          "change_condition": "when packets are from earlier epochs after a later epoch has begun",
+          "category": "DTLS 1.2 old epoch retention not implemented",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.1, Record Layer",
+          "comment": "BoringSSL 为 DTLS 1.3 保留 prev_read_epoch，但 DTLS 1.2 set_read_state 直接替换 read_epoch；代码注释说明 DTLS 1.2 会忽略旧 epoch 记录。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/dtls_method.cc:96",
+            "boringssl-main/ssl/dtls_method.cc:104",
+            "boringssl-main/ssl/dtls_record.cc:257",
+            "boringssl-main/ssl/dtls_record.cc:368"
+          ],
+          "standard_check": "RFC 6347 requires old epoch handling during the handshake and warns against reusing epoch values within the old-packet lifetime.",
+          "code_check": "DTLS 1.2 set_read_state directly replaces read_epoch. Only DTLS 1.3 creates next_read_epoch/prev_read_epoch retention; dtls_record.cc states DTLS 1.2 only considers one epoch.",
+          "test_check": "verify_dtls12_cookie_paths.py checked the DTLS 1.2 branch and found no prev_read_epoch assignment in that path. No compiled libssl test binary was available.",
+          "decision_reason": "The implementation has robust newer-epoch retention for DTLS 1.3, but not the DTLS 1.2 previous-epoch retention expected by RFC 6347. This is confirmed partial.",
+          "phase2_decision": "confirmed_partial"
+        },
+        {
+          "id": 41,
+          "status": "部分满足",
+          "variable_name": "epoch",
+          "change_action": "must not equal previously used epoch value",
+          "change_condition": "within two times the TCP maximum segment lifetime",
+          "category": "DTLS 1.2 old epoch retention not implemented",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.1, Record Layer",
+          "comment": "BoringSSL 为 DTLS 1.3 保留 prev_read_epoch，但 DTLS 1.2 set_read_state 直接替换 read_epoch；代码注释说明 DTLS 1.2 会忽略旧 epoch 记录。",
+          "evidence_in_boringssl": [
+            "boringssl-main/ssl/dtls_method.cc:96",
+            "boringssl-main/ssl/dtls_method.cc:104",
+            "boringssl-main/ssl/dtls_record.cc:257",
+            "boringssl-main/ssl/dtls_record.cc:368"
+          ],
+          "standard_check": "RFC 6347 requires old epoch handling during the handshake and warns against reusing epoch values within the old-packet lifetime.",
+          "code_check": "DTLS 1.2 set_read_state directly replaces read_epoch. Only DTLS 1.3 creates next_read_epoch/prev_read_epoch retention; dtls_record.cc states DTLS 1.2 only considers one epoch.",
+          "test_check": "verify_dtls12_cookie_paths.py checked the DTLS 1.2 branch and found no prev_read_epoch assignment in that path. No compiled libssl test binary was available.",
+          "decision_reason": "The implementation has robust newer-epoch retention for DTLS 1.3, but not the DTLS 1.2 previous-epoch retention expected by RFC 6347. This is confirmed partial.",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "summary": {
+    "static_checks_passed": 9,
+    "static_checks_total": 9,
+    "cid_feature_symbols_found": {},
+    "runtime_execution": "blocked: no cmake/ninja/go/bazel and no prebuilt ssl_test.exe/bssl_shim.exe found"
+  },
+  "static_checks": [
+    {
+      "name": "dtls13_rejects_cid_bit_on_receive",
+      "file": "ssl/dtls_record.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_writer_never_sends_cid_and_always_sends_length",
+      "file": "ssl/dtls_record.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_reader_accepts_length_omission_as_rest_of_datagram",
+      "file": "ssl/dtls_record.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_message_seq_reassembly_window_and_discard_past",
+      "file": "ssl/d1_both.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_message_seq_increment_only_for_new_non_ccs_message",
+      "file": "ssl/d1_both.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_transcript_uses_tls13_message_hash_hrr",
+      "file": "ssl/ssl_transcript.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_server_does_not_echo_legacy_session_id",
+      "file": "ssl/tls13_server.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_clienthello_legacy_cookie_parsed_but_no_server_validation",
+      "file": "ssl/extensions.cc",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "name": "dtls13_hvr_negative_runner_tests_exist",
+      "file": "ssl/test/runner/state_machine_tests.go",
+      "passed": true,
+      "missing": []
+    }
+  ],
+  "cid_symbol_probe": {
+    "RequestConnectionId": false,
+    "NewConnectionId": false,
+    "cid_spare": false,
+    "num_cids": false,
+    "connection_id_length": false
+  },
+  "tool_probes": [
+    {
+      "command": [
+        "cmake",
+        "--version"
+      ],
+      "available": false,
+      "returncode": null,
+      "output": "not found in PATH"
+    },
+    {
+      "command": [
+        "ninja",
+        "--version"
+      ],
+      "available": false,
+      "returncode": null,
+      "output": "not found in PATH"
+    },
+    {
+      "command": [
+        "go",
+        "version"
+      ],
+      "available": false,
+      "returncode": null,
+      "output": "not found in PATH"
+    },
+    {
+      "command": [
+        "bazel",
+        "--version"
+      ],
+      "available": false,
+      "returncode": null,
+      "output": "not found in PATH"
+    }
+  ],
+  "executable_probes": {
+    "ssl_test.exe": [],
+    "bssl_shim.exe": []
+  }
+}

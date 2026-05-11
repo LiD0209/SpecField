@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "scope": "001-050_rules",
+    "target": "boringssl-main",
+    "partial_unsatisfied_count": 1,
+    "counts_by_status": {
+      "部分满足": 1
+    },
+    "counts_by_category": {
+      "incomplete retransmission scheduling": 1
+    }
+  },
+  "groups": [
+    {
+      "category": "incomplete retransmission scheduling",
+      "items": [
+        {
+          "id": 7,
+          "source_index": 6,
+          "variable_name": "ACK",
+          "change_condition": "Upon receiving an ACK for a partial flight",
+          "change_action": "validated value check: ACK must indicate a partial flight; retransmit the unacknowledged portion of the flight",
+          "old_value": "",
+          "new_value": "",
+          "related_state_or_step": "WAITING -> SENDING",
+          "explicit_or_inferred": "explicit",
+          "source_chunk_id": "chunk_0013",
+          "status": "部分满足",
+          "comment": "BoringSSL 接收 partial ACK 后会标记已确认的消息范围，并且后续重传只发送未确认范围；但 partial ACK 分支仅留下 TODO，没有立即调度重传或立刻进入发送未确认部分的路径，只能等现有 retransmit timer。",
+          "standard_section": "RFC 9147 Sections 5.8, 7 and 7.1",
+          "standard_basis": "upon receiving an ACK for a partial flight (as mentioned in Section 7.1), the implementation transitions to the SENDING state, where it retransmits the unacknowledged portion of the flight",
+          "comparison_summary": "需求：validated value check: ACK must indicate a partial flight; retransmit the unacknowledged portion of the flight；标准依据：upon receiving an ACK for a partial flight (as mentioned in Section 7.1), the implementation transitions to the SENDING state, where it retransmits the unacknowledged portion of the flight；代码行为：标准要求收到 partial flight ACK 时转入 SENDING 并重传未确认部分。代码证明已确认范围会被跳过，但 partial 分支没有设置 sending_flight 或重传定时器，只在 TODO 中说明应调度重传，因此满足“重传内容选择”，缺少“收到 partial ACK 后主动调度/转入发送”的部分。；结论：部分满足。",
+          "category": "incomplete retransmission scheduling",
+          "risk": "medium",
+          "evidence_in_boringssl-main": [
+            "ssl/d1_pkt.cc:98",
+            "ssl/d1_pkt.cc:122",
+            "ssl/d1_pkt.cc:148",
+            "ssl/d1_pkt.cc:152",
+            "ssl/d1_both.cc:756",
+            "ssl/d1_both.cc:759"
+          ],
+          "phase2_verification": {
+            "standard_check": "RFC 9147 Section 7 states that on an ACK for a partial flight, the implementation transitions to SENDING and retransmits the unacknowledged portion of the flight.",
+            "code_check": "ssl/d1_pkt.cc marks ACKed record ranges and preserves unACKed ranges, but the partial-ACK branch at lines 148-154 only clears unused write epochs and contains a TODO to schedule a retransmit; it does not set sending_flight or restart the retransmit timer immediately.",
+            "test_check": "verify_dtls13_static_paths.py passed and explicitly checked partial_ack_no_immediate_retransmit. Focused Go runner execution was attempted but blocked because the go command is not installed; runner_blocker.log records the exact blocker.",
+            "decision": "confirmed_partial",
+            "decision_reason": "The retransmitted bytes are filtered to unacknowledged ranges, so the content-selection portion is implemented. The immediate state transition/scheduling required by the standard is not implemented in the partial ACK branch."
+          }
+        }
+      ]
+    }
+  ]
+}
