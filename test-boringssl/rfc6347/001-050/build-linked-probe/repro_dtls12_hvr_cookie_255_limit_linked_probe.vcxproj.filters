@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\project\SpecTrace\test-boringssl\rfc6347\001-050\repro_dtls12_hvr_cookie_255_limit_linked_probe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\project\SpecTrace\test-boringssl\rfc6347\001-050\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8124EDA2-D530-3CBE-BDB6-DB177D226F08}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

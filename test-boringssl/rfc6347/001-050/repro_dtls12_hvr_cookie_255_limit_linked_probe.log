@@ -1,0 +1,21 @@
+﻿BUILD:
+cmake --build D:\project\SpecTrace\test-boringssl\rfc6347\001-050\build-linked-probe --config Release --target repro_dtls12_hvr_cookie_255_limit_linked_probe
+
+BORINGSSL LIBS:
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\ssl.lib
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\crypto.lib
+
+RUN:
+D:\project\SpecTrace\test-boringssl\rfc6347\001-050\build-linked-probe\Release\repro_dtls12_hvr_cookie_255_limit_linked_probe.exe D:\project\boringssl-main
+
+OUTPUT:
+LINK SSL_CTX_new(DTLS_method): PASS
+LINK DTLS1_2_VERSION min/max: PASS
+LINK OpenSSL_version: BoringSSL
+PRODUCT HVR parser uses u8 length-prefixed cookie: PASS
+PRODUCT HVR parser has no obsolete 32-byte cookie cap: PASS
+RUNNER HVR unmarshal rejects cookieLen > 32: PASS
+RUNNER has DTLS-HelloVerifyRequest-255 test vector: PASS
+RUNNER comments acknowledge RFC 6347 255-byte limit: PASS
+
+EXIT_CODE: 0

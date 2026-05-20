@@ -1,0 +1,6 @@
+﻿linked BoringSSL probe: PASS
+send behavior: dtls_record_version freezes DTLS 1.3 outbound legacy_record_version at DTLS 1.2
+receive behavior: parse_dtls12_record still reads and checks DTLSPlaintext legacy_record_version
+receive detail: epoch 0 permits only DTLS major byte, later epochs require exact dtls_record_version
+runner coverage: addRecordVersionTests registers CheckRecordVersion and initial-record-version tests
+conclusion: RFC 9147 ID 109 is confirmed partially satisfied

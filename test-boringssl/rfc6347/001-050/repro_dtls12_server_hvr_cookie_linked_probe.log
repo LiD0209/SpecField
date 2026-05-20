@@ -1,0 +1,25 @@
+﻿CONFIGURE:
+cmake -S D:\project\SpecTrace\test-boringssl\rfc6347\001-050 -B D:\project\SpecTrace\test-boringssl\rfc6347\001-050\build-linked-probe -G "Visual Studio 18 2026" -A x64
+
+BORINGSSL LIBS:
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\ssl.lib
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\crypto.lib
+
+BUILD:
+cmake --build D:\project\SpecTrace\test-boringssl\rfc6347\001-050\build-linked-probe --config Release
+
+RUN:
+D:\project\SpecTrace\test-boringssl\rfc6347\001-050\build-linked-probe\Release\repro_dtls12_server_hvr_cookie_linked_probe.exe D:\project\boringssl-main
+
+OUTPUT:
+LINK SSL_CTX_new(DTLS_method): PASS
+LINK DTLS1_2_VERSION min/max: PASS
+LINK OpenSSL_version: BoringSSL
+CLIENT parses HelloVerifyRequest: PASS
+PRODUCT API has no DTLSv1_listen or cookie callbacks: PASS
+PRODUCT server has no HelloVerifyRequest message generation: PASS
+PRODUCT server has no stateless cookie verify path: PASS
+PRODUCT ClientHello parser only exposes dtls_cookie bytes: PASS
+RUNNER has server-side HVR cookie behavior only in test peer: PASS
+
+EXIT_CODE: 0

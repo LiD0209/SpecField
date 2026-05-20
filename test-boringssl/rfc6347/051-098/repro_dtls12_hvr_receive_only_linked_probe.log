@@ -1,0 +1,24 @@
+﻿BUILD:
+cmake --build D:\project\SpecTrace\test-boringssl\rfc6347\051-098\build-linked-probe --config Release --target repro_dtls12_hvr_receive_only_linked_probe
+
+BORINGSSL LIBS:
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\ssl.lib
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\crypto.lib
+
+RUN:
+D:\project\SpecTrace\test-boringssl\rfc6347\051-098\build-linked-probe\Release\repro_dtls12_hvr_receive_only_linked_probe.exe D:\project\boringssl-main
+
+OUTPUT:
+LINK SSL_CTX_new(DTLS_method): PASS
+LINK DTLS1_2_VERSION min/max: PASS
+LINK OpenSSL_version: BoringSSL
+HVR handshake type constant is present: PASS
+Client dispatches HelloVerifyRequest only once: PASS
+Client parses HVR server_version and u8 cookie syntax: PASS
+Client copies cookie and resends ClientHello: PASS
+Client excludes initial ClientHello/HVR from transcript: PASS
+Product server has no HVR generation path: PASS
+Product public API exposes no legacy DTLS HVR cookie exchange: PASS
+Runner has HVR generation but is not product libssl: PASS
+
+EXIT_CODE: 0

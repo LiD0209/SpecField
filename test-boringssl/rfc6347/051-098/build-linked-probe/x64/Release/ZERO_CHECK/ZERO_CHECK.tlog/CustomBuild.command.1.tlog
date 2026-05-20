@@ -1,0 +1,10 @@
+^D:\PROJECT\SPECTRACE\TEST-BORINGSSL\RFC6347\051-098\BUILD-LINKED-PROBE\CMAKEFILES\09EA697A7E27DBCDBBFBC1636F39CBE4\GENERATE.STAMP.RULE
+setlocal
+D:\Tools\cmake\bin\cmake.exe -SD:/project/SpecTrace/test-boringssl/rfc6347/051-098 -BD:/project/SpecTrace/test-boringssl/rfc6347/051-098/build-linked-probe --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/project/SpecTrace/test-boringssl/rfc6347/051-098/build-linked-probe/dtls12_hvr_server_generation_probe.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

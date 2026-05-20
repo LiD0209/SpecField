@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<BuildType Name="MinSizeRel"/>
+		<BuildType Name="RelWithDebInfo"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9f4afbd2-8f78-38d1-adf6-61da53eda214" DefaultStartup="true">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="repro_dtls12_hvr_receive_only_linked_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls12_hvr_server_generation_linked_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls12_hvr_serverhello_version_linked_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls12_renegotiation_message_seq_linked_probe.vcxproj"/>
+		<Build Solution="Debug|*" Project="false"/>
+		<Build Solution="Release|*" Project="false"/>
+		<Build Solution="MinSizeRel|*" Project="false"/>
+		<Build Solution="RelWithDebInfo|*" Project="false"/>
+	</Project>
+	<Project Path="ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="787b2424-4231-316b-a05a-a591e617106e"/>
+	<Project Path="repro_dtls12_hvr_receive_only_linked_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="24ff2146-4647-3f37-b6fe-85fa08498a13">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls12_hvr_server_generation_linked_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d9ada30d-ea43-3fac-af0d-77151fc9c643">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls12_hvr_serverhello_version_linked_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="aba6b14e-d101-3d04-8557-7b42e6896de2">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls12_renegotiation_message_seq_linked_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="90674a82-2c0e-3ea9-be69-5b2dd9be17c6">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+</Solution>

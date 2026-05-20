@@ -1,0 +1,33 @@
+CONFIGURE:
+cmake -S D:\project\SpecTrace\test-boringssl\rfc9147\151-187 -B D:\project\SpecTrace\test-boringssl\rfc9147\151-187\build-linked-probe -G "Visual Studio 18 2026" -A x64
+
+BUILD BORINGSSL LIBS:
+cmake -S D:\project\boringssl-main -B D:\project\boringssl-main\build-codex-vs18-msvc -G "Visual Studio 18 2026" -A x64 -DOPENSSL_NO_ASM=1 -DBUILD_TESTING=OFF
+cmake --build D:\project\boringssl-main\build-codex-vs18-msvc --config Release --target ssl crypto
+produced D:\project\boringssl-main\build-codex-vs18-msvc\Release\ssl.lib and crypto.lib
+
+BUILD HARNESS:
+cmake --build D:\project\SpecTrace\test-boringssl\rfc9147\151-187\build-linked-probe --config Release
+produced build-linked-probe\Release\repro_dtls13_151_187_linked_probe.exe
+
+RUN:
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\build-linked-probe\Release\repro_dtls13_151_187_linked_probe.exe D:\project\boringssl-main
+
+OUTPUT:
+LINK SSL_CTX_new(DTLS_method) succeeds: PASS
+LINK DTLS 1.3 min/max setters are callable: PASS
+LINK OpenSSL_version: BoringSSL
+ID152 heartbeat content type is not defined: PASS
+ID152 non-handshake dispatch has no heartbeat branch: PASS
+ID153 DTLS 1.3 CID bit is rejected: PASS
+ID153 sender fixes C bit to zero: PASS
+ID153 no DTLS 1.2 tls12_cid demux symbols: PASS
+ID157 ACK encoding uses a length-prefixed vector: PASS
+ID157 ACK scheduling is gated by non-empty records_to_ack: PASS
+ID157 send_ack assumes space for at least one RecordNumber: PASS
+ID185 NewConnectionId/cid_spare handling absent: PASS
+ID186 cid_immediate handling absent: PASS
+ID187 RequestConnectionId handling absent: PASS
+CID_ROOT CID update findings share ID153 missing CID root cause: PASS
+
+EXIT_CODE: 0

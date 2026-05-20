@@ -1,0 +1,28 @@
+﻿BUILD:
+cmake --build D:\project\SpecTrace\test-boringssl\rfc6347\051-098\build-linked-probe --config Release --target repro_dtls12_renegotiation_message_seq_linked_probe
+
+BORINGSSL LIBS:
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\ssl.lib
+D:\project\boringssl-main\build-codex-vs18-msvc\Release\crypto.lib
+
+RUN:
+D:\project\SpecTrace\test-boringssl\rfc6347\051-098\build-linked-probe\Release\repro_dtls12_renegotiation_message_seq_linked_probe.exe D:\project\boringssl-main
+
+OUTPUT:
+LINK SSL_CTX_new(DTLS_method): PASS
+LINK DTLS1_2_VERSION min/max: PASS
+LINK OpenSSL_version: BoringSSL
+LINK SSL_new: PASS
+Initial DTLS handshake write seq is 0: PASS
+Initial DTLS handshake read seq is 0: PASS
+Caller-initiated renegotiation returns failure: PASS
+SSL_renegotiate error: function should not have been called
+DTLS message_seq is written from handshake_write_seq: PASS
+DTLS initial handshake seq fields default to zero: PASS
+DTLS post-handshake record path marks renegotiation unsupported: PASS
+Public docs say initiating renegotiation is unsupported: PASS
+SSL_renegotiate rejects caller-initiated renegotiation: PASS
+Runner notes DTLS renegotiation resets message sequence numbers: PASS
+Runner tests document DTLS renegotiation not supported by BoringSSL: PASS
+
+EXIT_CODE: 0

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<BuildType Name="MinSizeRel"/>
+		<BuildType Name="RelWithDebInfo"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d666f292-e7cf-3dfb-9f2a-f2cc142ce560" DefaultStartup="true">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="repro_dtls13_cid_request_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls13_hrr_cookie_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls13_legacy_cookie_probe.vcxproj"/>
+		<BuildDependency Project="repro_dtls13_legacy_record_version_probe.vcxproj"/>
+		<Build Solution="Debug|*" Project="false"/>
+		<Build Solution="Release|*" Project="false"/>
+		<Build Solution="MinSizeRel|*" Project="false"/>
+		<Build Solution="RelWithDebInfo|*" Project="false"/>
+	</Project>
+	<Project Path="ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="3299c741-c8e7-388d-82af-e86faee3b56f"/>
+	<Project Path="repro_dtls13_cid_request_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="2b998b37-7844-3faf-9b16-d6b8af1acacb">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls13_hrr_cookie_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="adb03492-1f21-37d3-9543-e8a80f2adacd">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls13_legacy_cookie_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="688f61da-be3c-3640-a273-17af21d29678">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="repro_dtls13_legacy_record_version_probe.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="97a209a2-fa94-3f65-8b2c-379ddcd1136d">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+</Solution>

@@ -1,0 +1,40 @@
+﻿linked BoringSSL DTLS_method successfully
+ok: dtls_method.cc contains static bool next_epoch
+ok: next_epoch contains uint16_t *out
+ok: next_epoch contains uint16_t prev
+ok: next_epoch contains if (prev == 0xffff)
+ok: next_epoch contains SSL_R_TOO_MANY_KEY_UPDATES
+ok: next_epoch contains return false
+ok: next_epoch contains *out = prev + 1
+ok: next_epoch does not contain 0xffffffffffff
+ok: next_epoch does not contain 2^48
+ok: dtls_method.cc contains ssl_send_alert(ssl, SSL3_AL_FATAL, SSL_AD_UNEXPECTED_MESSAGE)
+ok: dtls_method.cc contains if (!next_epoch(ssl, &epoch, level, ssl->d1->write_epoch.epoch()))
+ok: tls13_both.cc contains static bool tls13_receive_key_update
+ok: tls13_receive_key_update contains key_update_request == SSL_KEY_UPDATE_REQUESTED
+ok: tls13_receive_key_update contains tls13_add_key_update(ssl, SSL_KEY_UPDATE_NOT_REQUESTED)
+ok: tls13_receive_key_update does not contain SSL_R_TOO_MANY_KEY_UPDATES
+ok: tls13_receive_key_update does not contain ignore
+ok: tls13_receive_key_update does not contain 0xffff
+ok: tls13_both.cc contains static const uint8_t kMaxKeyUpdates = 32
+ok: tls13_both.cc contains ssl->s3->key_update_count > kMaxKeyUpdates
+ok: d1_pkt.cc contains queued_key_update
+ok: d1_pkt.cc contains SSL_KEY_UPDATE_REQUESTED
+ok: d1_pkt.cc contains tls13_add_key_update(ssl, request_type)
+ok: internal.h contains enum class QueuedKeyUpdate
+ok: internal.h contains kUpdateRequested
+ok: internal.h contains queued_key_update
+ok: runner.go contains addKeyUpdateTests()
+ok: runner.go contains SendKeyUpdate(test.keyUpdateRequest)
+ok: runner.go contains ReadKeyUpdate()
+ok: common.go contains keyUpdateRequested
+ok: common.go contains AllowEpochOverflow
+ok: key_update_tests.go contains const maxClientKeyUpdates = 0xffff - 3
+ok: key_update_tests.go contains KeyUpdate-ReadEpochOverflow-DTLS
+ok: key_update_tests.go contains KeyUpdate-WriteEpochOverflow-DTLS
+ok: key_update_tests.go contains expectedError:      ":TOO_MANY_KEY_UPDATES:"
+ok: key_update_tests.go contains expectedError:                ":TOO_MANY_KEY_UPDATES:"
+ok: key_update_tests.go contains rejects KeyUpdates at epoch 0xffff
+ok: key_update_tests.go contains 9147 does not prescribe this limit
+ok: key_update_tests.go contains but we enforce it
+RESULT: confirmed partial. BoringSSL responds to received update_requested KeyUpdate by attempting tls13_add_key_update with SSL_KEY_UPDATE_NOT_REQUESTED. In DTLS this allocates the next write epoch through next_epoch, which is uint16_t-based and fails at 0xffff with SSL_R_TOO_MANY_KEY_UPDATES. The receiver path has no branch to ignore update_requested when sending a response would exceed the RFC 9147 sending limit. Runner tests explicitly expect TOO_MANY_KEY_UPDATES at the 0xffff DTLS epoch boundary, reflecting BoringSSL's 16-bit epoch model rather than RFC 9147's 2^48-1 sending limit and ignore-update_requested rule.
