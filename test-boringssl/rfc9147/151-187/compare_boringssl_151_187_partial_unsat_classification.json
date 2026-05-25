@@ -1,19 +1,19 @@
 {
   "meta": {
-    "source_file": "D:\\project\\conditionFuzzing\\output\\DTLS_02_variable_changes.json",
+    "source_file": "D:\\project\\SpecTrace\\output\\DTLS_02_variable_changes.json",
     "scope": "151-187_rules",
-    "requested_scope": "151-200_rules",
+    "requested_scope": "151-187_rules",
     "clamped_end_id": 187,
-    "method": "static_code_comparison_plus_focused_verification",
+    "method": "static_code_comparison_plus_focused_verification_regenerated_utf8",
     "target": "boringssl-main",
     "protocol": "DTLS 1.3",
     "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
     "implementation": "boringssl-main",
-    "generated_at": "2026-05-09T22:10:56",
+    "generated_at": "2026-05-25T09:33:15",
     "counts": {
-      "??": 31,
-      "????": 2,
-      "???": 4
+      "满足": 31,
+      "部分满足": 2,
+      "不满足": 4
     },
     "evidence_validation_summary": {
       "total": 111,
@@ -23,10 +23,11 @@
     "phase2_per_round": true,
     "skip_runtime_tests": false,
     "classified_statuses": [
-      "????",
-      "???"
+      "部分满足",
+      "不满足"
     ],
-    "classified_count": 6
+    "classified_count": 6,
+    "encoding": "utf-8"
   },
   "groups": {
     "missing optional feature/path": {
@@ -48,11 +49,11 @@
           "evidence_from_input": "OCT == 24   -+--> Heartbeat (DTLS <1.3)",
           "note": "",
           "source_chunk_id": "chunk_0005",
-          "status": "????",
-          "comment": "BoringSSL ?? Heartbeat content type/???????? Heartbeat ????/????????????? RFC ? 5 ? Heartbeat demux ?????????",
+          "status": "部分满足",
+          "comment": "Heartbeat appears in the RFC demux table, but BoringSSL has no Heartbeat feature or handler. Unsupported Heartbeat records are rejected/not dispatched, while processing Heartbeat records is unavailable.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
-          "comparison_summary": "???? OCT 24 ? DTLS <1.3 Heartbeat????? SSL3_RT_HEARTBEAT ??? Heartbeat ????type 24 ?? DTLSPlaintext ????????????????????? handshake/ACK/application_data/alert ???????? unexpected record ?????????????????? Heartbeat ??????????? Heartbeat ????????",
+          "comparison_summary": "Requirement: when OCT == 24, Outer Content Type must must equal mapped constant for Heartbeat demultiplexing. Input evidence: OCT == 24   -+--> Heartbeat (DTLS <1.3). Code evidence: boringssl-main/ssl/dtls_record.cc:267; boringssl-main/ssl/d1_both.cc:419; boringssl-main/ssl/d1_pkt.cc:223. Heartbeat appears in the RFC demux table, but BoringSSL has no Heartbeat feature or handler. Unsupported Heartbeat records are rejected/not dispatched, while processing Heartbeat records is unavailable. Conclusion: partially satisfied.",
           "category": "missing optional feature/path",
           "risk": "medium",
           "evidence_in_boringssl": [
@@ -78,10 +79,10 @@
             }
           ],
           "verification_decision": "confirmed_partial",
-          "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is a separate optional TLS/DTLS feature rather than a mandatory DTLS 1.3 core handshake path.",
-          "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS record parsing accepts the outer shape, but d1_both.cc and d1_pkt.cc only dispatch handshake, ACK, application data, alert, and CCS-specific paths.",
-          "test_check": "focused_static_id152_153_185_187.py PASS: no heartbeat symbols were found and non-handshake dispatch paths do not route type 24 to a handler.",
-          "decision_reason": "Confirmed partial: unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if that feature were required by the deployment."
+          "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is an optional TLS/DTLS feature rather than mandatory DTLS 1.3 core behavior.",
+          "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS dispatch handles handshake, ACK, application data, alert, and CCS-specific paths.",
+          "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: heartbeat symbols and dispatch path are absent.",
+          "decision_reason": "Unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if that feature is required."
         }
       ]
     },
@@ -104,11 +105,11 @@
           "evidence_from_input": "OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2)",
           "note": "incomplete information",
           "source_chunk_id": "chunk_0005",
-          "status": "???",
-          "comment": "BoringSSL ?? DTLS 1.2 CID/tls12_cid(25) ?????? CID demux?DTLS 1.3 ???????? C bit?",
+          "status": "不满足",
+          "comment": "BoringSSL has no DTLS 1.2 tls12_cid demux path, rejects DTLS 1.3 records with the C bit set, and always sends DTLS 1.3 encrypted records with C=0.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
-          "comparison_summary": "?? OCT 25 ??? DTLSCiphertext with CID (DTLS 1.2)????? tls12_cid ? connection_id ?????parse_dtls13_record ? C bit ??????? false??????? C=0??????? CID demux/?????",
+          "comparison_summary": "Requirement: when OCT == 25, Outer Content Type must must equal mapped constant for encrypted_record with CID demultiplexing. Input evidence: OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2). Code evidence: boringssl-main/ssl/dtls_record.cc:170; boringssl-main/ssl/dtls_record.cc:431; boringssl-main/ssl/dtls_record.cc:533. BoringSSL has no DTLS 1.2 tls12_cid demux path, rejects DTLS 1.3 records with the C bit set, and always sends DTLS 1.3 encrypted records with C=0. Conclusion: not satisfied.",
           "category": "missing feature/path",
           "risk": "high",
           "evidence_in_boringssl": [
@@ -134,10 +135,10 @@
             }
           ],
           "verification_decision": "confirmed_unsatisfied",
-          "standard_check": "RFC 9147 Figure 5 reserves OCT 25 for DTLSCiphertext with CID (DTLS 1.2), and Section 4.1 describes mixed DTLS 1.2/1.3 demultiplexing when CIDs are in use.",
-          "code_check": "Static re-read found no tls12_cid/connection_id implementation. parse_dtls13_record returns false when the C bit is set, and the sender fixes C=0.",
-          "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of CID symbols and presence of explicit C-bit rejection/fixed C=0 send header.",
-          "decision_reason": "Confirmed unsatisfied for CID-capable operation: the record layer has no DTLS 1.2 CID demux path and rejects DTLS 1.3 CID headers."
+          "standard_check": "RFC 9147 Section 4.1 includes OCT 25 for DTLSCiphertext with CID in DTLS 1.2, and DTLS 1.3 has an explicit CID bit in encrypted record headers.",
+          "code_check": "parse_dtls13_record rejects the C bit, the sender fixes C=0, and no tls12_cid demux symbols are present.",
+          "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID symbols are absent, C-bit rejection exists, and the send header is fixed to C=0.",
+          "decision_reason": "CID-capable operation is not implemented."
         }
       ]
     },
@@ -160,11 +161,11 @@
           "evidence_from_input": "it may be necessary to send an ACK which does not contain any record numbers.",
           "note": "",
           "source_chunk_id": "chunk_0017",
-          "status": "????",
-          "comment": "BoringSSL ?? ACK ????? vector???????? records_to_ack ?????????? RFC ??????? ACK ?????",
+          "status": "部分满足",
+          "comment": "ACK encoding can represent a length-prefixed record_numbers vector, but dtls1_schedule_ack only sends ACKs when records_to_ack is non-empty and send_ack assumes space for at least one RecordNumber.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
-          "comparison_summary": "???????????? record number ? ACK?CBB ?????? vector?? dtls1_schedule_ack ? sending_ack ??? !records_to_ack.empty()?send_ack ?????? ACK ?? MTU?????? ACK ?????????????",
+          "comparison_summary": "Requirement: when in some cases it may be necessary to send an ACK which does not contain any record numbers, record_numbers must set to empty / absent. Input evidence: it may be necessary to send an ACK which does not contain any record numbers.. Code evidence: boringssl-main/ssl/d1_both.cc:956; boringssl-main/ssl/d1_both.cc:969; boringssl-main/ssl/d1_both.cc:990. ACK encoding can represent a length-prefixed record_numbers vector, but dtls1_schedule_ack only sends ACKs when records_to_ack is non-empty and send_ack assumes space for at least one RecordNumber. Conclusion: partially satisfied.",
           "category": "incomplete ACK behavior",
           "risk": "medium",
           "evidence_in_boringssl": [
@@ -190,10 +191,10 @@
             }
           ],
           "verification_decision": "confirmed_partial",
-          "standard_check": "RFC 9147 Section 7.1 says some cases may require an ACK with no record numbers, such as receiving EncryptedExtensions before ServerHello.",
-          "code_check": "ACK encoding could represent an empty vector, but dtls1_schedule_ack only sets sending_ack when records_to_ack is non-empty. send_ack also assumes room for at least one 16-byte RecordNumber.",
-          "test_check": "focused_static_id157_empty_ack.py PASS: confirmed sending_ack is gated by !records_to_ack.empty() and no empty-ACK scheduling path exists.",
-          "decision_reason": "Confirmed partial: regular ACK generation works, but the special empty ACK shortcut is not implemented."
+          "standard_check": "RFC 9147 allows an ACK that contains no record numbers in special cases.",
+          "code_check": "The ACK vector format is length-prefixed, but scheduling is gated by records_to_ack being non-empty and send_ack assumes at least one RecordNumber can fit.",
+          "test_check": "focused_static_id157_empty_ack.py PASS and linked C harness PASS: empty-ACK scheduling path is absent.",
+          "decision_reason": "Normal ACK generation works, but the special empty ACK shortcut is not implemented."
         }
       ]
     },
@@ -216,11 +217,11 @@
           "evidence_from_input": "If it is set to \"cid_spare\", then either an existing or new CID MAY be used.",
           "note": "",
           "source_chunk_id": "chunk_0019",
-          "status": "???",
-          "comment": "BoringSSL ?? NewConnectionId/ConnectionIdUsage ?????????????? cid_spare ???",
+          "status": "不满足",
+          "comment": "NewConnectionId usage=cid_spare cannot be implemented because BoringSSL has no DTLS CID update state machine and no CID-capable record support. Root cause same as ID153.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-          "comparison_summary": "?? NewConnectionId.usage=cid_spare ??????? CID ???? CID????? RequestConnectionId/NewConnectionId/ConnectionIdUsage ???DTLS 1.3 ???????? CID ??? C bit????????",
+          "comparison_summary": "Requirement: when If it is set to \"cid_spare\", usage must must equal / selected behavior. Input evidence: If it is set to \"cid_spare\", then either an existing or new CID MAY be used.. Code evidence: boringssl-main/ssl/dtls_record.cc:170; boringssl-main/ssl/dtls_record.cc:431; boringssl-main/ssl/dtls_record.cc:533. NewConnectionId usage=cid_spare cannot be implemented because BoringSSL has no DTLS CID update state machine and no CID-capable record support. Root cause same as ID153. Conclusion: not satisfied.",
           "category": "missing CID update feature/path",
           "risk": "high",
           "evidence_in_boringssl": [
@@ -246,10 +247,10 @@
             }
           ],
           "verification_decision": "confirmed_unsatisfied",
-          "standard_check": "RFC 9147 Section 9 defines NewConnectionId.usage=cid_spare and says either an existing or new CID may be used.",
-          "code_check": "No NewConnectionId or ConnectionIdUsage parser/state exists. The DTLS 1.3 sender never sends CID and the receiver rejects C bit.",
-          "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of NewConnectionId/RequestConnectionId/cid_spare symbols and CID-capable record support.",
-          "decision_reason": "Confirmed unsatisfied: BoringSSL cannot process cid_spare because DTLS CID update support is absent."
+          "standard_check": "RFC 9147 Section 9 defines Connection ID update behavior using NewConnectionId and RequestConnectionId.",
+          "code_check": "No RequestConnectionId/NewConnectionId/ConnectionIdUsage/cid_spare/cid_immediate symbols or state machine are present, and record CID support is absent.",
+          "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID update symbols and CID-capable record support are absent.",
+          "decision_reason": "NewConnectionId usage=cid_spare cannot be implemented because BoringSSL has no DTLS CID update state machine and no CID-capable record support. Root cause same as ID153."
         },
         {
           "id": 186,
@@ -264,11 +265,11 @@
           "evidence_from_input": "If usage is set to \"cid_immediate\", then one of the new CIDs MUST be used immediately for all future records.",
           "note": "",
           "source_chunk_id": "chunk_0019",
-          "status": "???",
-          "comment": "BoringSSL ?? cid_immediate ????????? usage ??????? CID?",
+          "status": "不满足",
+          "comment": "cid_immediate switching cannot be implemented because the sender always uses C=0 and there is no state transition to select a new CID for future records. Root cause same as ID153.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-          "comparison_summary": "?? usage=cid_immediate ???????????? CID??????? C=0 no Connection ID??? NewConnectionId ???? CID ????????????",
+          "comparison_summary": "Requirement: when If usage is set to \"cid_immediate\", usage must must equal / selected behavior. Input evidence: If usage is set to \"cid_immediate\", then one of the new CIDs MUST be used immediately for all future records.. Code evidence: boringssl-main/ssl/dtls_record.cc:170; boringssl-main/ssl/dtls_record.cc:533; boringssl-main/ssl/dtls_record.cc:540. cid_immediate switching cannot be implemented because the sender always uses C=0 and there is no state transition to select a new CID for future records. Root cause same as ID153. Conclusion: not satisfied.",
           "category": "missing CID update feature/path",
           "risk": "high",
           "evidence_in_boringssl": [
@@ -294,10 +295,10 @@
             }
           ],
           "verification_decision": "confirmed_unsatisfied",
-          "standard_check": "RFC 9147 Section 9 says usage=cid_immediate means one of the new CIDs MUST be used immediately for all future records.",
-          "code_check": "No CID selection or immediate-switch state exists. The sender writes C=0 and no Connection ID in every DTLS 1.3 encrypted record.",
-          "test_check": "focused_static_id152_153_185_187.py PASS: confirmed fixed C=0 header and no cid_immediate symbol/path.",
-          "decision_reason": "Confirmed unsatisfied: there is no mechanism to switch future records to a new CID immediately."
+          "standard_check": "RFC 9147 Section 9 defines Connection ID update behavior using NewConnectionId and RequestConnectionId.",
+          "code_check": "No RequestConnectionId/NewConnectionId/ConnectionIdUsage/cid_spare/cid_immediate symbols or state machine are present, and record CID support is absent.",
+          "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID update symbols and CID-capable record support are absent.",
+          "decision_reason": "cid_immediate switching cannot be implemented because the sender always uses C=0 and there is no state transition to select a new CID for future records. Root cause same as ID153."
         },
         {
           "id": 187,
@@ -312,11 +313,11 @@
           "evidence_from_input": "Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.",
           "note": "",
           "source_chunk_id": "chunk_0019",
-          "status": "???",
-          "comment": "BoringSSL ?? RequestConnectionId ?????????? cid_spare NewConnectionId?",
+          "status": "不满足",
+          "comment": "RequestConnectionId cannot trigger a cid_spare NewConnectionId response because RequestConnectionId/NewConnectionId handling and CID-capable records are absent. Root cause same as ID153.",
           "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
           "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-          "comparison_summary": "??? RequestConnectionId ???? usage=cid_spare ? NewConnectionId?????? request_connection_id/new_connection_id handshake type ????????????? CID????????",
+          "comparison_summary": "Requirement: when Responding to RequestConnectionId, usage must set to constant. Input evidence: Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.. Code evidence: boringssl-main/ssl/dtls_record.cc:170; boringssl-main/ssl/d1_both.cc:784; boringssl-main/ssl/dtls_record.cc:533. RequestConnectionId cannot trigger a cid_spare NewConnectionId response because RequestConnectionId/NewConnectionId handling and CID-capable records are absent. Root cause same as ID153. Conclusion: not satisfied.",
           "category": "missing CID update feature/path",
           "risk": "high",
           "evidence_in_boringssl": [
@@ -342,302 +343,12 @@
             }
           ],
           "verification_decision": "confirmed_unsatisfied",
-          "standard_check": "RFC 9147 Section 9 says endpoints SHOULD respond to RequestConnectionId by sending NewConnectionId with usage cid_spare containing num_cids CIDs as soon as possible.",
-          "code_check": "No RequestConnectionId handshake type handling or NewConnectionId response generation exists in the DTLS handshake code.",
-          "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absent request_connection_id/new_connection_id handling symbols.",
-          "decision_reason": "Confirmed unsatisfied: RequestConnectionId cannot trigger a cid_spare NewConnectionId response."
+          "standard_check": "RFC 9147 Section 9 defines Connection ID update behavior using NewConnectionId and RequestConnectionId.",
+          "code_check": "No RequestConnectionId/NewConnectionId/ConnectionIdUsage/cid_spare/cid_immediate symbols or state machine are present, and record CID support is absent.",
+          "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID update symbols and CID-capable record support are absent.",
+          "decision_reason": "RequestConnectionId cannot trigger a cid_spare NewConnectionId response because RequestConnectionId/NewConnectionId handling and CID-capable records are absent. Root cause same as ID153."
         }
       ]
     }
-  },
-  "items": [
-    {
-      "id": 152,
-      "source_index": 151,
-      "variable_name": "Outer Content Type",
-      "change_condition": "OCT == 24",
-      "change_action": "must equal mapped constant for Heartbeat demultiplexing",
-      "old_value": "",
-      "new_value": "24",
-      "related_state_or_step": "packet demultiplexing",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "OCT == 24   -+--> Heartbeat (DTLS <1.3)",
-      "note": "",
-      "source_chunk_id": "chunk_0005",
-      "status": "????",
-      "comment": "BoringSSL ?? Heartbeat content type/???????? Heartbeat ????/????????????? RFC ? 5 ? Heartbeat demux ?????????",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
-      "comparison_summary": "???? OCT 24 ? DTLS <1.3 Heartbeat????? SSL3_RT_HEARTBEAT ??? Heartbeat ????type 24 ?? DTLSPlaintext ????????????????????? handshake/ACK/application_data/alert ???????? unexpected record ?????????????????? Heartbeat ??????????? Heartbeat ????????",
-      "category": "missing optional feature/path",
-      "risk": "medium",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/dtls_record.cc:267",
-        "boringssl-main/ssl/d1_both.cc:419",
-        "boringssl-main/ssl/d1_pkt.cc:223"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:267",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/d1_both.cc:419",
-          "ok": true,
-          "detail": "line_count=1073"
-        },
-        {
-          "evidence": "boringssl-main/ssl/d1_pkt.cc:223",
-          "ok": true,
-          "detail": "line_count=322"
-        }
-      ],
-      "verification_decision": "confirmed_partial",
-      "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is a separate optional TLS/DTLS feature rather than a mandatory DTLS 1.3 core handshake path.",
-      "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS record parsing accepts the outer shape, but d1_both.cc and d1_pkt.cc only dispatch handshake, ACK, application data, alert, and CCS-specific paths.",
-      "test_check": "focused_static_id152_153_185_187.py PASS: no heartbeat symbols were found and non-handshake dispatch paths do not route type 24 to a handler.",
-      "decision_reason": "Confirmed partial: unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if that feature were required by the deployment."
-    },
-    {
-      "id": 153,
-      "source_index": 152,
-      "variable_name": "Outer Content Type",
-      "change_condition": "OCT == 25",
-      "change_action": "must equal mapped constant for encrypted_record with CID demultiplexing",
-      "old_value": "",
-      "new_value": "25",
-      "related_state_or_step": "packet demultiplexing",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2)",
-      "note": "incomplete information",
-      "source_chunk_id": "chunk_0005",
-      "status": "???",
-      "comment": "BoringSSL ?? DTLS 1.2 CID/tls12_cid(25) ?????? CID demux?DTLS 1.3 ???????? C bit?",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
-      "comparison_summary": "?? OCT 25 ??? DTLSCiphertext with CID (DTLS 1.2)????? tls12_cid ? connection_id ?????parse_dtls13_record ? C bit ??????? false??????? C=0??????? CID demux/?????",
-      "category": "missing feature/path",
-      "risk": "high",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/dtls_record.cc:170",
-        "boringssl-main/ssl/dtls_record.cc:431",
-        "boringssl-main/ssl/dtls_record.cc:533"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
-          "ok": true,
-          "detail": "line_count=585"
-        }
-      ],
-      "verification_decision": "confirmed_unsatisfied",
-      "standard_check": "RFC 9147 Figure 5 reserves OCT 25 for DTLSCiphertext with CID (DTLS 1.2), and Section 4.1 describes mixed DTLS 1.2/1.3 demultiplexing when CIDs are in use.",
-      "code_check": "Static re-read found no tls12_cid/connection_id implementation. parse_dtls13_record returns false when the C bit is set, and the sender fixes C=0.",
-      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of CID symbols and presence of explicit C-bit rejection/fixed C=0 send header.",
-      "decision_reason": "Confirmed unsatisfied for CID-capable operation: the record layer has no DTLS 1.2 CID demux path and rejects DTLS 1.3 CID headers."
-    },
-    {
-      "id": 157,
-      "source_index": 156,
-      "variable_name": "record_numbers",
-      "change_condition": "in some cases it may be necessary to send an ACK which does not contain any record numbers",
-      "change_action": "set to empty / absent",
-      "old_value": "",
-      "new_value": "no record numbers",
-      "related_state_or_step": "sending ACKs",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "it may be necessary to send an ACK which does not contain any record numbers.",
-      "note": "",
-      "source_chunk_id": "chunk_0017",
-      "status": "????",
-      "comment": "BoringSSL ?? ACK ????? vector???????? records_to_ack ?????????? RFC ??????? ACK ?????",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 7 / 7.1 / 7.2, ACK Message",
-      "comparison_summary": "???????????? record number ? ACK?CBB ?????? vector?? dtls1_schedule_ack ? sending_ack ??? !records_to_ack.empty()?send_ack ?????? ACK ?? MTU?????? ACK ?????????????",
-      "category": "incomplete ACK behavior",
-      "risk": "medium",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/d1_both.cc:956",
-        "boringssl-main/ssl/d1_both.cc:969",
-        "boringssl-main/ssl/d1_both.cc:990"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/d1_both.cc:956",
-          "ok": true,
-          "detail": "line_count=1073"
-        },
-        {
-          "evidence": "boringssl-main/ssl/d1_both.cc:969",
-          "ok": true,
-          "detail": "line_count=1073"
-        },
-        {
-          "evidence": "boringssl-main/ssl/d1_both.cc:990",
-          "ok": true,
-          "detail": "line_count=1073"
-        }
-      ],
-      "verification_decision": "confirmed_partial",
-      "standard_check": "RFC 9147 Section 7.1 says some cases may require an ACK with no record numbers, such as receiving EncryptedExtensions before ServerHello.",
-      "code_check": "ACK encoding could represent an empty vector, but dtls1_schedule_ack only sets sending_ack when records_to_ack is non-empty. send_ack also assumes room for at least one 16-byte RecordNumber.",
-      "test_check": "focused_static_id157_empty_ack.py PASS: confirmed sending_ack is gated by !records_to_ack.empty() and no empty-ACK scheduling path exists.",
-      "decision_reason": "Confirmed partial: regular ACK generation works, but the special empty ACK shortcut is not implemented."
-    },
-    {
-      "id": 185,
-      "source_index": 184,
-      "variable_name": "usage",
-      "change_condition": "If it is set to \"cid_spare\"",
-      "change_action": "must equal / selected behavior",
-      "old_value": "",
-      "new_value": "cid_spare",
-      "related_state_or_step": "NewConnectionId handling for CID use",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "If it is set to \"cid_spare\", then either an existing or new CID MAY be used.",
-      "note": "",
-      "source_chunk_id": "chunk_0019",
-      "status": "???",
-      "comment": "BoringSSL ?? NewConnectionId/ConnectionIdUsage ?????????????? cid_spare ???",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-      "comparison_summary": "?? NewConnectionId.usage=cid_spare ??????? CID ???? CID????? RequestConnectionId/NewConnectionId/ConnectionIdUsage ???DTLS 1.3 ???????? CID ??? C bit????????",
-      "category": "missing CID update feature/path",
-      "risk": "high",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/dtls_record.cc:170",
-        "boringssl-main/ssl/dtls_record.cc:431",
-        "boringssl-main/ssl/dtls_record.cc:533"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:431",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
-          "ok": true,
-          "detail": "line_count=585"
-        }
-      ],
-      "verification_decision": "confirmed_unsatisfied",
-      "standard_check": "RFC 9147 Section 9 defines NewConnectionId.usage=cid_spare and says either an existing or new CID may be used.",
-      "code_check": "No NewConnectionId or ConnectionIdUsage parser/state exists. The DTLS 1.3 sender never sends CID and the receiver rejects C bit.",
-      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absence of NewConnectionId/RequestConnectionId/cid_spare symbols and CID-capable record support.",
-      "decision_reason": "Confirmed unsatisfied: BoringSSL cannot process cid_spare because DTLS CID update support is absent."
-    },
-    {
-      "id": 186,
-      "source_index": 185,
-      "variable_name": "usage",
-      "change_condition": "If usage is set to \"cid_immediate\"",
-      "change_action": "must equal / selected behavior",
-      "old_value": "",
-      "new_value": "cid_immediate",
-      "related_state_or_step": "NewConnectionId handling for future records",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "If usage is set to \"cid_immediate\", then one of the new CIDs MUST be used immediately for all future records.",
-      "note": "",
-      "source_chunk_id": "chunk_0019",
-      "status": "???",
-      "comment": "BoringSSL ?? cid_immediate ????????? usage ??????? CID?",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-      "comparison_summary": "?? usage=cid_immediate ???????????? CID??????? C=0 no Connection ID??? NewConnectionId ???? CID ????????????",
-      "category": "missing CID update feature/path",
-      "risk": "high",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/dtls_record.cc:170",
-        "boringssl-main/ssl/dtls_record.cc:533",
-        "boringssl-main/ssl/dtls_record.cc:540"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:540",
-          "ok": true,
-          "detail": "line_count=585"
-        }
-      ],
-      "verification_decision": "confirmed_unsatisfied",
-      "standard_check": "RFC 9147 Section 9 says usage=cid_immediate means one of the new CIDs MUST be used immediately for all future records.",
-      "code_check": "No CID selection or immediate-switch state exists. The sender writes C=0 and no Connection ID in every DTLS 1.3 encrypted record.",
-      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed fixed C=0 header and no cid_immediate symbol/path.",
-      "decision_reason": "Confirmed unsatisfied: there is no mechanism to switch future records to a new CID immediately."
-    },
-    {
-      "id": 187,
-      "source_index": 186,
-      "variable_name": "usage",
-      "change_condition": "Responding to RequestConnectionId",
-      "change_action": "set to constant",
-      "old_value": "",
-      "new_value": "cid_spare",
-      "related_state_or_step": "Sending NewConnectionId in response to RequestConnectionId",
-      "explicit_or_inferred": "explicit",
-      "evidence_from_input": "Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage \"cid_spare\" containing num_cids CIDs as soon as possible.",
-      "note": "",
-      "source_chunk_id": "chunk_0019",
-      "status": "???",
-      "comment": "BoringSSL ?? RequestConnectionId ?????????? cid_spare NewConnectionId?",
-      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
-      "standard_section": "RFC 9147 Section 9, Connection ID Updates",
-      "comparison_summary": "??? RequestConnectionId ???? usage=cid_spare ? NewConnectionId?????? request_connection_id/new_connection_id handshake type ????????????? CID????????",
-      "category": "missing CID update feature/path",
-      "risk": "high",
-      "evidence_in_boringssl": [
-        "boringssl-main/ssl/dtls_record.cc:170",
-        "boringssl-main/ssl/d1_both.cc:784",
-        "boringssl-main/ssl/dtls_record.cc:533"
-      ],
-      "evidence_validation": [
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:170",
-          "ok": true,
-          "detail": "line_count=585"
-        },
-        {
-          "evidence": "boringssl-main/ssl/d1_both.cc:784",
-          "ok": true,
-          "detail": "line_count=1073"
-        },
-        {
-          "evidence": "boringssl-main/ssl/dtls_record.cc:533",
-          "ok": true,
-          "detail": "line_count=585"
-        }
-      ],
-      "verification_decision": "confirmed_unsatisfied",
-      "standard_check": "RFC 9147 Section 9 says endpoints SHOULD respond to RequestConnectionId by sending NewConnectionId with usage cid_spare containing num_cids CIDs as soon as possible.",
-      "code_check": "No RequestConnectionId handshake type handling or NewConnectionId response generation exists in the DTLS handshake code.",
-      "test_check": "focused_static_id152_153_185_187.py PASS: confirmed absent request_connection_id/new_connection_id handling symbols.",
-      "decision_reason": "Confirmed unsatisfied: RequestConnectionId cannot trigger a cid_spare NewConnectionId response."
-    }
-  ]
+  }
 }

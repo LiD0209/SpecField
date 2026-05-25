@@ -1,61 +1,81 @@
-# cid_spare NewConnectionId Handling Is Missing
+# `cid_spare` NewConnectionId Handling Is Missing
 
 ## Summary
 
-BoringSSL ?? NewConnectionId/ConnectionIdUsage ?????????????? cid_spare ???
+RFC 9147 allows `NewConnectionId` to advertise usage `cid_spare`. BoringSSL's shipped DTLS code has no `NewConnectionId` parser and no CID usage state, so there is no product path that can generate or consume a `cid_spare` update.
+
+This confirms ID 185 as **not satisfied**.
 
 ## Standard Requirement
 
-Official standard: https://www.rfc-editor.org/rfc/rfc9147
+Official standard: <https://www.rfc-editor.org/rfc/rfc9147>
 
 Relevant section: `9 Connection ID Updates`
 
-Relevant original English text from the standard:
+Original English requirement excerpt:
 
 ```text
 If it is set to "cid_spare", then either an existing or new CID MAY be used.
 ```
 
-????????? DTLS 1.3 ????????? CID ??????????/?? CID ???????????
+## Code Behavior
 
-## Relevant Source Code
+The product record layer rejects CID-bearing input when CID was not negotiated:
 
-ssl/dtls_record.cc:170
-
-```c++
+```cpp
 if (out->type & 0x10) {
   // Connection ID bit set, which we didn't negotiate.
   return false;
 }
 ```
 
-ssl/dtls_record.cc:533
+The sender uses C=0 DTLS 1.3 headers:
 
-```c++
-// We set C=0 (no Connection ID), S=1 (16-bit sequence number), L=1 (length
-// is present), which is a mask of 0x2c.
+```cpp
+out[0] = 0x2c | (epoch & 0x3);
 ```
 
-## Implementation Behavior
+No product `NewConnectionId` parser or CID-usage state machine was found.
 
-No NewConnectionId or ConnectionIdUsage parser/state exists. The DTLS 1.3 sender never sends CID and the receiver rejects C bit.
+## Runner Coverage
 
-## Inconsistency Reason
-
-Implemented part: The DTLS 1.3 record layer and handshake fragmentation machinery are implemented, but not CID update semantics.
-
-Missing or conditional part: Confirmed unsatisfied: BoringSSL cannot process cid_spare because DTLS CID update support is absent.
+The runner can model DTLS epochs and record headers for tests, but it does not provide product `NewConnectionId` support.
 
 ## Runtime Evidence
 
-Test source: `test-boringssl/151-187/focused_static_id152_153_185_187.py`
+Focused static test:
 
-focused_static_id152_153_185_187.py PASS: confirmed absence of NewConnectionId/RequestConnectionId/cid_spare symbols and CID-capable record support.
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\focused_static_id152_153_185_187.py
+```
+
+Linked probe log:
+
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\repro_dtls13_151_187_linked_probe.log
+```
+
+Observed output excerpt:
+
+```text
+ID185 NewConnectionId/cid_spare handling absent: PASS
+```
+
+## Inconsistency
+
+| RFC 9147 requirement component | BoringSSL behavior |
+|---|---|
+| Process `NewConnectionId` with usage `cid_spare` | No product parser or state machine exists |
+| Track existing or new CID usage | No CID usage state exists |
+
+## Root Cause
+
+Root cause same as ID153: BoringSSL does not implement DTLS CID update semantics in the product code.
 
 ## Impact
 
-The impact is limited to peers or deployments that exercise this specific protocol path. For CID-related findings, peers that require DTLS CID update messages cannot interoperate with this implementation path. For the empty ACK finding, loss recovery may wait for retransmission timeout instead of being shortened by an empty ACK.
+Peers that rely on RFC 9147 CID update exchange cannot interoperate with this product path.
 
-## Fix Direction
+## Suggested Fix
 
-Add an explicit implementation path for the missing protocol behavior, including parser/state-machine support, negative tests, and interop tests. Keep unsupported optional features rejected unless and until their negotiation and message handling are fully implemented.
+Add `NewConnectionId` parsing and CID usage tracking to the DTLS handshake state machine.

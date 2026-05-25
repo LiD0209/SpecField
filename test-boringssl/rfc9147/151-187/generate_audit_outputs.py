@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import shutil
 from collections import OrderedDict
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +18,14 @@ SAT = "满足"
 PART = "部分满足"
 UNSAT = "不满足"
 
+TARGET_FILES = [
+    "compare_boringssl_151_187.json",
+    "compare_boringssl_151_187.md",
+    "compare_boringssl_151_187_simple.txt",
+    "compare_boringssl_151_187_partial_unsat_classification.json",
+    "compare_boringssl_151_187_partial_unsat_classification.md",
+    "output_self_review.log",
+]
 
 SECTIONS = {
     "demux": "RFC 9147 Section 4.1, Demultiplexing DTLS Records",
@@ -27,7 +36,6 @@ SECTIONS = {
     "handshake": "RFC 9147 Section 5.2, DTLS Handshake Message Format",
     "cid": "RFC 9147 Section 9, Connection ID Updates",
 }
-
 
 EVIDENCE = {
     151: ["boringssl-main/include/openssl/ssl3.h:110", "boringssl-main/ssl/dtls_record.cc:267", "boringssl-main/ssl/d1_pkt.cc:223"],
@@ -69,14 +77,23 @@ EVIDENCE = {
     187: ["boringssl-main/ssl/dtls_record.cc:170", "boringssl-main/ssl/d1_both.cc:784", "boringssl-main/ssl/dtls_record.cc:533"],
 }
 
-
 OVERRIDES = {
-    152: (PART, "Heartbeat content type appears in the RFC demux table, but BoringSSL has no Heartbeat feature or handler. Unsupported Heartbeat records are not dispatched, so this is partial rather than a core DTLS 1.3 failure.", "missing optional feature/path", "medium", "demux"),
+    152: (PART, "Heartbeat appears in the RFC demux table, but BoringSSL has no Heartbeat feature or handler. Unsupported Heartbeat records are rejected/not dispatched, while processing Heartbeat records is unavailable.", "missing optional feature/path", "medium", "demux"),
     153: (UNSAT, "BoringSSL has no DTLS 1.2 tls12_cid demux path, rejects DTLS 1.3 records with the C bit set, and always sends DTLS 1.3 encrypted records with C=0.", "missing feature/path", "high", "demux"),
     157: (PART, "ACK encoding can represent a length-prefixed record_numbers vector, but dtls1_schedule_ack only sends ACKs when records_to_ack is non-empty and send_ack assumes space for at least one RecordNumber.", "incomplete ACK behavior", "medium", "ack"),
-    185: (UNSAT, "NewConnectionId usage=cid_spare cannot be implemented because BoringSSL has no DTLS CID update state machine and no CID-capable record support. 根因同 ID153.", "missing CID update feature/path", "high", "cid"),
-    186: (UNSAT, "cid_immediate switching cannot be implemented because the sender always uses C=0 and there is no state transition to select a new CID for future records. 根因同 ID153.", "missing CID update feature/path", "high", "cid"),
-    187: (UNSAT, "RequestConnectionId cannot trigger a cid_spare NewConnectionId response because RequestConnectionId/NewConnectionId handling and CID-capable records are absent. 根因同 ID153.", "missing CID update feature/path", "high", "cid"),
+    185: (UNSAT, "NewConnectionId usage=cid_spare cannot be implemented because BoringSSL has no DTLS CID update state machine and no CID-capable record support. Root cause same as ID153.", "missing CID update feature/path", "high", "cid"),
+    186: (UNSAT, "cid_immediate switching cannot be implemented because the sender always uses C=0 and there is no state transition to select a new CID for future records. Root cause same as ID153.", "missing CID update feature/path", "high", "cid"),
+    187: (UNSAT, "RequestConnectionId cannot trigger a cid_spare NewConnectionId response because RequestConnectionId/NewConnectionId handling and CID-capable records are absent. Root cause same as ID153.", "missing CID update feature/path", "high", "cid"),
+}
+
+DEFAULT_COMMENTS = {
+    "demux": "BoringSSL implements the normal DTLS demultiplexing path for supported record types.",
+    "ack": "BoringSSL implements the normal DTLS ACK parsing or generation path for this field.",
+    "record": "BoringSSL implements the corresponding DTLS record-layer parsing, construction, validation, or state update path.",
+    "anti_replay": "BoringSSL implements replay-window validation and record-number tracking for this requirement.",
+    "close_notify": "BoringSSL implements close_notify processing in the audited DTLS record path.",
+    "handshake": "BoringSSL implements the corresponding DTLS handshake message serialization or tracking path.",
+    "cid": "BoringSSL implements the audited supported path, except for CID-update items explicitly classified as unsupported.",
 }
 
 
@@ -104,20 +121,16 @@ def default_status(item_id: int, item: dict) -> tuple[str, str, str, str, str]:
     if item_id in OVERRIDES:
         return OVERRIDES[item_id]
     topic = topic_for(item_id, item["variable_name"])
-    return (
-        SAT,
-        f"BoringSSL 的 DTLS 1.3 实现覆盖该规则：{item['change_condition']} 时，{item['variable_name']} 需要 {item['change_action']}，对应代码路径已实现解析、构造、检查或状态更新。",
-        "",
-        "",
-        topic,
-    )
+    return (SAT, DEFAULT_COMMENTS[topic], "", "", topic)
+
+
+def repo_path(repo_rel: str) -> Path:
+    rel = repo_rel[len("boringssl-main/"):] if repo_rel.startswith("boringssl-main/") else repo_rel
+    return REPO / rel
 
 
 def line_count(repo_rel: str) -> int:
-    rel = repo_rel
-    if rel.startswith("boringssl-main/"):
-        rel = rel[len("boringssl-main/"):]
-    return len((REPO / rel).read_text(encoding="utf-8", errors="replace").splitlines())
+    return len(repo_path(repo_rel).read_text(encoding="utf-8", errors="replace").splitlines())
 
 
 def validate_refs(refs: list[str]) -> list[dict]:
@@ -126,10 +139,11 @@ def validate_refs(refs: list[str]) -> list[dict]:
         try:
             path, line_text = ref.rsplit(":", 1)
             n = int(line_text)
-            rel = path[len("boringssl-main/"):] if path.startswith("boringssl-main/") else path
-            ok = (REPO / rel).exists() and 1 <= n <= line_count(path)
-            detail = f"line_count={line_count(path)}" if (REPO / rel).exists() else "missing file"
-        except Exception as exc:  # noqa: BLE001
+            exists = repo_path(path).exists()
+            count = line_count(path) if exists else 0
+            ok = exists and 1 <= n <= count
+            detail = f"line_count={count}" if exists else "missing file"
+        except Exception as exc:
             ok = False
             detail = str(exc)
         out.append({"evidence": ref, "ok": ok, "detail": detail})
@@ -139,20 +153,20 @@ def validate_refs(refs: list[str]) -> list[dict]:
 def comparison(item: dict, item_id: int, status: str, topic: str, comment: str) -> str:
     evidence = item.get("evidence", "")
     if status == SAT:
-        conclusion = "结论：满足。"
+        conclusion = "Conclusion: satisfied."
     elif status == PART:
-        conclusion = "结论：部分满足。"
+        conclusion = "Conclusion: partially satisfied."
     else:
-        conclusion = "结论：不满足。"
+        conclusion = "Conclusion: not satisfied."
     return (
-        f"标准要求：{item['change_condition']} 时，{item['variable_name']} {item['change_action']}。"
-        f"原始依据：{evidence}。"
-        f"代码证据位于 {'; '.join(EVIDENCE[item_id])}。"
-        f"{comment}{conclusion}"
+        f"Requirement: when {item['change_condition']}, {item['variable_name']} must {item['change_action']}. "
+        f"Input evidence: {evidence}. "
+        f"Code evidence: {'; '.join(EVIDENCE[item_id])}. "
+        f"{comment} {conclusion}"
     )
 
 
-def build_results() -> tuple[list[dict], dict, list[dict]]:
+def build_results() -> tuple[list[dict], OrderedDict, list[dict]]:
     data = json.loads(INPUT.read_text(encoding="utf-8"))
     selected = data["changes"][150:187]
     if len(selected) != 37:
@@ -160,13 +174,13 @@ def build_results() -> tuple[list[dict], dict, list[dict]]:
 
     results = []
     counts = OrderedDict([(SAT, 0), (PART, 0), (UNSAT, 0)])
-    all_validations = []
+    validations = []
     for item_id, item in enumerate(selected, start=151):
         status, comment, category, risk, topic = default_status(item_id, item)
         counts[status] += 1
         refs = EVIDENCE[item_id]
         validation = validate_refs(refs)
-        all_validations.extend(validation)
+        validations.extend(validation)
         result = {
             "id": item_id,
             "source_index": item_id - 1,
@@ -190,43 +204,66 @@ def build_results() -> tuple[list[dict], dict, list[dict]]:
             "evidence_in_boringssl": refs,
             "evidence_validation": validation,
         }
-        if item_id == 152:
-            result.update({
-                "verification_decision": "confirmed_partial",
-                "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is an optional TLS/DTLS feature rather than mandatory DTLS 1.3 core behavior.",
-                "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS dispatch handles handshake, ACK, application data, alert, and CCS-specific paths.",
-                "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: heartbeat symbols and dispatch path are absent.",
-                "decision_reason": "Unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if a deployment requires that optional feature.",
-            })
-        elif item_id == 153:
-            result.update({
-                "verification_decision": "confirmed_unsatisfied",
-                "standard_check": "RFC 9147 Section 4.1 includes OCT 25 for DTLSCiphertext with CID in DTLS 1.2, and DTLS 1.3 has an explicit CID bit in encrypted record headers.",
-                "code_check": "parse_dtls13_record rejects the C bit, the sender fixes C=0, and no tls12_cid demux symbols are present.",
-                "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID symbols are absent, C-bit rejection exists, and the send header is fixed to C=0.",
-                "decision_reason": "CID-capable operation is not implemented.",
-            })
-        elif item_id == 157:
-            result.update({
-                "verification_decision": "confirmed_partial",
-                "standard_check": "RFC 9147 allows an ACK that contains no record numbers in special cases.",
-                "code_check": "The ACK vector format is length-prefixed, but scheduling is gated by records_to_ack being non-empty and send_ack assumes at least one RecordNumber can fit.",
-                "test_check": "focused_static_id157_empty_ack.py PASS and linked C harness PASS: empty-ACK scheduling path is absent.",
-                "decision_reason": "Normal ACK generation works, but the special empty ACK shortcut is not implemented.",
-            })
-        elif item_id in (185, 186, 187):
-            result.update({
-                "verification_decision": "confirmed_unsatisfied",
-                "standard_check": "RFC 9147 Section 9 defines Connection ID update behavior using NewConnectionId and RequestConnectionId.",
-                "code_check": "No RequestConnectionId/NewConnectionId/ConnectionIdUsage/cid_spare/cid_immediate symbols or state machine are present, and record CID support is absent.",
-                "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID update symbols and CID-capable record support are absent.",
-                "decision_reason": result["comment"],
-            })
+        add_verification_fields(result, item_id)
         results.append(result)
-    return results, counts, all_validations
+    return results, counts, validations
 
 
-def write_main_outputs(results: list[dict], counts: dict, validations: list[dict]) -> None:
+def add_verification_fields(result: dict, item_id: int) -> None:
+    if item_id == 152:
+        result.update({
+            "verification_decision": "confirmed_partial",
+            "standard_check": "RFC 9147 Figure 5 maps OCT 24 and decrypted content type 24 to Heartbeat, but Heartbeat is an optional TLS/DTLS feature rather than mandatory DTLS 1.3 core behavior.",
+            "code_check": "Static re-read found no SSL3_RT_HEARTBEAT or heartbeat handler. DTLS dispatch handles handshake, ACK, application data, alert, and CCS-specific paths.",
+            "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: heartbeat symbols and dispatch path are absent.",
+            "decision_reason": "Unsupported Heartbeat is safely rejected/not dispatched, but the implementation cannot process Heartbeat records if that feature is required.",
+        })
+    elif item_id == 153:
+        result.update({
+            "verification_decision": "confirmed_unsatisfied",
+            "standard_check": "RFC 9147 Section 4.1 includes OCT 25 for DTLSCiphertext with CID in DTLS 1.2, and DTLS 1.3 has an explicit CID bit in encrypted record headers.",
+            "code_check": "parse_dtls13_record rejects the C bit, the sender fixes C=0, and no tls12_cid demux symbols are present.",
+            "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID symbols are absent, C-bit rejection exists, and the send header is fixed to C=0.",
+            "decision_reason": "CID-capable operation is not implemented.",
+        })
+    elif item_id == 157:
+        result.update({
+            "verification_decision": "confirmed_partial",
+            "standard_check": "RFC 9147 allows an ACK that contains no record numbers in special cases.",
+            "code_check": "The ACK vector format is length-prefixed, but scheduling is gated by records_to_ack being non-empty and send_ack assumes at least one RecordNumber can fit.",
+            "test_check": "focused_static_id157_empty_ack.py PASS and linked C harness PASS: empty-ACK scheduling path is absent.",
+            "decision_reason": "Normal ACK generation works, but the special empty ACK shortcut is not implemented.",
+        })
+    elif item_id in (185, 186, 187):
+        result.update({
+            "verification_decision": "confirmed_unsatisfied",
+            "standard_check": "RFC 9147 Section 9 defines Connection ID update behavior using NewConnectionId and RequestConnectionId.",
+            "code_check": "No RequestConnectionId/NewConnectionId/ConnectionIdUsage/cid_spare/cid_immediate symbols or state machine are present, and record CID support is absent.",
+            "test_check": "focused_static_id152_153_185_187.py PASS and linked C harness PASS: CID update symbols and CID-capable record support are absent.",
+            "decision_reason": result["comment"],
+        })
+    else:
+        result.update({
+            "verification_decision": "confirmed_satisfied",
+            "standard_check": "The extracted RFC requirement was compared against the implementation evidence.",
+            "code_check": "The referenced BoringSSL source path exists and implements the audited behavior.",
+            "test_check": "No focused negative runtime harness was required for this satisfied item.",
+            "decision_reason": result["comment"],
+        })
+
+
+def backup_outputs() -> Path:
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup = OUT / f"backup_before_utf8_fix_{stamp}"
+    backup.mkdir(exist_ok=False)
+    for name in TARGET_FILES:
+        src = OUT / name
+        if src.exists():
+            shutil.copy2(src, backup / name)
+    return backup
+
+
+def write_main_outputs(results: list[dict], counts: OrderedDict, validations: list[dict]) -> None:
     meta = {
         "source_file": str(INPUT),
         "scope": "151-187_rules",
@@ -248,48 +285,41 @@ def write_main_outputs(results: list[dict], counts: dict, validations: list[dict
         "skip_runtime_tests": False,
         "encoding": "utf-8",
     }
-    compare = {"meta": meta, "results": results}
     (OUT / "compare_boringssl_151_187.json").write_text(
-        json.dumps(compare, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps({"meta": meta, "results": results}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
     )
 
     md = [
-        "# BoringSSL 151-187 对比表",
+        "# BoringSSL 151-187 Comparison Table",
         "",
         f"- 满足: {counts[SAT]}",
         f"- 部分满足: {counts[PART]}",
         f"- 不满足: {counts[UNSAT]}",
         "",
-        "| ID | variable | action | 状态 | 备注 |",
+        "| ID | variable | action | status | note |",
         "|---:|---|---|---|---|",
     ]
     for r in results:
-        md.append(
-            f"| {r['id']} | {r['variable_name']} | {r['change_action']} | {r['status']} | {r['comment']} |"
-        )
+        md.append(f"| {r['id']} | {r['variable_name']} | {r['change_action']} | {r['status']} | {r['comment']} |")
     (OUT / "compare_boringssl_151_187.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
     simple = [
         f"{r['id']}\t{r['status']}\t{r['variable_name']}\t{r['change_action']}\t{r['comment']}"
         for r in results
     ]
-    (OUT / "compare_boringssl_151_187_simple.txt").write_text(
-        "\n".join(simple) + "\n", encoding="utf-8"
-    )
+    (OUT / "compare_boringssl_151_187_simple.txt").write_text("\n".join(simple) + "\n", encoding="utf-8")
 
 
-def write_classification(results: list[dict], counts: dict, validations: list[dict]) -> None:
+def write_classification(results: list[dict], counts: OrderedDict, validations: list[dict]) -> None:
     classified = [r for r in results if r["status"] in (PART, UNSAT)]
     groups = OrderedDict()
     for r in classified:
-        groups.setdefault(
-            r["category"],
-            {"count": 0, "risk_counts": OrderedDict(), "items": []},
-        )
-        g = groups[r["category"]]
-        g["count"] += 1
-        g["risk_counts"][r["risk"]] = g["risk_counts"].get(r["risk"], 0) + 1
-        g["items"].append(r)
+        groups.setdefault(r["category"], {"count": 0, "risk_counts": OrderedDict(), "items": []})
+        group = groups[r["category"]]
+        group["count"] += 1
+        group["risk_counts"][r["risk"]] = group["risk_counts"].get(r["risk"], 0) + 1
+        group["items"].append(r)
 
     payload = {
         "meta": {
@@ -321,16 +351,16 @@ def write_classification(results: list[dict], counts: dict, validations: list[di
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    lines = ["# BoringSSL 151-187 部分满足/不满足分类", "", f"- 分类条目: {len(classified)}"]
+    lines = ["# BoringSSL 151-187 Partial/Unsatisfied Classification", "", f"- Classified items: {len(classified)}"]
     for name, group in groups.items():
         lines.extend([
             "",
             f"## {name}",
             "",
-            f"- 数量: {group['count']}",
-            f"- 风险分布: {json.dumps(group['risk_counts'], ensure_ascii=False)}",
+            f"- Count: {group['count']}",
+            f"- Risk counts: {json.dumps(group['risk_counts'], ensure_ascii=False)}",
             "",
-            "| ID | 状态 | 风险 | 变量 | 验证结论 | 原因 |",
+            "| ID | status | risk | variable | verification | reason |",
             "|---:|---|---|---|---|---|",
         ])
         for r in group["items"]:
@@ -342,7 +372,7 @@ def write_classification(results: list[dict], counts: dict, validations: list[di
     )
 
 
-def write_self_review(counts: dict, validations: list[dict]) -> None:
+def write_self_review(counts: OrderedDict, validations: list[dict]) -> None:
     reports = [
         "id152_heartbeat_demux_unsupported_confirmed_partial.md",
         "id153_dtls_cid_demux_missing_confirmed_unsatisfied.md",
@@ -364,10 +394,12 @@ def write_self_review(counts: dict, validations: list[dict]) -> None:
 def main() -> int:
     if not INPUT.exists():
         raise FileNotFoundError(f"input not found: {INPUT}")
+    backup = backup_outputs()
     results, counts, validations = build_results()
     write_main_outputs(results, counts, validations)
     write_classification(results, counts, validations)
     write_self_review(counts, validations)
+    print(f"backup={backup}")
     return 0
 
 

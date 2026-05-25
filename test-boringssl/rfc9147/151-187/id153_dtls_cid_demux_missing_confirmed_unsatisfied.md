@@ -2,60 +2,84 @@
 
 ## Summary
 
-BoringSSL ?? DTLS 1.2 CID/tls12_cid(25) ?????? CID demux?DTLS 1.3 ???????? C bit?
+RFC 9147 includes a demultiplexing path for CID-bearing records. BoringSSL's shipped `libssl` does not implement DTLS CID demultiplexing. Its DTLS 1.3 parser rejects records with the CID bit set when CID was not negotiated, and its sender fixes the CID bit to zero.
+
+This confirms ID 153 as **not satisfied**.
 
 ## Standard Requirement
 
-Official standard: https://www.rfc-editor.org/rfc/rfc9147
+Official standard: <https://www.rfc-editor.org/rfc/rfc9147>
 
 Relevant section: `4.1 Demultiplexing DTLS Records`
 
-Relevant original English text from the standard:
+Original English requirement excerpt:
 
 ```text
 OCT == 25   -+--> DTLSCiphertext with CID (DTLS 1.2)
 ```
 
-????????? DTLS 1.3 ????????? CID ??????????/?? CID ???????????
+## Code Behavior
 
-## Relevant Source Code
+In `ssl/dtls_record.cc`, BoringSSL rejects an unexpected DTLS 1.3 CID bit:
 
-ssl/dtls_record.cc:170
-
-```c++
+```cpp
 if (out->type & 0x10) {
   // Connection ID bit set, which we didn't negotiate.
   return false;
 }
 ```
 
-ssl/dtls_record.cc:533
+The sender side fixes the DTLS 1.3 encrypted-record header to C=0:
 
-```c++
+```cpp
 // We set C=0 (no Connection ID), S=1 (16-bit sequence number), L=1 (length
 // is present), which is a mask of 0x2c.
 ```
 
-## Implementation Behavior
+No DTLS 1.2 `tls12_cid(25)` demux path or `connection_id` implementation was found in product code.
 
-Static re-read found no tls12_cid/connection_id implementation. parse_dtls13_record returns false when the C bit is set, and the sender fixes C=0.
+## Runner Coverage
 
-## Inconsistency Reason
-
-Implemented part: Regular DTLS record parsing and rejection of unsupported records are implemented.
-
-Missing or conditional part: Confirmed unsatisfied for CID-capable operation: the record layer has no DTLS 1.2 CID demux path and rejects DTLS 1.3 CID headers.
+`ssl/test/runner` can synthesize DTLS 1.3 record-header variants for tests, but that is test-peer behavior. It does not provide product CID demultiplexing in `libssl`.
 
 ## Runtime Evidence
 
-Test source: `test-boringssl/151-187/focused_static_id152_153_185_187.py`
+Focused static test:
 
-focused_static_id152_153_185_187.py PASS: confirmed absence of CID symbols and presence of explicit C-bit rejection/fixed C=0 send header.
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\focused_static_id152_153_185_187.py
+```
+
+Linked probe log:
+
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\repro_dtls13_151_187_linked_probe.log
+```
+
+Observed output excerpt:
+
+```text
+ID153 DTLS 1.3 CID bit is rejected: PASS
+ID153 sender fixes C bit to zero: PASS
+ID153 no DTLS 1.2 tls12_cid demux symbols: PASS
+```
+
+## Inconsistency
+
+| RFC 9147 requirement component | BoringSSL behavior |
+|---|---|
+| Demultiplex CID-bearing DTLS records | No product CID demux path exists |
+| Accept negotiated CID-bearing input | CID-bit records are rejected when CID was not negotiated |
+| Send CID-bearing DTLS records | Sender fixes C=0 |
+
+## Root Cause
+
+BoringSSL does not implement DTLS CID record demultiplexing in the shipped product record layer.
 
 ## Impact
 
-The impact is limited to peers or deployments that exercise this specific protocol path. For CID-related findings, peers that require DTLS CID update messages cannot interoperate with this implementation path. For the empty ACK finding, loss recovery may wait for retransmission timeout instead of being shortened by an empty ACK.
+Peers that require RFC 9147 CID-bearing records cannot interoperate with this product path.
 
-## Fix Direction
+## Suggested Fix
 
-Add an explicit implementation path for the missing protocol behavior, including parser/state-machine support, negative tests, and interop tests. Keep unsupported optional features rejected unless and until their negotiation and message handling are fully implemented.
+Add DTLS CID negotiation plus CID-bearing record parsing and serialization to `libssl`.

@@ -2,52 +2,73 @@
 
 ## Summary
 
-BoringSSL ?? RequestConnectionId ?????????? cid_spare NewConnectionId?
+RFC 9147 says endpoints should respond to `RequestConnectionId` with a `NewConnectionId` carrying usage `cid_spare`. BoringSSL's shipped DTLS code has no `RequestConnectionId` handler and no `NewConnectionId` response generator.
+
+This confirms ID 187 as **not satisfied**.
 
 ## Standard Requirement
 
-Official standard: https://www.rfc-editor.org/rfc/rfc9147
+Official standard: <https://www.rfc-editor.org/rfc/rfc9147>
 
 Relevant section: `9 Connection ID Updates`
 
-Relevant original English text from the standard:
+Original English requirement excerpt:
 
 ```text
 Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage "cid_spare" containing num_cids CIDs as soon as possible.
 ```
 
-????????? DTLS 1.3 ????????? CID ??????????/?? CID ???????????
+## Code Behavior
 
-## Relevant Source Code
+The DTLS handshake path serializes ordinary handshake messages:
 
-ssl/d1_both.cc:784
-
-```c++
+```cpp
 if (!CBB_add_u8(&cbb, hdr.type) ||
     !CBB_add_u24(&cbb, hdr.msg_len) ||
     !CBB_add_u16(&cbb, hdr.seq) ||
 ```
 
-## Implementation Behavior
+No product `RequestConnectionId` type handler or `NewConnectionId` response path was found.
 
-No RequestConnectionId handshake type handling or NewConnectionId response generation exists in the DTLS handshake code.
+## Runner Coverage
 
-## Inconsistency Reason
-
-Implemented part: The DTLS 1.3 record layer and handshake fragmentation machinery are implemented, but not CID update semantics.
-
-Missing or conditional part: Confirmed unsatisfied: RequestConnectionId cannot trigger a cid_spare NewConnectionId response.
+The runner can model DTLS handshake sequencing, but it does not provide product `RequestConnectionId` or `NewConnectionId` support.
 
 ## Runtime Evidence
 
-Test source: `test-boringssl/151-187/focused_static_id152_153_185_187.py`
+Focused static test:
 
-focused_static_id152_153_185_187.py PASS: confirmed absent request_connection_id/new_connection_id handling symbols.
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\focused_static_id152_153_185_187.py
+```
+
+Linked probe log:
+
+```text
+D:\project\SpecTrace\test-boringssl\rfc9147\151-187\repro_dtls13_151_187_linked_probe.log
+```
+
+Observed output excerpt:
+
+```text
+ID187 RequestConnectionId handling absent: PASS
+```
+
+## Inconsistency
+
+| RFC 9147 requirement component | BoringSSL behavior |
+|---|---|
+| Handle `RequestConnectionId` | No product request handler exists |
+| Generate `NewConnectionId` with usage `cid_spare` | No product response generation path exists |
+
+## Root Cause
+
+Root cause same as ID153: BoringSSL does not implement DTLS CID update semantics in shipped `libssl`.
 
 ## Impact
 
-The impact is limited to peers or deployments that exercise this specific protocol path. For CID-related findings, peers that require DTLS CID update messages cannot interoperate with this implementation path. For the empty ACK finding, loss recovery may wait for retransmission timeout instead of being shortened by an empty ACK.
+Peers that rely on RFC 9147 CID update signaling cannot interoperate with this product path.
 
-## Fix Direction
+## Suggested Fix
 
-Add an explicit implementation path for the missing protocol behavior, including parser/state-machine support, negative tests, and interop tests. Keep unsupported optional features rejected unless and until their negotiation and message handling are fully implemented.
+Add `RequestConnectionId` parsing and `NewConnectionId` generation to the DTLS handshake state machine.

@@ -1,6 +1,5 @@
-counts {"??": 31, "????": 2, "???": 4}
+counts {"满足": 31, "部分满足": 2, "不满足": 4}
 classified_count 6
 reports ["id152_heartbeat_demux_unsupported_confirmed_partial.md", "id153_dtls_cid_demux_missing_confirmed_unsatisfied.md", "id157_empty_ack_send_path_missing_confirmed_partial.md", "id185_cid_spare_new_connection_id_missing_confirmed_unsatisfied.md", "id186_cid_immediate_switch_missing_confirmed_unsatisfied.md", "id187_request_connection_id_response_missing_confirmed_unsatisfied.md"]
 validation_ok 111 / 111
 FINAL_CHECK PASS
-
