@@ -1,0 +1,148 @@
+{
+  "scope": "wolfssl-main 151-187 partial+unsatisfied",
+  "total_reviewed": 4,
+  "status_summary": {
+    "部分满足": 1,
+    "不满足": 3
+  },
+  "risk_summary": {
+    "medium": 4
+  },
+  "category_summary": {
+    "close_notify 后缺少 epoch/sequence pair 门控": {
+      "count": 1,
+      "unsatisfied": 0,
+      "partial": 1
+    },
+    "DTLS 1.3 动态 CID 更新消息缺失": {
+      "count": 3,
+      "unsatisfied": 3,
+      "partial": 0
+    }
+  },
+  "results": [
+    {
+      "id": 164,
+      "source_index": 163,
+      "variable_name": "sequence_number",
+      "change_action": "must be compared as part of an epoch/sequence number pair; data with a pair after that of the valid received closure alert must be ignored",
+      "change_condition": "Any data is received after a valid received closure alert",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "processing received data after closure alert",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0015",
+      "status": "部分满足",
+      "comment": "wolfSSL 处理 close_notify 并终止读取，但未记录有效关闭告警的 epoch/sequence pair 来按 RFC 9147 忽略之后的更晚数据。",
+      "standard_section": "RFC 9147 Section 5.10 Closure Alerts",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "comparison_summary": "RFC 9147 要求收到有效 closure alert 后，忽略 epoch/sequence pair 晚于该 alert 的数据。wolfSSL DoAlert 设置 closeNotify，记录处理返回 ZERO_RETURN；但源码中没有保存 close_notify 的 curEpoch64/curSeq，也没有对后续记录执行 pair-after-close 的专门比较。",
+      "category": "close_notify 后缺少 epoch/sequence pair 门控",
+      "risk": "medium",
+      "evidence_in_wolfssl-main": [
+        "wolfssl-master/src/internal.c:22186",
+        "wolfssl-master/src/internal.c:22226",
+        "wolfssl-master/src/internal.c:23654",
+        "wolfssl-master/src/internal.c:23664"
+      ],
+      "standard_check": "RFC 9147 Section 5.10 requires implementations to remember the epoch/sequence number pair of a valid received closure alert and ignore later data whose pair is after that alert.",
+      "code_check": "DoAlert records alert_history and sets closeNotify, and ProcessReply returns ZERO_RETURN on close_notify, but no source path stores close_notify curEpoch64/curSeq or compares later records against that saved pair.",
+      "test_check": "verify_wolfssl_dtls13_151_187.ps1 confirms positive DTLS 1.3 record/ACK paths and the current build flags. A packet-level post-close pair test is blocked because the local CMake build has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, but static symbol/path review confirms the missing pair gate.",
+      "decision": "confirmed_partial",
+      "decision_reason": "Generic closure handling exists, but the DTLS 1.3 pair-based ignore requirement is not implemented or exposed in the inspected paths."
+    },
+    {
+      "id": 185,
+      "source_index": 184,
+      "variable_name": "usage",
+      "change_action": "must equal / selected behavior",
+      "change_condition": "If it is set to \"cid_spare\"",
+      "old_value": "",
+      "new_value": "cid_spare",
+      "related_state_or_step": "NewConnectionId handling for CID use",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0019",
+      "status": "不满足",
+      "comment": "wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。",
+      "standard_section": "RFC 9147 Section 9 Connection IDs",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "comparison_summary": "RFC 9147 定义 NewConnectionId/RequestConnectionId 以及 cid_spare、cid_immediate 用法。wolfSSL 源码只有 wolfSSL_dtls_cid_* API、TLSX_ConnectionID_* 扩展和统一头 CID 检查；全仓库扫描 NewConnectionId、RequestConnectionId、cid_spare、cid_immediate 均无协议消息实现。",
+      "category": "DTLS 1.3 动态 CID 更新消息缺失",
+      "risk": "medium",
+      "evidence_in_wolfssl-main": [
+        "wolfssl-master/wolfssl/ssl.h:6150",
+        "wolfssl-master/wolfssl/internal.h:3793",
+        "wolfssl-master/src/dtls13.c:1163",
+        "wolfssl-master/src/dtls13.c:1185",
+        "wolfssl-master/src/internal.c:38422"
+      ],
+      "standard_check": "RFC 9147 Section 9 defines NewConnectionId and RequestConnectionId messages and the usage values cid_spare and cid_immediate for dynamic CID rotation.",
+      "code_check": "wolfSSL exposes RFC 9146-style Connection ID APIs and unified-header CID parsing, but repository-wide scans find no NewConnectionId, RequestConnectionId, cid_spare, or cid_immediate implementation.",
+      "test_check": "verify_wolfssl_dtls13_151_187.ps1 scanned source paths and logged ABSENT for NewConnectionId, RequestConnectionId, cid_spare, and cid_immediate. The local build has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, so no executable dynamic-CID packet test is available.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required protocol messages and usage semantics are absent; existing CID support only covers negotiated CID extension/header processing."
+    },
+    {
+      "id": 186,
+      "source_index": 185,
+      "variable_name": "usage",
+      "change_action": "must equal / selected behavior",
+      "change_condition": "If usage is set to \"cid_immediate\"",
+      "old_value": "",
+      "new_value": "cid_immediate",
+      "related_state_or_step": "NewConnectionId handling for future records",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0019",
+      "status": "不满足",
+      "comment": "wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。",
+      "standard_section": "RFC 9147 Section 9 Connection IDs",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "comparison_summary": "RFC 9147 定义 NewConnectionId/RequestConnectionId 以及 cid_spare、cid_immediate 用法。wolfSSL 源码只有 wolfSSL_dtls_cid_* API、TLSX_ConnectionID_* 扩展和统一头 CID 检查；全仓库扫描 NewConnectionId、RequestConnectionId、cid_spare、cid_immediate 均无协议消息实现。",
+      "category": "DTLS 1.3 动态 CID 更新消息缺失",
+      "risk": "medium",
+      "evidence_in_wolfssl-main": [
+        "wolfssl-master/wolfssl/ssl.h:6150",
+        "wolfssl-master/wolfssl/internal.h:3793",
+        "wolfssl-master/src/dtls13.c:1163",
+        "wolfssl-master/src/dtls13.c:1185",
+        "wolfssl-master/src/internal.c:38422"
+      ],
+      "standard_check": "RFC 9147 Section 9 defines NewConnectionId and RequestConnectionId messages and the usage values cid_spare and cid_immediate for dynamic CID rotation.",
+      "code_check": "wolfSSL exposes RFC 9146-style Connection ID APIs and unified-header CID parsing, but repository-wide scans find no NewConnectionId, RequestConnectionId, cid_spare, or cid_immediate implementation.",
+      "test_check": "verify_wolfssl_dtls13_151_187.ps1 scanned source paths and logged ABSENT for NewConnectionId, RequestConnectionId, cid_spare, and cid_immediate. The local build has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, so no executable dynamic-CID packet test is available.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required protocol messages and usage semantics are absent; existing CID support only covers negotiated CID extension/header processing."
+    },
+    {
+      "id": 187,
+      "source_index": 186,
+      "variable_name": "usage",
+      "change_action": "set to constant",
+      "change_condition": "Responding to RequestConnectionId",
+      "old_value": "",
+      "new_value": "cid_spare",
+      "related_state_or_step": "Sending NewConnectionId in response to RequestConnectionId",
+      "explicit_or_inferred": "explicit",
+      "source_chunk_id": "chunk_0019",
+      "status": "不满足",
+      "comment": "wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。",
+      "standard_section": "RFC 9147 Section 9 Connection IDs",
+      "standard_reference": "https://www.rfc-editor.org/rfc/rfc9147",
+      "comparison_summary": "RFC 9147 定义 NewConnectionId/RequestConnectionId 以及 cid_spare、cid_immediate 用法。wolfSSL 源码只有 wolfSSL_dtls_cid_* API、TLSX_ConnectionID_* 扩展和统一头 CID 检查；全仓库扫描 NewConnectionId、RequestConnectionId、cid_spare、cid_immediate 均无协议消息实现。",
+      "category": "DTLS 1.3 动态 CID 更新消息缺失",
+      "risk": "medium",
+      "evidence_in_wolfssl-main": [
+        "wolfssl-master/wolfssl/ssl.h:6150",
+        "wolfssl-master/wolfssl/internal.h:3793",
+        "wolfssl-master/src/dtls13.c:1163",
+        "wolfssl-master/src/dtls13.c:1185",
+        "wolfssl-master/src/internal.c:38422"
+      ],
+      "standard_check": "RFC 9147 Section 9 defines NewConnectionId and RequestConnectionId messages and the usage values cid_spare and cid_immediate for dynamic CID rotation.",
+      "code_check": "wolfSSL exposes RFC 9146-style Connection ID APIs and unified-header CID parsing, but repository-wide scans find no NewConnectionId, RequestConnectionId, cid_spare, or cid_immediate implementation.",
+      "test_check": "verify_wolfssl_dtls13_151_187.ps1 scanned source paths and logged ABSENT for NewConnectionId, RequestConnectionId, cid_spare, and cid_immediate. The local build has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, so no executable dynamic-CID packet test is available.",
+      "decision": "confirmed_unsatisfied",
+      "decision_reason": "The required protocol messages and usage semantics are absent; existing CID support only covers negotiated CID extension/header processing."
+    }
+  ]
+}

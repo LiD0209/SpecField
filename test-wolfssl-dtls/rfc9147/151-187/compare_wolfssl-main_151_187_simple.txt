@@ -1,0 +1,37 @@
+151: 满足 - Outer Content Type - ContentType 常量和记录头校验覆盖 Application Data 的分流/拒绝语义。
+152: 不适用 - Outer Content Type - 本仓库未启用或实现 Heartbeat 扩展路径；该 OCT=24 demux 常量不构成可验证的 DTLS 1.3 wolfSSL 行为。
+153: 满足 - Outer Content Type - ContentType 常量和记录头校验覆盖 encrypted_record with CID 的分流/拒绝语义。
+154: 满足 - Outer Content Type - ContentType 常量和记录头校验覆盖 ACK 的分流/拒绝语义。
+155: 满足 - Outer Content Type - ContentType 常量和记录头校验覆盖 unknown OCT 的分流/拒绝语义。
+156: 满足 - record_numbers - ACK 记录号列表使用 16-bit length 编码、允许空列表、按 epoch/seq 升序去重插入并序列化。
+157: 满足 - record_numbers - ACK 记录号列表使用 16-bit length 编码、允许空列表、按 epoch/seq 升序去重插入并序列化。
+158: 满足 - record_numbers - ACK 记录号列表使用 16-bit length 编码、允许空列表、按 epoch/seq 升序去重插入并序列化。
+159: 满足 - Sequence Number - 统一头 S bit 控制 8-bit/16-bit 序号长度，解析路径按该位选择长度并校验缓冲区。
+160: 满足 - Sequence Number - 统一头 S bit 控制 8-bit/16-bit 序号长度，解析路径按该位选择长度并校验缓冲区。
+161: 满足 - Sequence Number - 加密记录号通过序号保护密钥生成 mask 后 XOR，接收端使用同一过程解保护。
+162: 满足 - Sequence Number - 统一头 S bit 控制 8-bit/16-bit 序号长度，解析路径按该位选择长度并校验缓冲区。
+163: 满足 - Sequence Number - 统一头 S bit 控制 8-bit/16-bit 序号长度，解析路径按该位选择长度并校验缓冲区。
+164: 部分满足 - sequence_number - wolfSSL 处理 close_notify 并终止读取，但未记录有效关闭告警的 epoch/sequence pair 来按 RFC 9147 忽略之后的更晚数据。
+165: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+166: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+167: 满足 - sequence_number - 接收端根据 epoch bits 选择最近可用 epoch，并按当前 epoch 的 nextPeerSeqNumber 重构完整 RecordNumber。
+168: 满足 - sequence_number - DTLS 1.3 anti-replay 窗口在解保护后检查和更新，重复或窗口左侧记录被丢弃。
+169: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+170: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+171: 满足 - sequence_number - DTLS 1.3 anti-replay 窗口在解保护后检查和更新，重复或窗口左侧记录被丢弃。
+172: 满足 - sequence_number - DTLS 1.3 anti-replay 窗口在解保护后检查和更新，重复或窗口左侧记录被丢弃。
+173: 满足 - sequence_number - 接收端根据 epoch bits 选择最近可用 epoch，并按当前 epoch 的 nextPeerSeqNumber 重构完整 RecordNumber。
+174: 满足 - sequence_number - DTLS 1.3 anti-replay 窗口在解保护后检查和更新，重复或窗口左侧记录被丢弃。
+175: 满足 - sequence_number - DTLS 1.3 anti-replay 窗口在解保护后检查和更新，重复或窗口左侧记录被丢弃。
+176: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+177: 满足 - sequence_number - 重传为新记录时使用当前 epoch nextSeqNumber，并把新 record number 记入重传跟踪项。
+178: 满足 - sequence_number - DTLSPlaintext 写入低 48 位序号，发送序号按 epoch 独立递增并在 64-bit wrap 时拒绝继续。
+179: 满足 - sequence_number - 加密记录号通过序号保护密钥生成 mask 后 XOR，接收端使用同一过程解保护。
+180: 满足 - sequence_number - 加密记录号通过序号保护密钥生成 mask 后 XOR，接收端使用同一过程解保护。
+181: 满足 - sequence_number - 加密记录号通过序号保护密钥生成 mask 后 XOR，接收端使用同一过程解保护。
+182: 满足 - sequence_number - 接收端根据 epoch bits 选择最近可用 epoch，并按当前 epoch 的 nextPeerSeqNumber 重构完整 RecordNumber。
+183: 满足 - server_hello - 客户端在 ServerHello 完成前收到统一头加密记录时只发送空 ACK 快速恢复，不把 EncryptedExtensions 视为已安全确认。
+184: 满足 - type - wolfSSL 只在收到 handshake 类型记录时把记录加入 ACK 列表，非握手内容类型不会生成 DTLS 1.3 ACK。
+185: 不满足 - usage - wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。
+186: 不满足 - usage - wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。
+187: 不满足 - usage - wolfSSL 仅支持协商期 Connection ID 扩展和统一头 CID 位，未实现 RFC 9147 NewConnectionId/RequestConnectionId 的 usage=cid_spare/cid_immediate 语义。

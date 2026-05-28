@@ -1,0 +1,55 @@
+﻿wolfSSL DTLS 1.3 RFC9147 151-187 verification
+Repository: D:\project\conditionFuzzing\wolfssl-master
+
+== Build feature flags ==
+WOLFSSL_DTLS13:BOOL=no
+WOLFSSL_DTLS_CID:BOOL=no
+
+== Dynamic CID message symbol scan ==
+ABSENT NewConnectionId
+ABSENT RequestConnectionId
+ABSENT cid_immediate
+ABSENT cid_spare
+
+== Static positive-control scans ==
+PASS ACK writer
+D:\project\conditionFuzzing\wolfssl-master\wolfssl\internal.h:7229:        #define Dtls13WriteAckMessage wolfSSL_Dtls13WriteAckMessage
+D:\project\conditionFuzzing\wolfssl-master\wolfssl\internal.h:7286:WOLFSSL_TEST_VIS int Dtls13WriteAckMessage(WOLFSSL* ssl,
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:2603:int Dtls13WriteAckMessage(WOLFSSL* ssl,
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:2992:    ret = Dtls13WriteAckMessage(ssl, ssl->dtls13Rtx.seenRecords,
+D:\project\conditionFuzzing\wolfssl-master\tests\api\test_dtls.c:920:    ExpectIntEQ(Dtls13WriteAckMessage(ssl_c, ssl_c->dtls13Rtx.seenRecords,
+D:\project\conditionFuzzing\wolfssl-master\tests\api\test_dtls.c:976:    ExpectIntEQ(Dtls13WriteAckMessage(ssl_c, ssl_c->dtls13Rtx.seenRecords,
+D:\project\conditionFuzzing\wolfssl-master\tests\api\test_dtls.c:985:     * then verify Dtls13WriteAckMessage errors out instead of overflowing */
+D:\project\conditionFuzzing\wolfssl-master\tests\api\test_dtls.c:990:    ExpectIntEQ(Dtls13WriteAckMessage(ssl_c, ssl_c->dtls13Rtx.seenRecords,
+PASS Replay window after deprotect
+D:\project\conditionFuzzing\wolfssl-master\src\dtls.c:1040:                ret = Dtls13UpdateWindowRecordRecvd(ssl);
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19109:static WC_INLINE int Dtls13CheckWindow(WOLFSSL* ssl)
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19118:    WOLFSSL_ENTER("Dtls13CheckWindow");
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19359:static int Dtls13UpdateWindow(WOLFSSL* ssl)
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19369:    WOLFSSL_ENTER("Dtls13UpdateWindow");
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19402:            WOLFSSL_MSG("Invalid sequence number to Dtls13UpdateWindow");
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19423:int Dtls13UpdateWindowRecordRecvd(WOLFSSL* ssl)
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:19425:    int ret = Dtls13UpdateWindow(ssl);
+PASS ACK enum
+D:\project\conditionFuzzing\wolfssl-master\wolfssl\internal.h:6622:    ack                = 26,
+PASS Record-number encryption
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:295:static int Dtls13EncryptDecryptRecordNumber(WOLFSSL* ssl, byte* seq,
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1345:    return Dtls13EncryptDecryptRecordNumber(ssl,
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1569:        ret = Dtls13EncryptDecryptRecordNumber(ssl, seqNum, seqLen, input + idx,
+PASS ACK parser
+D:\project\conditionFuzzing\wolfssl-master\wolfssl\internal.h:7280:WOLFSSL_LOCAL int DoDtls13Ack(WOLFSSL* ssl, const byte* input, word32 inputSize,
+D:\project\conditionFuzzing\wolfssl-master\src\internal.c:23693:                    ret = DoDtls13Ack(ssl, ssl->buffers.inputBuffer.buffer +
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:2874:int DoDtls13Ack(WOLFSSL* ssl, const byte* input, word32 inputSize,
+PASS Unified header sequence length
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:91:#define DTLS13_SEQ_16_LEN 2
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:93:#define DTLS13_SEQ_8_LEN 1
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1335:    seqLength = (*hdr & DTLS13_LEN_BIT) ? DTLS13_SEQ_16_LEN : DTLS13_SEQ_8_LEN;
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1535:    seqLen = (flags & DTLS13_SEQ_LEN_BIT) != 0 ? DTLS13_SEQ_16_LEN
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1536:                                               : DTLS13_SEQ_8_LEN;
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:1575:    if (seqLen == DTLS13_SEQ_16_LEN) {
+PASS ACK ordering insertion
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:759:            else if (w64LT(epoch, cur->epoch)
+D:\project\conditionFuzzing\wolfssl-master\src\dtls13.c:761:                            && w64LT(seq, cur->seq))) {
+
+== Decision ==
+The dynamic CID update message symbols are absent, while DTLS 1.3 ACK, unified header sequence-number, record-number encryption, and anti-replay paths are present in source. Current CMake cache also has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, so built executable tests for the missing dynamic CID messages are not available in this build tree.

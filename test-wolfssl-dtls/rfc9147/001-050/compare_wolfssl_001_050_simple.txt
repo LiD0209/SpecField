@@ -1,0 +1,50 @@
+001	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+002	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+003	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+004	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+005	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+006	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+007	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+008	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+009	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+010	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+011	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+012	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+013	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+014	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+015	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+016	部分满足	ACK	ACK 列表有容量上限并能避免溢出，但满列表时直接丢弃新记录，没有记录“已经被 ACK 过”的状态，也没有优先保留未确认记录。
+017	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+018	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+019	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+020	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+021	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+022	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+023	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+024	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+025	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+026	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+027	满足	ACK	wolfSSL 的 DTLS 1.3 ACK 发送、解析、重传队列和记录号编码路径覆盖该要求。
+028	部分满足	body	常规 TLS 1.3/DTLS 1.3 握手消息被分派处理，但 RFC 9147 DTLSHandshake 中的 request_connection_id 和 new_connection_id 分支不存在。
+029	满足	certificate_request	post-handshake CertificateRequest 处理后即将发送的认证 flight 会隐式确认该记录，代码会移除当前 ACK。
+030	满足	cids	wolfSSL 支持协商后的静态 Connection ID，并在 DTLS 1.3 unified header 中添加、解析和校验 C bit/CID；未协商 CID 时会拒绝带 CID 的记录。
+031	不满足	cids	未实现 NewConnectionId/usage=cid_immediate，因此没有收到新 CID 后立即用于未来所有记录的路径。
+032	不满足	cids	未实现 spare CID 列表，因此不存在维护或丢弃多余 spare CID 的接收路径。
+033	不满足	cids	未实现 receiver-provided CID 队列，因此没有按提供顺序选择新 CID 的路径。
+034	满足	cids	wolfSSL 支持协商后的静态 Connection ID，并在 DTLS 1.3 unified header 中添加、解析和校验 C bit/CID；未协商 CID 时会拒绝带 CID 的记录。
+035	满足	cids	wolfSSL 支持协商后的静态 Connection ID，并在 DTLS 1.3 unified header 中添加、解析和校验 C bit/CID；未协商 CID 时会拒绝带 CID 的记录。
+036	满足	cids	wolfSSL 支持协商后的静态 Connection ID，并在 DTLS 1.3 unified header 中添加、解析和校验 C bit/CID；未协商 CID 时会拒绝带 CID 的记录。
+037	不适用	cipher_suites	该条约束是对未来非 AES/ChaCha20 DTLS cipher suite 规范的注册要求，不是当前 wolfSSL 运行时必须实现的具体套件行为。
+038	满足	cipher_suites	wolfSSL 对 DTLS 1.3 当前支持的 AEAD 套件使用 AES/ChaCha 记录号保护，并实现发送/失败 AEAD 限制检查。
+039	满足	CipherSuite	wolfSSL 对 DTLS 1.3 当前支持的 AEAD 套件使用 AES/ChaCha 记录号保护，并实现发送/失败 AEAD 限制检查。
+040	满足	client_hello	wolfSSL 解析 HRR cookie，重启握手哈希并在后续 ClientHello 中写入 cookie/key_share 等扩展。
+041	不适用	Content Type	该条是 IANA 保留范围分配规则，不是 wolfSSL 对端输入处理的直接义务；运行时未知 ContentType 会被拒绝。
+042	满足	Decrypted Content Type	TLS 1.3 解密后根据内层 content type 分派到 alert、handshake、application_data 或 ack；未知类型返回 UNKNOWN_RECORD_TYPE。
+043	满足	Decrypted Content Type	TLS 1.3 解密后根据内层 content type 分派到 alert、handshake、application_data 或 ack；未知类型返回 UNKNOWN_RECORD_TYPE。
+044	满足	Decrypted Content Type	TLS 1.3 解密后根据内层 content type 分派到 alert、handshake、application_data 或 ack；未知类型返回 UNKNOWN_RECORD_TYPE。
+045	不适用	Decrypted Content Type	wolfSSL 当前没有 Heartbeat content type 处理路径；该条 demux 映射只在启用/支持 Heartbeat 时适用。未知类型会被拒绝。
+046	满足	Decrypted Content Type	TLS 1.3 解密后根据内层 content type 分派到 alert、handshake、application_data 或 ack；未知类型返回 UNKNOWN_RECORD_TYPE。
+047	满足	Decrypted Content Type	TLS 1.3 解密后根据内层 content type 分派到 alert、handshake、application_data 或 ack；未知类型返回 UNKNOWN_RECORD_TYPE。
+048	满足	early_data	wolfSSL 将 DTLS 1.3 epoch 1 定义为 early data，并只在 earlyData 激活时切换到 early-data epoch；否则使用当前握手/应用 epoch。
+049	满足	encrypted_extensions	ServerHello 前遇到 unified/encrypted record 时，客户端只设置发送空 ACK 以提示重传，不会对无法解密的 EncryptedExtensions 做具体 ACK。
+050	满足	encrypted_record	BuildTls13Message 将真实 content type 附加在明文末尾，调用 EncryptTls13 加密，并为 DTLS 1.3 添加/加密 unified ciphertext header。

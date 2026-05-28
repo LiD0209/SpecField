@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "scope": "051-098_rules",
+    "target": "wolfssl-master",
+    "counts": {
+      "total": 2,
+      "部分满足": 2,
+      "不满足": 0
+    },
+    "risk_counts": {
+      "low": 2
+    },
+    "phase2_status": "completed",
+    "phase2_decisions": {
+      "confirmed_partial": 0,
+      "confirmed_unsatisfied": 0,
+      "false_positive": 2,
+      "not_testable": 0
+    }
+  },
+  "groups": {
+    "RFC6347 HelloVerifyRequest server_version equality text conflicts with DTLS 1.2 guidance": {
+      "count": 2,
+      "items": [
+        {
+          "id": 76,
+          "status": "部分满足",
+          "variable_name": "server_version",
+          "change_action": "must equal previously received HelloVerifyRequest server version",
+          "change_condition": "Client receives ServerHello after HelloVerifyRequest",
+          "category": "RFC6347 HelloVerifyRequest server_version equality text conflicts with DTLS 1.2 guidance",
+          "risk": "low",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures; RFC Errata 4103",
+          "comment": "按 RFC 6347 页面 16 的字面抽取，客户端应校验 HVR 与 ServerHello version 相等/服务端应发送相同 version；但同节前文又要求 DTLS 1.2 HVR SHOULD 使用 DTLS 1.0，RFC Errata 4103 指出这是内部矛盾。wolfSSL 未执行相等性校验，而是按 DTLS 1.2 实际互操作行为处理。",
+          "evidence_in_wolfssl": [
+            "src/internal.c:31343",
+            "src/internal.c:31346",
+            "src/internal.c:31347",
+            "src/internal.c:35584",
+            "src/internal.c:35605",
+            "src/internal.c:40830",
+            "src/internal.c:40842",
+            "src/internal.c:40843"
+          ],
+          "standard_check": "复核 RFC 6347 Section 4.2.1 时发现同一节存在 HVR server_version 的内部冲突：前文要求 DTLS 1.2 server implementations SHOULD use DTLS version 1.0，后文又保留 ServerHello/HVR version match 语句。RFC Editor Errata 4103 明确指出这些语句互相矛盾，建议删除 page 16 的 HVR server_version 相等性文本。",
+          "code_check": "wolfSSL SendHelloVerifyRequest 写 DTLS_MAJOR/DTLS_MINOR，即 DTLS 1.0 wire version；DoHelloVerifyRequest 只接受 DTLS 1.0 或 DTLS 1.2 的 HVR 格式值，并不保存 HVR version 参与最终 ServerHello version 判断。ServerHello 由 SendServerHello 通过 ssl->version 生成，DTLS 1.2 握手可继续使用 DTLS 1.2。",
+          "test_check": "verify_wolfssl_dtls12_051_098.py 检查了 HVR 发送常量、HVR 接收版本条件、没有保存 HVR version 的成员/路径，以及 RFC errata 4103 记录；结论是输入抽取的相等性规则属于规范冲突导致的误报，而非可确认实现缺陷。",
+          "decision_reason": "如果按 page 16 孤立句子判断，wolfSSL 不执行 HVR/ServerHello version equality；但 RFC 6347 同节对 DTLS 1.2 的实际要求是 HVR version 仅表示包格式且不参与版本协商，errata 也说明相等性文本应删除。因此该项不升级为 confirmed_partial/confirmed_unsatisfied。",
+          "phase2_decision": "false_positive"
+        },
+        {
+          "id": 80,
+          "status": "部分满足",
+          "variable_name": "server_version",
+          "change_action": "must equal value that would be used in ServerHello",
+          "change_condition": "Server sends HelloVerifyRequest",
+          "category": "RFC6347 HelloVerifyRequest server_version equality text conflicts with DTLS 1.2 guidance",
+          "risk": "low",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures; RFC Errata 4103",
+          "comment": "按 RFC 6347 页面 16 的字面抽取，客户端应校验 HVR 与 ServerHello version 相等/服务端应发送相同 version；但同节前文又要求 DTLS 1.2 HVR SHOULD 使用 DTLS 1.0，RFC Errata 4103 指出这是内部矛盾。wolfSSL 未执行相等性校验，而是按 DTLS 1.2 实际互操作行为处理。",
+          "evidence_in_wolfssl": [
+            "src/internal.c:31343",
+            "src/internal.c:31346",
+            "src/internal.c:31347",
+            "src/internal.c:35584",
+            "src/internal.c:35605",
+            "src/internal.c:40830",
+            "src/internal.c:40842",
+            "src/internal.c:40843"
+          ],
+          "standard_check": "复核 RFC 6347 Section 4.2.1 时发现同一节存在 HVR server_version 的内部冲突：前文要求 DTLS 1.2 server implementations SHOULD use DTLS version 1.0，后文又保留 ServerHello/HVR version match 语句。RFC Editor Errata 4103 明确指出这些语句互相矛盾，建议删除 page 16 的 HVR server_version 相等性文本。",
+          "code_check": "wolfSSL SendHelloVerifyRequest 写 DTLS_MAJOR/DTLS_MINOR，即 DTLS 1.0 wire version；DoHelloVerifyRequest 只接受 DTLS 1.0 或 DTLS 1.2 的 HVR 格式值，并不保存 HVR version 参与最终 ServerHello version 判断。ServerHello 由 SendServerHello 通过 ssl->version 生成，DTLS 1.2 握手可继续使用 DTLS 1.2。",
+          "test_check": "verify_wolfssl_dtls12_051_098.py 检查了 HVR 发送常量、HVR 接收版本条件、没有保存 HVR version 的成员/路径，以及 RFC errata 4103 记录；结论是输入抽取的相等性规则属于规范冲突导致的误报，而非可确认实现缺陷。",
+          "decision_reason": "如果按 page 16 孤立句子判断，wolfSSL 不执行 HVR/ServerHello version equality；但 RFC 6347 同节对 DTLS 1.2 的实际要求是 HVR version 仅表示包格式且不参与版本协商，errata 也说明相等性文本应删除。因此该项不升级为 confirmed_partial/confirmed_unsatisfied。",
+          "phase2_decision": "false_positive"
+        }
+      ]
+    }
+  }
+}

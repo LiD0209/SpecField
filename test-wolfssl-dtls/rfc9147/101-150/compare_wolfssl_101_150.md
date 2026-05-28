@@ -1,0 +1,59 @@
+# wolfSSL DTLS 1.3 101-150 对比结果
+
+- 满足: 30
+- 部分满足: 8
+- 不满足: 2
+- 不适用: 10
+
+| ID | variable | action | 状态 | 说明 |
+|---:|---|---|---|---|
+| 101 | legacy_cookie | may be accepted if verifiable with both secrets | 部分满足 | wolfSSL 支持单个 DTLS 1.3 HRR cookie secret 并允许应用重新设置或随机生成 secret；但没有内建双 secret 过渡窗口，也没有 cookie 时间戳/有效期策略。 |
+| 102 | legacy_cookie | invalid if value check fails; terminate handshake | 满足 | 无效 cookie 经 TlsCheckCookie/RestartHandshakeHashWithCookie 返回 HRR_COOKIE_ERROR，错误映射为 illegal_parameter alert。 |
+| 103 | legacy_cookie | invalidated by secret change | 部分满足 | wolfSSL 支持单个 DTLS 1.3 HRR cookie secret 并允许应用重新设置或随机生成 secret；但没有内建双 secret 过渡窗口，也没有 cookie 时间戳/有效期策略。 |
+| 104 | legacy_cookie | invalid if generated outside allowed time interval | 部分满足 | wolfSSL 支持单个 DTLS 1.3 HRR cookie secret 并允许应用重新设置或随机生成 secret；但没有内建双 secret 过渡窗口，也没有 cookie 时间戳/有效期策略。 |
+| 105 | legacy_cookie | must equal zero-length vector | 满足 | 初始 DTLS 1.3 ClientHello 写入 legacy_cookie 长度字节；没有 DTLS 1.2 downgrade cookie 时为 0。 |
+| 106 | legacy_cookie | must be validated | 满足 | 第二个 ClientHello 的 cookie extension 会被 HMAC、peer 地址和 transcript 重启逻辑验证。 |
+| 107 | legacy_cookie | ignored | 满足 | DTLS 1.3 解析路径只读取并跳过 legacy_cookie；真正的 DTLS 1.3 cookie 在 cookie extension 中处理。 |
+| 108 | legacy_cookie | invalid if value check fails | 满足 | DTLS 1.3 ClientHello 中 legacy_cookie 非零会返回 INVALID_PARAMETER，最终映射为 illegal_parameter。 |
+| 109 | legacy_record_version | must be ignored | 满足 | DTLS 1.3 明文记录发送路径将 legacy_record_version 写为 {254,253}；接收路径不把该字段用于版本协商。 |
+| 110 | legacy_record_version | must equal | 满足 | DTLS 1.3 明文记录发送路径将 legacy_record_version 写为 {254,253}；接收路径不把该字段用于版本协商。 |
+| 111 | legacy_record_version | may also equal | 满足 | 初始 ClientHello 兼容值 {254,255} 属于允许项；wolfSSL 发送端使用 {254,253}，接收端在 TLS 1.3 协商前仍保留 DTLS 记录解析兼容性。 |
+| 112 | legacy_session_id | must not echo | 满足 | DTLS 1.3 不回显 legacy_session_id，默认 ClientHello/ServerHello legacy_version 均使用 DTLS 1.2 兼容值。 |
+| 113 | legacy_session_id | set to constant | 满足 | DTLS 1.3 不回显 legacy_session_id，默认 ClientHello/ServerHello legacy_version 均使用 DTLS 1.2 兼容值。 |
+| 114 | legacy_session_id | set to cached value | 部分满足 | 通用 TLS 1.3 helper 能写入已有 session ID，但 DTLS 1.3 路径关闭 middlebox compat；未找到明确只在 pre-DTLS 1.3 cached session ID 时发送该值的专门策略。 |
+| 115 | legacy_version | set to constant | 满足 | DTLS 1.3 不回显 legacy_session_id，默认 ClientHello/ServerHello legacy_version 均使用 DTLS 1.2 兼容值。 |
+| 116 | legacy_version | set to constant | 满足 | DTLS 1.3 不回显 legacy_session_id，默认 ClientHello/ServerHello legacy_version 均使用 DTLS 1.2 兼容值。 |
+| 117 | length | validated range check | 部分满足 | 未看到 wolfSSL 对 DTLS-over-TCP/SCTP 记录写入 2^14 上限的专门路径；本仓库 DTLS 实现以 datagram 为主。 |
+| 118 | length | derived/computed from another field | 满足 | 统一头解析支持 L bit、有长度字段和无长度字段，发送端当前总是包含 16-bit length。 |
+| 119 | length | must be present / must be absent | 满足 | 发送端没有利用省略 length 的优化，接收端可解析最后记录无 length 的格式。 |
+| 120 | length | invalid if value check fails | 满足 | 统一头解析支持 L bit、有长度字段和无长度字段，发送端当前总是包含 16-bit length。 |
+| 121 | length | must be present | 满足 | 统一头解析支持 L bit、有长度字段和无长度字段，发送端当前总是包含 16-bit length。 |
+| 122 | length | must be absent | 满足 | 统一头解析支持 L bit、有长度字段和无长度字段，发送端当前总是包含 16-bit length。 |
+| 123 | length | must only be used for the last record in a datagram | 部分满足 | 解析端在 L bit 清除时把剩余 datagram 作为当前记录，但没有独立证明该无长度格式只出现在 datagram 最后一个记录。 |
+| 124 | length | derived/computed from another field | 满足 | 统一头解析支持 L bit、有长度字段和无长度字段，发送端当前总是包含 16-bit length。 |
+| 125 | length | validated range check | 部分满足 | 源码能证明读取 length 字段本身不会越界，但未看到显式 `idx + recordLength <= inputSize` 检查；后续处理依赖 recordLength 和输入缓冲边界。 |
+| 126 | message_hash | computed according to referenced procedure | 满足 | HRR cookie/stateless路径使用 synthetic message_hash，并在 DTLS hash 中跳过 message_seq/fragment 字段。 |
+| 127 | message_hash | set to synthetic message carrying hash value | 满足 | HRR cookie/stateless路径使用 synthetic message_hash，并在 DTLS hash 中跳过 message_seq/fragment 字段。 |
+| 128 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 129 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 130 | message_seq | must be assigned a specific sequence number | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 131 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 132 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 133 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 134 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 135 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 136 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 137 | message_seq | set to constant | 不适用 | 该条来自 RFC 示例握手 trace 的具体 message_seq 值，不是独立的通用实现义务；通用序列号机制在 130、138-144 覆盖。 |
+| 138 | message_seq | set to constant | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 139 | message_seq | must not be reset | 部分满足 | 代码中 post-handshake ACK/KeyUpdate 使用同一 DTLS 1.3 RTX/sequence 结构，但未能证明所有 post-handshake 消息永不重置 message_seq。 |
+| 140 | message_seq | must equal | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 141 | message_seq | validated range check | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 142 | message_seq | invalid if value check fails | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 143 | message_seq | reuse old value / must not increment | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 144 | message_seq | incremented by one | 满足 | DTLS handshake sequence 使用 dtls_handshake_number/expected_peer_handshake_number 生成、检查、缓存乱序并丢弃旧序号。 |
+| 145 | num_cids | validated upper-bound exception / may return fewer than requested | 不满足 | wolfSSL 实现了 RFC 9146/DTLS CID extension 和 DTLS 1.3 unified header CID bit，但未找到 RFC 9147 RequestConnectionId/NewConnectionId handshake 消息、num_cids 或 cid_spare 处理。 |
+| 146 | num_cids | copy from requested value | 不满足 | wolfSSL 实现了 RFC 9146/DTLS CID extension 和 DTLS 1.3 unified header CID bit，但未找到 RFC 9147 RequestConnectionId/NewConnectionId handshake 消息、num_cids 或 cid_spare 处理。 |
+| 147 | Outer Content Type | validated range check for encrypted_record demultiplexing | 满足 | 首字节分流覆盖旧 content type 20/21/22 和 DTLS 1.3 unified header 固定位模式。 |
+| 148 | Outer Content Type | must equal mapped constant for ChangeCipherSpec demultiplexing | 满足 | 首字节分流覆盖旧 content type 20/21/22 和 DTLS 1.3 unified header 固定位模式。 |
+| 149 | Outer Content Type | must equal mapped constant for Alert demultiplexing | 满足 | 首字节分流覆盖旧 content type 20/21/22 和 DTLS 1.3 unified header 固定位模式。 |
+| 150 | Outer Content Type | must equal mapped constant for DTLSHandshake demultiplexing | 满足 | 首字节分流覆盖旧 content type 20/21/22 和 DTLS 1.3 unified header 固定位模式。 |

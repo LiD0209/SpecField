@@ -1,0 +1,48 @@
+051 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+052 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+053 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+054 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+055 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+056 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+057 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+058 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+059 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+060 满足 message_seq - wolfSSL 初始化发送和期望接收的 DTLS handshake sequence 为 0；发送时写入并递增 message_seq；重传池保存原始 handshake 记录并复用同一个 message_seq；接收端按 dtls_expected_peer_handshake_number 排序、缓存、处理或丢弃。
+061 满足 msg_type - wolfSSL 在 HandShakeType 枚举中包含 hello_verify_request(3)，并在 DoHandShakeMsgType 中按具体 msg_type 分派解析；未知类型不会因常量存在而被默许。
+062 满足 msg_type - wolfSSL 在 HandShakeType 枚举中包含 hello_verify_request(3)，并在 DoHandShakeMsgType 中按具体 msg_type 分派解析；未知类型不会因常量存在而被默许。
+063 满足 random - 客户端处理 HelloVerifyRequest 时仅保存 cookie 并重置 DTLS 重传池；后续 ClientHello 仍由原握手状态生成，version/random/session_id/cipher_suites/compression_method 不因 HVR 被重新协商或替换。
+064 满足 sequence_number - wolfSSL 在发送 HelloVerifyRequest 前把当前发送 record sequence 设置为收到的 ClientHello record sequence，随后 AddRecordHeader 写入该序列号，避免多个 cookie exchange 造成 record sequence 重复。
+065 满足 sequence_number - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。
+066 满足 sequence_number - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。
+067 满足 sequence_number - wolfSSL 维护 peerSeq window，并在记录已通过解密/MAC 处理后更新窗口；低于窗口左边界或重复 bit 的记录由 DtlsUpdateWindow 返回 SEQUENCE_ERROR。
+068 满足 sequence_number - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。
+069 满足 sequence_number - wolfSSL 维护 peerSeq window，并在记录已通过解密/MAC 处理后更新窗口；低于窗口左边界或重复 bit 的记录由 DtlsUpdateWindow 返回 SEQUENCE_ERROR。
+070 满足 sequence_number - wolfSSL 维护 peerSeq window，并在记录已通过解密/MAC 处理后更新窗口；低于窗口左边界或重复 bit 的记录由 DtlsUpdateWindow 返回 SEQUENCE_ERROR。
+071 满足 sequence_number - wolfSSL 维护 peerSeq window，并在记录已通过解密/MAC 处理后更新窗口；低于窗口左边界或重复 bit 的记录由 DtlsUpdateWindow 返回 SEQUENCE_ERROR。
+072 满足 sequence_number - wolfSSL 在发送 HelloVerifyRequest 前把当前发送 record sequence 设置为收到的 ClientHello record sequence，随后 AddRecordHeader 写入该序列号，避免多个 cookie exchange 造成 record sequence 重复。
+073 满足 sequence_number - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。
+074 满足 sequence_number - wolfSSL 维护 peerSeq window，并在记录已通过解密/MAC 处理后更新窗口；低于窗口左边界或重复 bit 的记录由 DtlsUpdateWindow 返回 SEQUENCE_ERROR。
+075 满足 server_version - wolfSSL 发送 HelloVerifyRequest 时使用 DTLS 1.0 wire version，并且客户端只接受 DTLS 1.0/1.2 格式值，不把 HVR 版本用于最终版本协商。输入中的 ServerHello 必须与 HVR 版本相等规则来自 RFC 6347 内部矛盾文本，RFC Errata 4103 指出应删除该相等性要求，因此未作为确认缺陷。
+076 部分满足 server_version - 按 RFC 6347 页面 16 的字面抽取，客户端应校验 HVR 与 ServerHello version 相等/服务端应发送相同 version；但同节前文又要求 DTLS 1.2 HVR SHOULD 使用 DTLS 1.0，RFC Errata 4103 指出这是内部矛盾。wolfSSL 未执行相等性校验，而是按 DTLS 1.2 实际互操作行为处理。
+077 满足 server_version - wolfSSL 发送 HelloVerifyRequest 时使用 DTLS 1.0 wire version，并且客户端只接受 DTLS 1.0/1.2 格式值，不把 HVR 版本用于最终版本协商。输入中的 ServerHello 必须与 HVR 版本相等规则来自 RFC 6347 内部矛盾文本，RFC Errata 4103 指出应删除该相等性要求，因此未作为确认缺陷。
+078 满足 server_version - wolfSSL 发送 HelloVerifyRequest 时使用 DTLS 1.0 wire version，并且客户端只接受 DTLS 1.0/1.2 格式值，不把 HVR 版本用于最终版本协商。输入中的 ServerHello 必须与 HVR 版本相等规则来自 RFC 6347 内部矛盾文本，RFC Errata 4103 指出应删除该相等性要求，因此未作为确认缺陷。
+079 满足 server_version - wolfSSL 发送 HelloVerifyRequest 时使用 DTLS 1.0 wire version，并且客户端只接受 DTLS 1.0/1.2 格式值，不把 HVR 版本用于最终版本协商。输入中的 ServerHello 必须与 HVR 版本相等规则来自 RFC 6347 内部矛盾文本，RFC Errata 4103 指出应删除该相等性要求，因此未作为确认缺陷。
+080 部分满足 server_version - 按 RFC 6347 页面 16 的字面抽取，客户端应校验 HVR 与 ServerHello version 相等/服务端应发送相同 version；但同节前文又要求 DTLS 1.2 HVR SHOULD 使用 DTLS 1.0，RFC Errata 4103 指出这是内部矛盾。wolfSSL 未执行相等性校验，而是按 DTLS 1.2 实际互操作行为处理。
+081 满足 session_id - 客户端处理 HelloVerifyRequest 时仅保存 cookie 并重置 DTLS 重传池；后续 ClientHello 仍由原握手状态生成，version/random/session_id/cipher_suites/compression_method 不因 HVR 被重新协商或替换。
+082 满足 TLS_DH_anon_WITH_RC4_128_MD5 - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+083 满足 TLS_DHE_PSK_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+084 满足 TLS_ECDH_anon_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+085 满足 TLS_ECDH_ECDSA_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+086 满足 TLS_ECDH_RSA_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+087 满足 TLS_ECDHE_ECDSA_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+088 满足 TLS_ECDHE_PSK_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+089 满足 TLS_ECDHE_RSA_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+090 满足 TLS_KRB5_EXPORT_WITH_RC4_40_MD5 - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+091 满足 TLS_KRB5_EXPORT_WITH_RC4_40_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+092 满足 TLS_KRB5_WITH_RC4_128_MD5 - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+093 满足 TLS_KRB5_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+094 满足 TLS_PSK_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+095 满足 TLS_RSA_PSK_WITH_RC4_128_SHA - wolfSSL 默认禁用 RC4；即使构建时显式允许 RC4，默认套件构建和显式 cipher list 解析在 DTLS 方法下都用 !dtls 或 version.major == DTLS_MAJOR 过滤 RC4。输入列出的 PSK/KRB5/anon RC4 套件多数在 wolfSSL 中没有实现，无法被 DTLS 使用。
+096 满足 version - 客户端处理 HelloVerifyRequest 时仅保存 cookie 并重置 DTLS 重传池；后续 ClientHello 仍由原握手状态生成，version/random/session_id/cipher_suites/compression_method 不因 HVR 被重新协商或替换。
+097 满足 version - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。
+098 满足 version - wolfSSL 的 DTLS record header 长度包含 epoch 和 6 字节 sequence；每个 epoch 切换时 sequence 归零；每条发送记录经 DtlsSEQIncrement 取得新 record sequence；MAC additional data 使用 epoch+sequence 的 64 位值；DTLS 1.2 record 版本写为 FE FD。

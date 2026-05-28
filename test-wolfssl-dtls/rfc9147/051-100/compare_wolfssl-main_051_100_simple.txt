@@ -1,0 +1,50 @@
+051 满足 encrypted_record - wolfSSL 在 DTLS 1.3 统一头解析和发送路径中都使用 16 字节最小 ciphertext 约束；发送端 BuildTls13Message 对短明文补零 padding，接收端 Dtls13ParseUnifiedRecordLayer 在解密 record number 前拒绝过短 ciphertext。
+052 满足 encrypted_record - wolfSSL 在 DTLS 1.3 统一头解析和发送路径中都使用 16 字节最小 ciphertext 约束；发送端 BuildTls13Message 对短明文补零 padding，接收端 Dtls13ParseUnifiedRecordLayer 在解密 record number 前拒绝过短 ciphertext。
+053 满足 encrypted_record - wolfSSL 在 DTLS 1.3 统一头解析和发送路径中都使用 16 字节最小 ciphertext 约束；发送端 BuildTls13Message 对短明文补零 padding，接收端 Dtls13ParseUnifiedRecordLayer 在解密 record number 前拒绝过短 ciphertext。
+054 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+055 满足 epoch - wolfSSL 将 KeyUpdate 作为 retransmission-tracked handshake 记录；发送 KeyUpdate 时设置 dtls13WaitKeyUpdateAck，ACK 处理按 epoch 和 seq 移除对应记录，只有确认后才派生新的发送 traffic key 并递增本端 epoch。
+056 满足 epoch - wolfSSL 先比较 peer current epoch 的低两位；不匹配时扫描有效 epoch 槽，选取低两位匹配且数值最大的 epoch。
+057 部分满足 epoch - wolfSSL 收到 close_notify 后设置 closeNotify 并从当前 ProcessReply 返回 ZERO_RETURN；但代码没有保存有效 closure alert 的 epoch/sequence pair，也没有在后续 DTLS 1.3 record receive path 中比较并忽略 pair 之后的数据。
+058 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+059 满足 epoch - wolfSSL 先比较 peer current epoch 的低两位；不匹配时扫描有效 epoch 槽，选取低两位匹配且数值最大的 epoch。
+060 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+061 满足 epoch - wolfSSL 先比较 peer current epoch 的低两位；不匹配时扫描有效 epoch 槽，选取低两位匹配且数值最大的 epoch。
+062 部分满足 epoch - wolfSSL 使用 64-bit epoch 并在递增后检查是否回到 0，用于避免 64-bit wrap；但未找到发送端对 2^48-1 的显式上限检查。
+063 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+064 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+065 满足 epoch - wolfSSL 为收到的 handshake record 记录 ACK 的 epoch/seq；发送 ACK 前优先把发送 epoch 切到当前最高 epoch。服务器握手未完成但本端已经有 application epoch 时，会降到 handshake epoch 来 ACK 客户端尚无法解密更高 epoch 的记录，符合 RFC 给出的握手期例外语义。
+066 满足 epoch - wolfSSL 为收到的 handshake record 记录 ACK 的 epoch/seq；发送 ACK 前优先把发送 epoch 切到当前最高 epoch。服务器握手未完成但本端已经有 application epoch 时，会降到 handshake epoch 来 ACK 客户端尚无法解密更高 epoch 的记录，符合 RFC 给出的握手期例外语义。
+067 满足 epoch - wolfSSL 为收到的 handshake record 记录 ACK 的 epoch/seq；发送 ACK 前优先把发送 epoch 切到当前最高 epoch。服务器握手未完成但本端已经有 application epoch 时，会降到 handshake epoch 来 ACK 客户端尚无法解密更高 epoch 的记录，符合 RFC 给出的握手期例外语义。
+068 满足 epoch - wolfSSL 为收到的 handshake record 记录 ACK 的 epoch/seq；发送 ACK 前优先把发送 epoch 切到当前最高 epoch。服务器握手未完成但本端已经有 application epoch 时，会降到 handshake epoch 来 ACK 客户端尚无法解密更高 epoch 的记录，符合 RFC 给出的握手期例外语义。
+069 满足 epoch - wolfSSL 将 KeyUpdate 作为 retransmission-tracked handshake 记录；发送 KeyUpdate 时设置 dtls13WaitKeyUpdateAck，ACK 处理按 epoch 和 seq 移除对应记录，只有确认后才派生新的发送 traffic key 并递增本端 epoch。
+070 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+071 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+072 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+073 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+074 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+075 满足 epoch - wolfSSL 先比较 peer current epoch 的低两位；不匹配时扫描有效 epoch 槽，选取低两位匹配且数值最大的 epoch。
+076 部分满足 epoch - wolfSSL 在 epoch 递增后检查 w64IsZero 并返回 BAD_STATE_E，可阻止 64-bit wrap；但同一节的发送端 2^48-1 限制没有显式实现。
+077 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+078 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+079 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+080 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+081 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+082 满足 epoch - wolfSSL 将 KeyUpdate 作为 retransmission-tracked handshake 记录；发送 KeyUpdate 时设置 dtls13WaitKeyUpdateAck，ACK 处理按 epoch 和 seq 移除对应记录，只有确认后才派生新的发送 traffic key 并递增本端 epoch。
+083 满足 epoch - wolfSSL 先比较 peer current epoch 的低两位；不匹配时扫描有效 epoch 槽，选取低两位匹配且数值最大的 epoch。
+084 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+085 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+086 满足 epoch - wolfSSL 使用 64-bit w64wrapper 保存 DTLS 1.3 epoch，初始化 epoch 0，按 early/handshake/application/update secret 创建 epoch 槽，并在明文头、统一头和 record number reconstruction 中使用低位 epoch 表示。
+087 部分满足 epoch - wolfSSL 通过 w64IsZero 捕获 64-bit wrap，但未显式执行 DTLS 1.3 sending epoch 2^48-1 上限。
+088 满足 extensions - wolfSSL 在 server stateless path 中为 HRR 生成 cookie extension；server 解析 retried ClientHello 时检查 cookie extension 长度并调用 TlsCheckCookie，只有 cookieGood 才进入 stateful 解析；DTLS 1.3 path 使用 TLS cookie extension 而不是 DTLS 1.2 legacy_cookie。
+089 满足 extensions - wolfSSL 在 server stateless path 中为 HRR 生成 cookie extension；server 解析 retried ClientHello 时检查 cookie extension 长度并调用 TlsCheckCookie，只有 cookieGood 才进入 stateful 解析；DTLS 1.3 path 使用 TLS cookie extension 而不是 DTLS 1.2 legacy_cookie。
+090 满足 Fixed Bits - wolfSSL 定义 mask/value 0xe0/0x20，发送统一头时设置固定高三位，接收 demux 时只把 fixed bits 为 001 的非 alert/handshake/ack 记录识别为 unified header，否则按非统一头处理并在后续版本/type 检查中拒绝。
+091 满足 Fixed Bits - wolfSSL 定义 mask/value 0xe0/0x20，发送统一头时设置固定高三位，接收 demux 时只把 fixed bits 为 001 的非 alert/handshake/ack 记录识别为 unified header，否则按非统一头处理并在后续版本/type 检查中拒绝。
+092 满足 Fixed Bits - wolfSSL 定义 mask/value 0xe0/0x20，发送统一头时设置固定高三位，接收 demux 时只把 fixed bits 为 001 的非 alert/handshake/ack 记录识别为 unified header，否则按非统一头处理并在后续版本/type 检查中拒绝。
+093 部分满足 fragment - wolfSSL 支持按当前 MTU/max plaintext 对 handshake message 分片，也会重传已缓存的 DTLS 1.3 handshake record；但未找到 repeated retransmission timeout 后在 PMTU unknown 场景逐步降低 record size 的策略。
+094 满足 fragment - wolfSSL 的 DTLS 1.3 handshake header 结构包含 fragmentOffset 和 fragmentLength，普通未分片发送时写 offset=0、fragmentLength=message length，分片发送路径逐片更新 offset/length。
+095 满足 fragment_length - wolfSSL 的 DTLS 1.3 handshake header 结构包含 fragmentOffset 和 fragmentLength，普通未分片发送时写 offset=0、fragmentLength=message length，分片发送路径逐片更新 offset/length。
+096 满足 fragment_offset - wolfSSL 的 DTLS 1.3 handshake header 结构包含 fragmentOffset 和 fragmentLength，普通未分片发送时写 offset=0、fragmentLength=message length，分片发送路径逐片更新 offset/length。
+097 部分满足 key_update - wolfSSL 会在已有 KeyUpdate 等待 ACK 时抑制新的 KeyUpdate，但未发现发送响应前检查该响应是否会超过 2^48-1 epoch/key usage limit 的代码。
+098 满足 key_update - wolfSSL 将 KeyUpdate 作为 retransmission-tracked handshake 记录；发送 KeyUpdate 时设置 dtls13WaitKeyUpdateAck，ACK 处理按 epoch 和 seq 移除对应记录，只有确认后才派生新的发送 traffic key 并递增本端 epoch。
+099 满足 legacy_cookie - wolfSSL 在 server stateless path 中为 HRR 生成 cookie extension；server 解析 retried ClientHello 时检查 cookie extension 长度并调用 TlsCheckCookie，只有 cookieGood 才进入 stateful 解析；DTLS 1.3 path 使用 TLS cookie extension 而不是 DTLS 1.2 legacy_cookie。
+100 满足 legacy_cookie - wolfSSL 在 server stateless path 中为 HRR 生成 cookie extension；server 解析 retried ClientHello 时检查 cookie extension 长度并调用 TlsCheckCookie，只有 cookieGood 才进入 stateful 解析；DTLS 1.3 path 使用 TLS cookie extension 而不是 DTLS 1.2 legacy_cookie。
