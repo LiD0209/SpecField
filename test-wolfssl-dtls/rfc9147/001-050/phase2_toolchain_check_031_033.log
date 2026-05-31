@@ -1,0 +1,6 @@
+cmake available: checked separately in shell, version 4.2.4
+cl in PATH: false
+gcc in PATH: false
+ninja in PATH: false
+unit.test.exe: 0 found
+wolfssl libs: 0 found
