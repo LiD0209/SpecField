@@ -204,6 +204,54 @@ def normalize_alias(value: Any) -> list[str]:
     return [single] if single else []
 
 
+def normalize_joined_text(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        parts = [normalize_joined_text(v) for v in value]
+        return "; ".join(dict.fromkeys([p for p in parts if p]))
+    return normalize_text(value)
+
+
+def first_text(row: dict[str, Any], *keys: str) -> str:
+    for key in keys:
+        value = normalize_joined_text(row.get(key))
+        if value:
+            return value
+    return ""
+
+
+def field_name_from_record(row: dict[str, Any]) -> str:
+    return _clean_field_name(first_text(row, "canonical_name", "variable_name", "field_name", "f"))
+
+
+def aliases_from_record(row: dict[str, Any]) -> list[str]:
+    return list(dict.fromkeys(normalize_alias(row.get("aliases")) + normalize_alias(row.get("alias"))))
+
+
+def parent_from_record(row: dict[str, Any]) -> str:
+    return first_text(
+        row,
+        "parent_message_or_structure",
+        "parent_message",
+        "parent_structure",
+        "parent",
+        "message_or_structure",
+    )
+
+
+def allowed_values_from_record(row: dict[str, Any]) -> str:
+    return first_text(row, "allowed_values", "initial_value_or_range", "value_range", "range")
+
+
+def source_locations_from_record(row: dict[str, Any]) -> str:
+    return first_text(row, "source_locations", "source_location", "module_or_section", "section")
+
+
+def source_evidence_from_record(row: dict[str, Any]) -> str:
+    return first_text(row, "source_evidence", "evidence", "E")
+
+
 PACKET_FIELD_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.\- /(),]{0,119}$")
 PACKET_CONTEXT_KEYWORDS = {
     # generic structured-message terms
@@ -215,6 +263,9 @@ PACKET_CONTEXT_KEYWORDS = {
     "flag",
     "code",
     "identifier",
+    "option",
+    "parameter",
+    "table",
     "packet",
     "message",
     "frame",
@@ -296,13 +347,17 @@ def is_packet_field_name(name: str) -> bool:
 
 
 def is_packet_field_context(row: dict[str, Any]) -> bool:
-    name = normalize_text(row.get("variable_name")).lower()
+    name = field_name_from_record(row).lower()
     text = " ".join(
         [
             normalize_text(row.get("type")),
             normalize_text(row.get("definition")),
-            normalize_text(row.get("module_or_section")),
-            normalize_text(row.get("evidence")),
+            normalize_text(row.get("field_kind")),
+            normalize_text(row.get("semantic_role")),
+            parent_from_record(row),
+            allowed_values_from_record(row),
+            source_locations_from_record(row),
+            source_evidence_from_record(row),
         ]
     ).lower()
     if any(k in text for k in PACKET_CONTEXT_KEYWORDS):
@@ -330,13 +385,28 @@ def filter_packet_field_definitions(
 ) -> list[dict[str, Any]]:
     filtered: list[dict[str, Any]] = []
     for row in definitions:
-        if not is_packet_field_name(normalize_text(row.get("variable_name"))):
+        name = field_name_from_record(row)
+        if not is_packet_field_name(name):
             continue
         if not is_packet_field_context(row):
             continue
         row = dict(row)
-        row["variable_name"] = _clean_field_name(normalize_text(row.get("variable_name")))
-        row["alias"] = normalize_alias(row.get("alias"))
+        aliases = aliases_from_record(row)
+        allowed_values = allowed_values_from_record(row)
+        source_locations = source_locations_from_record(row)
+        source_evidence = source_evidence_from_record(row)
+
+        row["canonical_name"] = name
+        row["variable_name"] = name
+        row["aliases"] = aliases
+        row["alias"] = aliases
+        row["parent_message_or_structure"] = parent_from_record(row)
+        row["allowed_values"] = allowed_values
+        row["source_locations"] = source_locations
+        row["source_evidence"] = source_evidence
+        row["initial_value_or_range"] = allowed_values
+        row["module_or_section"] = source_locations
+        row["evidence"] = source_evidence
         filtered.append(row)
     return filtered
 
@@ -346,9 +416,9 @@ def filter_change_records_to_catalog(
     definitions: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     allowed = {
-        _clean_field_name(normalize_text(d.get("variable_name"))).lower()
+        field_name_from_record(d).lower()
         for d in definitions
-        if normalize_text(d.get("variable_name"))
+        if field_name_from_record(d)
     }
     out: list[dict[str, Any]] = []
     for row in changes:
@@ -399,19 +469,31 @@ def extract_json_array(text: str) -> list[dict[str, Any]]:
 
 
 def merge_definition_records(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    merged: dict[str, dict[str, Any]] = {}
+    merged: dict[tuple[str, str], dict[str, Any]] = {}
     for row in items:
-        name = normalize_text(row.get("variable_name"))
+        name = field_name_from_record(row)
         if not name:
             continue
-        key = name.lower()
+        parent = parent_from_record(row)
+        key = (name.lower(), parent.lower())
+        allowed_values = allowed_values_from_record(row)
+        source_locations = source_locations_from_record(row)
+        source_evidence = source_evidence_from_record(row)
         existing = merged.get(
             key,
             {
+                "canonical_name": name,
                 "variable_name": name,
+                "aliases": [],
                 "alias": [],
+                "parent_message_or_structure": parent,
+                "field_kind": "",
                 "type": "",
+                "allowed_values": "",
                 "definition": "",
+                "semantic_role": "",
+                "source_locations": "",
+                "source_evidence": "",
                 "initial_value_or_range": "",
                 "module_or_section": "",
                 "evidence": "",
@@ -419,12 +501,25 @@ def merge_definition_records(items: list[dict[str, Any]]) -> list[dict[str, Any]
             },
         )
 
-        existing["alias"] = list(dict.fromkeys(existing["alias"] + normalize_alias(row.get("alias"))))
-        for field in ["type", "definition", "initial_value_or_range", "module_or_section"]:
+        aliases = list(dict.fromkeys(existing["aliases"] + aliases_from_record(row)))
+        existing["aliases"] = aliases
+        existing["alias"] = aliases
+
+        for field in ["field_kind", "type", "definition", "semantic_role"]:
             if not existing.get(field):
-                existing[field] = normalize_text(row.get(field))
-        if not existing.get("evidence"):
-            existing["evidence"] = normalize_text(row.get("evidence"))
+                existing[field] = normalize_joined_text(row.get(field))
+        if not existing.get("allowed_values"):
+            existing["allowed_values"] = allowed_values
+            existing["initial_value_or_range"] = allowed_values
+        if not existing.get("source_locations"):
+            existing["source_locations"] = source_locations
+            existing["module_or_section"] = source_locations
+        elif source_locations and source_locations not in existing["source_locations"]:
+            existing["source_locations"] = f"{existing['source_locations']}; {source_locations}"
+            existing["module_or_section"] = existing["source_locations"]
+        if not existing.get("source_evidence"):
+            existing["source_evidence"] = source_evidence
+            existing["evidence"] = source_evidence
 
         chunk_id = normalize_text(row.get("source_chunk_id"))
         if chunk_id and chunk_id not in existing["source_chunks"]:
@@ -432,7 +527,13 @@ def merge_definition_records(items: list[dict[str, Any]]) -> list[dict[str, Any]
 
         merged[key] = existing
 
-    merged_list = sorted(merged.values(), key=lambda x: x["variable_name"].lower())
+    merged_list = sorted(
+        merged.values(),
+        key=lambda x: (
+            x["canonical_name"].lower(),
+            x.get("parent_message_or_structure", "").lower(),
+        ),
+    )
     return filter_packet_field_definitions(merged_list)
 
 
@@ -477,14 +578,23 @@ def build_variable_catalog(definitions: list[dict[str, Any]]) -> str:
         return "[]"
     rows = []
     for i, row in enumerate(definitions, start=1):
-        name = normalize_text(row.get("variable_name"))
-        alias = normalize_alias(row.get("alias"))
+        name = field_name_from_record(row)
+        alias = aliases_from_record(row)
+        parent = parent_from_record(row)
         vtype = normalize_text(row.get("type"))
+        allowed_values = allowed_values_from_record(row)
+        source_locations = source_locations_from_record(row)
         parts = [f"{i}. {name}"]
         if alias:
-            parts.append(f"alias={', '.join(alias)}")
+            parts.append(f"aliases={', '.join(alias)}")
+        if parent:
+            parts.append(f"parent={parent}")
         if vtype:
             parts.append(f"type={vtype}")
+        if allowed_values:
+            parts.append(f"allowed_values={allowed_values}")
+        if source_locations:
+            parts.append(f"source_locations={source_locations}")
         rows.append(" | ".join(parts))
     return "\n".join(rows)
 
