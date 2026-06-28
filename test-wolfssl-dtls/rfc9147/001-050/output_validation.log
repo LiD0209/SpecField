@@ -1,6 +1,0 @@
-required_missing=0
-json_result_count=50
-classification_count=5
-counts_json={"\u4e0d\u6ee1\u8db3": 3, "\u4e0d\u9002\u7528": 3, "\u6ee1\u8db3": 42, "\u90e8\u5206\u6ee1\u8db3": 2}
-evidence_errors=0
-absolute_path_hits_in_reports=0
