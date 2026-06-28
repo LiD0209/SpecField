@@ -1,57 +1,57 @@
-# wolfMQTT-master 251-300 未满足/部分满足分类
-
-- total_reviewed: 31
-- 部分满足: 23
-- 不满足: 8
-- 风险分布: low=0, medium=10, high=21
-
-## 分类汇总
-
-| 分类 | 数量 | 部分满足 | 不满足 |
-|---|---:|---:|---:|
-| CONNECT User Name Flag 与载荷一致性校验不足 | 4 | 4 | 0 |
-| CONNECT 用户名/密码错误码语义覆盖不精确 | 1 | 1 | 0 |
-| Topic Filter 语法约束校验不足 | 2 | 1 | 1 |
-| Topic Name 基本合法性校验缺失 | 2 | 0 | 2 |
-| Topic Name 通配符约束仅在 Broker 入站侧覆盖 | 3 | 3 | 0 |
-| UTF-8 禁用字符校验缺失 | 5 | 0 | 5 |
-| UTF-8 语义校验缺失（仅长度解码） | 9 | 9 | 0 |
-| Will Flag 条目语义与实现存在条件差异 | 1 | 1 | 0 |
-| 控制报文无可变头约束校验不足 | 3 | 3 | 0 |
-| 禁用通配符场景下订阅拒绝缺失 | 1 | 1 | 0 |
-
-## 明细
-
-| ID | source_idx | 状态 | 风险 | 分类 | 原因 |
-|---:|---:|---|---|---|---|
-| 251 | 250 | 不满足 | high | UTF-8 禁用字符校验缺失 | Topic Filter 允许携带 NUL 会导致匹配和字符串处理出现语义偏差。 |
-| 254 | 253 | 部分满足 | medium | 禁用通配符场景下订阅拒绝缺失 | 当配置为不支持通配符时，行为更接近“按普通字符存储”，而非协议要求的无效处理。 |
-| 255 | 254 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 仅做长度解码无法覆盖非法 UTF-8 序列场景。 |
-| 256 | 255 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 无法拦截非法 UTF-8 的 Topic Filter。 |
-| 260 | 259 | 部分满足 | medium | Topic Filter 语法约束校验不足 | 非法过滤器未被拒绝，只是在匹配时可能不命中。 |
-| 261 | 260 | 不满足 | high | Topic Filter 语法约束校验不足 | 可能接受规范外过滤器并产生非预期匹配结果。 |
-| 262 | 261 | 不满足 | high | Topic Name 基本合法性校验缺失 | 空主题名不符合条目要求，可能导致路由语义不确定。 |
-| 263 | 262 | 不满足 | high | UTF-8 禁用字符校验缺失 | NUL 字符会破坏 C 字符串语义并影响匹配一致性。 |
-| 264 | 263 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 非法 UTF-8 字节序列无法被协议层识别。 |
-| 265 | 264 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 不能满足“字符数据必须是有效 UTF-8”要求。 |
-| 266 | 265 | 不满足 | high | UTF-8 禁用字符校验缺失 | 含 NUL 的主题名可能在不同路径被截断解释。 |
-| 269 | 268 | 部分满足 | medium | Topic Name 通配符约束仅在 Broker 入站侧覆盖 | 发送侧仍可构造不合规 Topic Name。 |
-| 270 | 269 | 部分满足 | medium | Topic Name 通配符约束仅在 Broker 入站侧覆盖 | 全链路一致性不足。 |
-| 271 | 270 | 不满足 | high | Topic Name 基本合法性校验缺失 | 空主题名可能被接收/编码。 |
-| 272 | 271 | 不满足 | high | UTF-8 禁用字符校验缺失 | 字符串截断和路由一致性风险持续存在。 |
-| 276 | 275 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 无法识别非法 UTF-8 Topic Name。 |
-| 277 | 276 | 部分满足 | medium | Topic Name 通配符约束仅在 Broker 入站侧覆盖 | 发送端约束不足。 |
-| 278 | 277 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 对 malformed UTF-8 缺乏防护。 |
-| 282 | 281 | 部分满足 | high | CONNECT User Name Flag 与载荷一致性校验不足 | 可能接受 Flag/载荷不一致的 CONNECT 报文。 |
-| 283 | 282 | 部分满足 | high | CONNECT User Name Flag 与载荷一致性校验不足 | 协议一致性约束不完整。 |
-| 286 | 285 | 部分满足 | medium | CONNECT 用户名/密码错误码语义覆盖不精确 | 错误码语义粒度与条目描述存在偏差。 |
-| 287 | 286 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 无法严格满足 UTF-8 接收校验要求。 |
-| 289 | 288 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 无法拦截非法 UTF-8 用户名。 |
-| 290 | 289 | 不满足 | high | UTF-8 禁用字符校验缺失 | NUL 可能导致认证字符串比较语义偏移。 |
-| 292 | 291 | 部分满足 | high | UTF-8 语义校验缺失（仅长度解码） | 格式层满足但语义层不足。 |
-| 293 | 292 | 部分满足 | high | CONNECT User Name Flag 与载荷一致性校验不足 | 入站 CONNECT 可能放行 Flag 组合违规报文。 |
-| 294 | 293 | 部分满足 | high | CONNECT User Name Flag 与载荷一致性校验不足 | 缺失最终“已消费长度==remaining length”的一致性检查。 |
-| 297 | 296 | 部分满足 | medium | 控制报文无可变头约束校验不足 | 协议版本分支与收包校验粒度导致约束非强一致。 |
-| 298 | 297 | 部分满足 | medium | 控制报文无可变头约束校验不足 | 接收侧缺少 strict format check。 |
-| 299 | 298 | 部分满足 | medium | 控制报文无可变头约束校验不足 | 接收侧可放行非零 remaining length 的 PINGRESP。 |
-| 300 | 299 | 部分满足 | medium | Will Flag 条目语义与实现存在条件差异 | 实现遵循“客户端声明 will 才置位”，与该条目字面条件存在差异。 |
+# wolfMQTT-master 251-300 [non-English text removed]satisfied/partialsatisfiedcategory
+
+- total_reviewed: 31
+- partialsatisfied: 23
+- [non-English text removed]satisfied: 8
+- risk distribution: low=0, medium=10, high=21
+
+## classification summary
+
+| category | count | partialsatisfied | [non-English text removed]satisfied |
+|---|---:|---:|---:|
+| CONNECT User Name Flag [non-English text removed] | 4 | 4 | 0 |
+| CONNECT [non-English text removed] | 1 | 1 | 0 |
+| Topic Filter [non-English text removed] | 2 | 1 | 1 |
+| Topic Name [non-English text removed] | 2 | 0 | 2 |
+| Topic Name [non-English text removed] | 3 | 3 | 0 |
+| UTF-8 [non-English text removed] | 5 | 0 | 5 |
+| UTF-8 semanticvalidation[non-English text removed]） | 9 | 9 | 0 |
+| Will Flag [non-English text removed] | 1 | 1 | 0 |
+| [non-English text removed] | 3 | 3 | 0 |
+| [non-English text removed] | 1 | 1 | 0 |
+
+## details
+
+| ID | source_idx | status | risk | category | reason |
+|---:|---:|---|---|---|---|
+| 251 | 250 | [non-English text removed]satisfied | high | UTF-8 [non-English text removed]。 |
+| 254 | 253 | partialsatisfied | medium | [non-English text removed]processing。 |
+| 255 | 254 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 256 | 255 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed] Topic Filter。 |
+| 260 | 259 | partialsatisfied | medium | Topic Filter [non-English text removed]medium。 |
+| 261 | 260 | [non-English text removed]satisfied | high | Topic Filter [non-English text removed]。 |
+| 262 | 261 | [non-English text removed]satisfied | high | Topic Name [non-English text removed]。 |
+| 263 | 262 | [non-English text removed]satisfied | high | UTF-8 [non-English text removed]。 |
+| 264 | 263 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 265 | 264 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 266 | 265 | [non-English text removed]satisfied | high | UTF-8 [non-English text removed]。 |
+| 269 | 268 | partialsatisfied | medium | Topic Name [non-English text removed] Topic Name。 |
+| 270 | 269 | partialsatisfied | medium | Topic Name [non-English text removed]。 |
+| 271 | 270 | [non-English text removed]satisfied | high | Topic Name [non-English text removed]。 |
+| 272 | 271 | [non-English text removed]satisfied | high | UTF-8 [non-English text removed]。 |
+| 276 | 275 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed] UTF-8 Topic Name。 |
+| 277 | 276 | partialsatisfied | medium | Topic Name [non-English text removed]。 |
+| 278 | 277 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 282 | 281 | partialsatisfied | high | CONNECT User Name Flag [non-English text removed]。 |
+| 283 | 282 | partialsatisfied | high | CONNECT User Name Flag [non-English text removed]。 |
+| 286 | 285 | partialsatisfied | medium | CONNECT [non-English text removed]。 |
+| 287 | 286 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 289 | 288 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 290 | 289 | [non-English text removed]satisfied | high | UTF-8 [non-English text removed]。 |
+| 292 | 291 | partialsatisfied | high | UTF-8 semanticvalidation[non-English text removed]。 |
+| 293 | 292 | partialsatisfied | high | CONNECT User Name Flag [non-English text removed]。 |
+| 294 | 293 | partialsatisfied | high | CONNECT User Name Flag [non-English text removed]length==remaining length”[non-English text removed]。 |
+| 297 | 296 | partialsatisfied | medium | [non-English text removed]。 |
+| 298 | 297 | partialsatisfied | medium | [non-English text removed]missing strict format check。 |
+| 299 | 298 | partialsatisfied | medium | [non-English text removed] PINGRESP。 |
+| 300 | 299 | partialsatisfied | medium | Will Flag [non-English text removed]。 |

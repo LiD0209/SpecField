@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"D:/project/SpecTrace/test-boringssl/rfc9146/001-022/build-linked-probe/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

@@ -1,3 +1,0 @@
-D:/project/SpecTrace/test-boringssl/rfc9147/151-187/build-linked-probe/CMakeFiles/repro_dtls13_151_187_linked_probe.dir
-D:/project/SpecTrace/test-boringssl/rfc9147/151-187/build-linked-probe/CMakeFiles/ALL_BUILD.dir
-D:/project/SpecTrace/test-boringssl/rfc9147/151-187/build-linked-probe/CMakeFiles/ZERO_CHECK.dir

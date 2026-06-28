@@ -1,86 +1,86 @@
-{
-  "status": "done",
-  "input": "D:\\project\\conditionFuzzingPaper\\result.json",
-  "output": "D:\\project\\conditionFuzzingPaper\\output\\recheck_with_standard_inline.json",
-  "codebase_path": "D:\\project\\conditionFuzzingPaper\\wolfssl-master",
-  "total_items": 1,
-  "matched_index": 0,
-  "matched_result": "不满足",
-  "first_reason": "代码在 binder 校验失败时直接设置 `ret = BAD_BINDER` 并 `goto cleanup`（6254-6284），而不是按“没有有效 PSK identity”继续处理。后续若 `current == NULL` 且启用 `WOLFSSL_PSK_ID_PROTECTION`，还会再次返回 `BAD_BINDER`（6293-6303），与描述要求“对仅支持 PSK 的服务器应等同于无有效 PSK identity”不符。",
-  "standard_source": "inline(--standard-text)",
-  "review_stage": {
-    "model": "gpt-5.4",
-    "result": {
-      "true_mismatch": true,
-      "verdict": "true_mismatch",
-      "analysis": "The requirement is specific enough to verify: on a PSK-only server, a binder mismatch should be handled the same as \"no valid PSK identity\", not as a direct `BAD_BINDER` failure. The implementation in `DoPreSharedKeys()` does the opposite: once a candidate PSK is found and the computed binder differs, it immediately sets `ret = BAD_BINDER` and exits, instead of treating that identity as unusable and continuing/falling back to the normal no-match path. The code also has an explicit PSK-only branch under `WOLFSSL_PSK_ID_PROTECTION` that returns `BAD_BINDER` when no matching PSK remains and no certificate chain is configured, which is the inverse of the stated requirement. The repository test `test_tls13_bad_psk_binder` further confirms that `BAD_BINDER` is the intended current behavior.",
-      "evidence": [
-        {
-          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
-          "line_hint": "DoPreSharedKeys(), 6279-6284",
-          "detail": "When binder verification fails, the code immediately logs `BAD_BINDER`, sets `ret = BAD_BINDER`, and `goto cleanup`; it does not treat the PSK as merely invalid and continue searching."
-        },
-        {
-          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
-          "line_hint": "DoPreSharedKeys(), 6293-6303",
-          "detail": "If no PSK candidate remains (`current == NULL`), then with `WOLFSSL_PSK_ID_PROTECTION` enabled the code returns success only when a certificate chain exists; otherwise it returns `BAD_BINDER`, which is exactly the PSK-only-server case."
-        },
-        {
-          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
-          "line_hint": "CheckPreSharedKeys(), 6414-6424",
-          "detail": "The normal \"no suitable PSK found\" behavior is non-error: when `*usingPSK` is false, the function just hashes the complete ClientHello and proceeds. This contrasts with the binder-mismatch path, showing they are not treated equivalently."
-        },
-        {
-          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/tests/api/test_tls13.c",
-          "line_hint": "test_tls13_bad_psk_binder(), 1147-1149",
-          "detail": "The test explicitly expects `wolfSSL_accept()` on the server side to fail with `BAD_BINDER`, confirming the repository's intended implementation behavior is direct binder failure rather than \"no valid PSK identity\" handling."
-        }
-      ],
-      "confidence": 0.98
-    },
-    "codex_last_message": "{\n  \"true_mismatch\": true,\n  \"verdict\": \"true_mismatch\",\n  \"analysis\": \"The requirement is specific enough to verify: on a PSK-only server, a binder mismatch should be handled the same as \\\"no valid PSK identity\\\", not as a direct `BAD_BINDER` failure. The implementation in `DoPreSharedKeys()` does the opposite: once a candidate PSK is found and the computed binder differs, it immediately sets `ret = BAD_BINDER` and exits, instead of treating that identity as unusable and continuing/falling back to the normal no-match path. The code also has an explicit PSK-only branch under `WOLFSSL_PSK_ID_PROTECTION` that returns `BAD_BINDER` when no matching PSK remains and no certificate chain is configured, which is the inverse of the stated requirement. The repository test `test_tls13_bad_psk_binder` further confirms that `BAD_BINDER` is the intended current behavior.\",\n  \"evidence\": [\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"DoPreSharedKeys(), 6279-6284\",\n      \"detail\": \"When binder verification fails, the code immediately logs `BAD_BINDER`, sets `ret = BAD_BINDER`, and `goto cleanup`; it does not treat the PSK as merely invalid and continue searching.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"DoPreSharedKeys(), 6293-6303\",\n      \"detail\": \"If no PSK candidate remains (`current == NULL`), then with `WOLFSSL_PSK_ID_PROTECTION` enabled the code returns success only when a certificate chain exists; otherwise it returns `BAD_BINDER`, which is exactly the PSK-only-server case.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"CheckPreSharedKeys(), 6414-6424\",\n      \"detail\": \"The normal \\\"no suitable PSK found\\\" behavior is non-error: when `*usingPSK` is false, the function just hashes the complete ClientHello and proceeds. This contrasts with the binder-mismatch path, showing they are not treated equivalently.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/tests/api/test_tls13.c\",\n      \"line_hint\": \"test_tls13_bad_psk_binder(), 1147-1149\",\n      \"detail\": \"The test explicitly expects `wolfSSL_accept()` on the server side to fail with `BAD_BINDER`, confirming the repository's intended implementation behavior is direct binder failure rather than \\\"no valid PSK identity\\\" handling.\"\n    }\n  ],\n  \"confidence\": 0.98\n}"
-  },
-  "need_stage2_test": true,
-  "test_stage": {
-    "model": "gpt-5.3-codex",
-    "result": {
-      "confirmed_mismatch": true,
-      "final_verdict": "confirmed_mismatch",
-      "checks": [
-        {
-          "name": "BinderMismatchDirectReturn",
-          "method": "Inspected `DoPreSharedKeys()` in `src/tls13.c` with line-numbered extraction around 6248-6310.",
-          "evidence": "At lines 6279-6284, binder compare failure executes `ret = BAD_BINDER; goto cleanup;` immediately, instead of treating that PSK as unusable and continuing as no-valid-identity.",
-          "result": "pass"
-        },
-        {
-          "name": "NoValidPskReferenceBehavior",
-          "method": "Inspected `CheckPreSharedKeys()` flow in `src/tls13.c` around 6408-6425.",
-          "evidence": "When `*usingPSK == 0`, lines 6422-6424 explicitly treat it as \"No suitable PSK found\" and continue by hashing full ClientHello (`ret = HashInput(...)`), i.e., non-fatal path.",
-          "result": "pass"
-        },
-        {
-          "name": "PskOnlyWithIdProtectionBranch",
-          "method": "Inspected `current == NULL` handling in `DoPreSharedKeys()` around 6293-6307.",
-          "evidence": "Under `WOLFSSL_PSK_ID_PROTECTION`, if no cert chain is present (PSK-only server case), lines 6301-6303 return `BAD_BINDER` rather than no-valid-PSK fallback.",
-          "result": "pass"
-        },
-        {
-          "name": "RepositoryTestOracle",
-          "method": "Inspected `tests/api/test_tls13.c` test case `test_tls13_bad_psk_binder()` around 1124-1155.",
-          "evidence": "Lines 1147-1149 assert server accept fails and error equals `BAD_BINDER`, confirming current intended behavior is direct BAD_BINDER on binder failure.",
-          "result": "pass"
-        }
-      ],
-      "analysis": "The re-test confirms the mismatch is real. The binder mismatch path is a direct fatal `BAD_BINDER` return in `DoPreSharedKeys()`, which is not equivalent to \"no valid PSK identity\" handling. The codebase has a distinct non-fatal no-valid-PSK path in `CheckPreSharedKeys()`, showing the two behaviors are intentionally different today. In addition, with `WOLFSSL_PSK_ID_PROTECTION`, the PSK-only/no-cert branch also maps no current PSK to `BAD_BINDER`. The dedicated unit test explicitly expects `BAD_BINDER`, reinforcing that current implementation behavior contradicts the stated requirement.",
-      "confidence": 0.99,
-      "next_actions": [
-        "Change binder-failure handling in `DoPreSharedKeys()` to mark candidate unusable and continue/fall through as no-valid-PSK identity instead of immediate `BAD_BINDER`.",
-        "Update `test_tls13_bad_psk_binder` (and add PSK-only coverage with/without `WOLFSSL_PSK_ID_PROTECTION`) to assert requirement-compliant behavior."
-      ]
-    },
-    "codex_last_message": "{\n  \"confirmed_mismatch\": true,\n  \"final_verdict\": \"confirmed_mismatch\",\n  \"checks\": [\n    {\n      \"name\": \"BinderMismatchDirectReturn\",\n      \"method\": \"Inspected `DoPreSharedKeys()` in `src/tls13.c` with line-numbered extraction around 6248-6310.\",\n      \"evidence\": \"At lines 6279-6284, binder compare failure executes `ret = BAD_BINDER; goto cleanup;` immediately, instead of treating that PSK as unusable and continuing as no-valid-identity.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"NoValidPskReferenceBehavior\",\n      \"method\": \"Inspected `CheckPreSharedKeys()` flow in `src/tls13.c` around 6408-6425.\",\n      \"evidence\": \"When `*usingPSK == 0`, lines 6422-6424 explicitly treat it as \\\"No suitable PSK found\\\" and continue by hashing full ClientHello (`ret = HashInput(...)`), i.e., non-fatal path.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"PskOnlyWithIdProtectionBranch\",\n      \"method\": \"Inspected `current == NULL` handling in `DoPreSharedKeys()` around 6293-6307.\",\n      \"evidence\": \"Under `WOLFSSL_PSK_ID_PROTECTION`, if no cert chain is present (PSK-only server case), lines 6301-6303 return `BAD_BINDER` rather than no-valid-PSK fallback.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"RepositoryTestOracle\",\n      \"method\": \"Inspected `tests/api/test_tls13.c` test case `test_tls13_bad_psk_binder()` around 1124-1155.\",\n      \"evidence\": \"Lines 1147-1149 assert server accept fails and error equals `BAD_BINDER`, confirming current intended behavior is direct BAD_BINDER on binder failure.\",\n      \"result\": \"pass\"\n    }\n  ],\n  \"analysis\": \"The re-test confirms the mismatch is real. The binder mismatch path is a direct fatal `BAD_BINDER` return in `DoPreSharedKeys()`, which is not equivalent to \\\"no valid PSK identity\\\" handling. The codebase has a distinct non-fatal no-valid-PSK path in `CheckPreSharedKeys()`, showing the two behaviors are intentionally different today. In addition, with `WOLFSSL_PSK_ID_PROTECTION`, the PSK-only/no-cert branch also maps no current PSK to `BAD_BINDER`. The dedicated unit test explicitly expects `BAD_BINDER`, reinforcing that current implementation behavior contradicts the stated requirement.\",\n  \"confidence\": 0.99,\n  \"next_actions\": [\n    \"Change binder-failure handling in `DoPreSharedKeys()` to mark candidate unusable and continue/fall through as no-valid-PSK identity instead of immediate `BAD_BINDER`.\",\n    \"Update `test_tls13_bad_psk_binder` (and add PSK-only coverage with/without `WOLFSSL_PSK_ID_PROTECTION`) to assert requirement-compliant behavior.\"\n  ]\n}"
-  },
-  "codex_calls": 2,
-  "final_decision": "Confirmed mismatch."
+{
+  "status": "done",
+  "input": "D:\\project\\conditionFuzzingPaper\\result.json",
+  "output": "D:\\project\\conditionFuzzingPaper\\output\\recheck_with_standard_inline.json",
+  "codebase_path": "D:\\project\\conditionFuzzingPaper\\wolfssl-master",
+  "total_items": 1,
+  "matched_index": 0,
+  "matched_result": "non-English text removedsatisfied",
+  "first_reason": "non-English text removed `goto cleanup`(6254-6284),non-English text removed `WOLFSSL_PSK_ID_PROTECTION`,non-English text removed `BAD_BINDER`(6293-6303),non-English text removed.",
+  "standard_source": "inline(--standard-text)",
+  "review_stage": {
+    "model": "gpt-5.4",
+    "result": {
+      "true_mismatch": true,
+      "verdict": "true_mismatch",
+      "analysis": "The requirement is specific enough to verify: on a PSK-only server, a binder mismatch should be handled the same as \"no valid PSK identity\", not as a direct `BAD_BINDER` failure. The implementation in `DoPreSharedKeys()` does the opposite: once a candidate PSK is found and the computed binder differs, it immediately sets `ret = BAD_BINDER` and exits, instead of treating that identity as unusable and continuing/falling back to the normal no-match path. The code also has an explicit PSK-only branch under `WOLFSSL_PSK_ID_PROTECTION` that returns `BAD_BINDER` when no matching PSK remains and no certificate chain is configured, which is the inverse of the stated requirement. The repository test `test_tls13_bad_psk_binder` further confirms that `BAD_BINDER` is the intended current behavior.",
+      "evidence": [
+        {
+          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
+          "line_hint": "DoPreSharedKeys(), 6279-6284",
+          "detail": "When binder verification fails, the code immediately logs `BAD_BINDER`, sets `ret = BAD_BINDER`, and `goto cleanup`; it does not treat the PSK as merely invalid and continue searching."
+        },
+        {
+          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
+          "line_hint": "DoPreSharedKeys(), 6293-6303",
+          "detail": "If no PSK candidate remains (`current == NULL`), then with `WOLFSSL_PSK_ID_PROTECTION` enabled the code returns success only when a certificate chain exists; otherwise it returns `BAD_BINDER`, which is exactly the PSK-only-server case."
+        },
+        {
+          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c",
+          "line_hint": "CheckPreSharedKeys(), 6414-6424",
+          "detail": "The normal \"no suitable PSK found\" behavior is non-error: when `*usingPSK` is false, the function just hashes the complete ClientHello and proceeds. This contrasts with the binder-mismatch path, showing they are not treated equivalently."
+        },
+        {
+          "file": "D:/project/conditionFuzzingPaper/wolfssl-master/tests/api/test_tls13.c",
+          "line_hint": "test_tls13_bad_psk_binder(), 1147-1149",
+          "detail": "The test explicitly expects `wolfSSL_accept()` on the server side to fail with `BAD_BINDER`, confirming the repository's intended implementation behavior is direct binder failure rather than \"no valid PSK identity\" handling."
+        }
+      ],
+      "confidence": 0.98
+    },
+    "codex_last_message": "{\n  \"true_mismatch\": true,\n  \"verdict\": \"true_mismatch\",\n  \"analysis\": \"The requirement is specific enough to verify: on a PSK-only server, a binder mismatch should be handled the same as \\\"no valid PSK identity\\\", not as a direct `BAD_BINDER` failure. The implementation in `DoPreSharedKeys()` does the opposite: once a candidate PSK is found and the computed binder differs, it immediately sets `ret = BAD_BINDER` and exits, instead of treating that identity as unusable and continuing/falling back to the normal no-match path. The code also has an explicit PSK-only branch under `WOLFSSL_PSK_ID_PROTECTION` that returns `BAD_BINDER` when no matching PSK remains and no certificate chain is configured, which is the inverse of the stated requirement. The repository test `test_tls13_bad_psk_binder` further confirms that `BAD_BINDER` is the intended current behavior.\",\n  \"evidence\": [\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"DoPreSharedKeys(), 6279-6284\",\n      \"detail\": \"When binder verification fails, the code immediately logs `BAD_BINDER`, sets `ret = BAD_BINDER`, and `goto cleanup`; it does not treat the PSK as merely invalid and continue searching.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"DoPreSharedKeys(), 6293-6303\",\n      \"detail\": \"If no PSK candidate remains (`current == NULL`), then with `WOLFSSL_PSK_ID_PROTECTION` enabled the code returns success only when a certificate chain exists; otherwise it returns `BAD_BINDER`, which is exactly the PSK-only-server case.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/src/tls13.c\",\n      \"line_hint\": \"CheckPreSharedKeys(), 6414-6424\",\n      \"detail\": \"The normal \\\"no suitable PSK found\\\" behavior is non-error: when `*usingPSK` is false, the function just hashes the complete ClientHello and proceeds. This contrasts with the binder-mismatch path, showing they are not treated equivalently.\"\n    },\n    {\n      \"file\": \"D:/project/conditionFuzzingPaper/wolfssl-master/tests/api/test_tls13.c\",\n      \"line_hint\": \"test_tls13_bad_psk_binder(), 1147-1149\",\n      \"detail\": \"The test explicitly expects `wolfSSL_accept()` on the server side to fail with `BAD_BINDER`, confirming the repository's intended implementation behavior is direct binder failure rather than \\\"no valid PSK identity\\\" handling.\"\n    }\n  ],\n  \"confidence\": 0.98\n}"
+  },
+  "need_stage2_test": true,
+  "test_stage": {
+    "model": "gpt-5.3-codex",
+    "result": {
+      "confirmed_mismatch": true,
+      "final_verdict": "confirmed_mismatch",
+      "checks": [
+        {
+          "name": "BinderMismatchDirectReturn",
+          "method": "Inspected `DoPreSharedKeys()` in `src/tls13.c` with line-numbered extraction around 6248-6310.",
+          "evidence": "At lines 6279-6284, binder compare failure executes `ret = BAD_BINDER; goto cleanup;` immediately, instead of treating that PSK as unusable and continuing as no-valid-identity.",
+          "result": "pass"
+        },
+        {
+          "name": "NoValidPskReferenceBehavior",
+          "method": "Inspected `CheckPreSharedKeys()` flow in `src/tls13.c` around 6408-6425.",
+          "evidence": "When `*usingPSK == 0`, lines 6422-6424 explicitly treat it as \"No suitable PSK found\" and continue by hashing full ClientHello (`ret = HashInput(...)`), i.e., non-fatal path.",
+          "result": "pass"
+        },
+        {
+          "name": "PskOnlyWithIdProtectionBranch",
+          "method": "Inspected `current == NULL` handling in `DoPreSharedKeys()` around 6293-6307.",
+          "evidence": "Under `WOLFSSL_PSK_ID_PROTECTION`, if no cert chain is present (PSK-only server case), lines 6301-6303 return `BAD_BINDER` rather than no-valid-PSK fallback.",
+          "result": "pass"
+        },
+        {
+          "name": "RepositoryTestOracle",
+          "method": "Inspected `tests/api/test_tls13.c` test case `test_tls13_bad_psk_binder()` around 1124-1155.",
+          "evidence": "Lines 1147-1149 assert server accept fails and error equals `BAD_BINDER`, confirming current intended behavior is direct BAD_BINDER on binder failure.",
+          "result": "pass"
+        }
+      ],
+      "analysis": "The re-test confirms the mismatch is real. The binder mismatch path is a direct fatal `BAD_BINDER` return in `DoPreSharedKeys()`, which is not equivalent to \"no valid PSK identity\" handling. The codebase has a distinct non-fatal no-valid-PSK path in `CheckPreSharedKeys()`, showing the two behaviors are intentionally different today. In addition, with `WOLFSSL_PSK_ID_PROTECTION`, the PSK-only/no-cert branch also maps no current PSK to `BAD_BINDER`. The dedicated unit test explicitly expects `BAD_BINDER`, reinforcing that current implementation behavior contradicts the stated requirement.",
+      "confidence": 0.99,
+      "next_actions": [
+        "Change binder-failure handling in `DoPreSharedKeys()` to mark candidate unusable and continue/fall through as no-valid-PSK identity instead of immediate `BAD_BINDER`.",
+        "Update `test_tls13_bad_psk_binder` (and add PSK-only coverage with/without `WOLFSSL_PSK_ID_PROTECTION`) to assert requirement-compliant behavior."
+      ]
+    },
+    "codex_last_message": "{\n  \"confirmed_mismatch\": true,\n  \"final_verdict\": \"confirmed_mismatch\",\n  \"checks\": [\n    {\n      \"name\": \"BinderMismatchDirectReturn\",\n      \"method\": \"Inspected `DoPreSharedKeys()` in `src/tls13.c` with line-numbered extraction around 6248-6310.\",\n      \"evidence\": \"At lines 6279-6284, binder compare failure executes `ret = BAD_BINDER; goto cleanup;` immediately, instead of treating that PSK as unusable and continuing as no-valid-identity.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"NoValidPskReferenceBehavior\",\n      \"method\": \"Inspected `CheckPreSharedKeys()` flow in `src/tls13.c` around 6408-6425.\",\n      \"evidence\": \"When `*usingPSK == 0`, lines 6422-6424 explicitly treat it as \\\"No suitable PSK found\\\" and continue by hashing full ClientHello (`ret = HashInput(...)`), i.e., non-fatal path.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"PskOnlyWithIdProtectionBranch\",\n      \"method\": \"Inspected `current == NULL` handling in `DoPreSharedKeys()` around 6293-6307.\",\n      \"evidence\": \"Under `WOLFSSL_PSK_ID_PROTECTION`, if no cert chain is present (PSK-only server case), lines 6301-6303 return `BAD_BINDER` rather than no-valid-PSK fallback.\",\n      \"result\": \"pass\"\n    },\n    {\n      \"name\": \"RepositoryTestOracle\",\n      \"method\": \"Inspected `tests/api/test_tls13.c` test case `test_tls13_bad_psk_binder()` around 1124-1155.\",\n      \"evidence\": \"Lines 1147-1149 assert server accept fails and error equals `BAD_BINDER`, confirming current intended behavior is direct BAD_BINDER on binder failure.\",\n      \"result\": \"pass\"\n    }\n  ],\n  \"analysis\": \"The re-test confirms the mismatch is real. The binder mismatch path is a direct fatal `BAD_BINDER` return in `DoPreSharedKeys()`, which is not equivalent to \\\"no valid PSK identity\\\" handling. The codebase has a distinct non-fatal no-valid-PSK path in `CheckPreSharedKeys()`, showing the two behaviors are intentionally different today. In addition, with `WOLFSSL_PSK_ID_PROTECTION`, the PSK-only/no-cert branch also maps no current PSK to `BAD_BINDER`. The dedicated unit test explicitly expects `BAD_BINDER`, reinforcing that current implementation behavior contradicts the stated requirement.\",\n  \"confidence\": 0.99,\n  \"next_actions\": [\n    \"Change binder-failure handling in `DoPreSharedKeys()` to mark candidate unusable and continue/fall through as no-valid-PSK identity instead of immediate `BAD_BINDER`.\",\n    \"Update `test_tls13_bad_psk_binder` (and add PSK-only coverage with/without `WOLFSSL_PSK_ID_PROTECTION`) to assert requirement-compliant behavior.\"\n  ]\n}"
+  },
+  "codex_calls": 2,
+  "final_decision": "Confirmed mismatch."
 }

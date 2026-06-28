@@ -1,58 +1,58 @@
-{
-  "status": "done",
-  "input": "D:\\project\\conditionFuzzingPaper\\result.json",
-  "output": "D:\\project\\conditionFuzzingPaper\\output\\recheck_from_current_result.json",
-  "total_items": 1,
-  "matched_index": 0,
-  "matched_result": "不满足",
-  "first_reason": "代码在 binder 校验失败时直接设置 `ret = BAD_BINDER` 并 `goto cleanup`（6254-6284），而不是按“没有有效 PSK identity”继续处理。后续若 `current == NULL` 且启用 `WOLFSSL_PSK_ID_PROTECTION`，还会再次返回 `BAD_BINDER`（6293-6303），与描述要求“对仅支持 PSK 的服务器应等同于无有效 PSK identity”不符。",
-  "review_stage": {
-    "model": "gpt-5.4",
-    "result": {
-      "certain_inconsistent": true,
-      "verdict": "不一致",
-      "analysis": "mock: reason 存在前后矛盾。",
-      "conflicts": [
-        "mock_conflict_1",
-        "mock_conflict_2"
-      ],
-      "confidence": 0.95
-    }
-  },
-  "need_test_with_gpt_5_3_codex": true,
-  "test_stage": {
-    "model": "gpt-5.3-codex",
-    "result": {
-      "tested": true,
-      "checks": [
-        {
-          "name": "术语映射",
-          "method": "mock",
-          "evidence": "mock_evidence",
-          "result": "fail"
-        },
-        {
-          "name": "条件动作链",
-          "method": "mock",
-          "evidence": "mock_evidence",
-          "result": "fail"
-        },
-        {
-          "name": "结论支撑度",
-          "method": "mock",
-          "evidence": "mock_evidence",
-          "result": "fail"
-        }
-      ],
-      "final_verdict": "确实不一致",
-      "confirmed_inconsistent": true,
-      "confidence": 0.92,
-      "next_actions": [
-        "补充反例片段",
-        "回溯原始 snippet"
-      ]
-    }
-  },
-  "llm_calls": 2,
-  "final_decision": "最终结论：确实不一致。"
+{
+  "status": "done",
+  "input": "D:\\project\\conditionFuzzingPaper\\result.json",
+  "output": "D:\\project\\conditionFuzzingPaper\\output\\recheck_from_current_result.json",
+  "total_items": 1,
+  "matched_index": 0,
+  "matched_result": "non-English text removedsatisfied",
+  "first_reason": "non-English text removed `goto cleanup`(6254-6284),non-English text removed `WOLFSSL_PSK_ID_PROTECTION`,non-English text removed `BAD_BINDER`(6293-6303),non-English text removed.",
+  "review_stage": {
+    "model": "gpt-5.4",
+    "result": {
+      "certain_inconsistent": true,
+      "verdict": "non-English text removed",
+      "analysis": "mock: reason non-English text removed.",
+      "conflicts": [
+        "mock_conflict_1",
+        "mock_conflict_2"
+      ],
+      "confidence": 0.95
+    }
+  },
+  "need_test_with_gpt_5_3_codex": true,
+  "test_stage": {
+    "model": "gpt-5.3-codex",
+    "result": {
+      "tested": true,
+      "checks": [
+        {
+          "name": "non-English text removed",
+          "method": "mock",
+          "evidence": "mock_evidence",
+          "result": "fail"
+        },
+        {
+          "name": "non-English text removed",
+          "method": "mock",
+          "evidence": "mock_evidence",
+          "result": "fail"
+        },
+        {
+          "name": "non-English text removed",
+          "method": "mock",
+          "evidence": "mock_evidence",
+          "result": "fail"
+        }
+      ],
+      "final_verdict": "non-English text removed",
+      "confirmed_inconsistent": true,
+      "confidence": 0.92,
+      "next_actions": [
+        "non-English text removed",
+        "non-English text removed snippet"
+      ]
+    }
+  },
+  "llm_calls": 2,
+  "final_decision": "non-English text removed."
 }

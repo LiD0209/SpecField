@@ -1,50 +1,50 @@
-001	部分满足	clean_session=0 断连后会保留订阅关系，但未实现离线 QoS1/QoS2 消息存储。
-002	满足	SUBSCRIBE 编码固定使用 QoS1，低 4 位为 0010。
-003	满足	UNSUBSCRIBE 编码固定使用 QoS1，低 4 位为 0010。
-004	不满足	SUBSCRIBE 入站仅校验 packet type，不校验固定报头低 4 位，也未在该场景显式断链。
-005	不满足	UNSUBSCRIBE 与 ID4 同类问题：无保留位值校验，缺少该违规场景的断链路径。
-006	满足	PUBREL 发送路径强制 QoS1，固定报头低 4 位为 0010。
-007	满足	同 ID6，PUBREL 编码常量符合 0010 语义。
-008	不满足	PUBREL 入站只校验类型，不校验低 4 位是否为 0010，违规包不会按规范断链。
-009	不满足	同 ID8，PUBREL 保留位违规未被拒绝并断链。
-010	满足	SUBSCRIBE 固定报头编码常量满足要求。
-011	不满足	SUBSCRIBE 非 0010 的非法固定报头未被显式识别并关闭连接。
-012	满足	UNSUBSCRIBE 固定报头编码常量满足要求。
-013	不满足	UNSUBSCRIBE 非 0010 的非法固定报头未触发规范要求的断链。
-014	部分满足	与 ID1 同类：仅持久化订阅，不持久化离线 QoS>0 消息。
-015	部分满足	clean_session=0 可重关联历史订阅，但未恢复离线在途消息状态。
-016	满足	clean_session=1 分支会移除同 client_id 历史订阅并开启新会话语义。
-017	不满足	零长度 ClientId 未强制要求 clean_session=1；客户端和服务端均未做该联动约束。
-018	不满足	空 ClientId + clean_session=0 未返回 0x02 并关闭连接，MQTT5 路径会进入自动分配 ID。
-019	不满足	同 ID17：空 ClientId 场景未绑定 clean_session=1。
-020	不满足	空 ClientId + clean_session=0 的违规路径未执行 0x02 + 断链。
-021	部分满足	可确认 clean_session=1 时 CONNACK flags 固定为 0，但该条规则原文信息不完整。
-022	满足	clean_session=1 路径会删除历史订阅并进入新会话。
-023	不适用	该条为客户端重连策略建议（should），不属于 broker 协议强制校验项。
-024	不适用	该条为客户端使用建议（随机 ClientId 与 clean_session=0 组合的使用约束），非 broker 强制规则。
-025	部分满足	实现保留 clean_session=0 的订阅会话语义，但离线 QoS 消息持久化缺失。
-026	不适用	该条为客户端生命周期建议，不是服务端协议接收校验规则。
-027	不满足	clean_session=0 重连后未实现未确认 PUBLISH/PUBREL 的离线重发机制。
-028	部分满足	clean_session=0 的“会话恢复”仅在订阅重关联层面实现。
-029	不满足	接收链路未执行 UTF-8 well-formed 校验，无法保证 ill-formed 时断链。
-030	满足	服务端允许零长度 ClientId（可选行为），并在 MQTT5 路径进入特殊处理。
-031	部分满足	实现未见 BOM 去除逻辑（不会主动 strip），但也未显式做 U+FEFF 语义解释校验。
-032	不满足	未发现对 UTF-8 代理区编码（U+D800~U+DFFF）的拒绝校验。
-033	不满足	未发现 U+0000 编码拒绝校验。
-034	不满足	含 U+0000 的 UTF-8 字符串未触发规范要求的断链。
-035	满足	CONNECT 负载编码与解码顺序均以 ClientId 为首，后续字段顺序符合规范。
-036	满足	ClientId 为 CONNECT 负载首字段且必经解析路径。
-037	满足	实现中 ClientId 字段是 CONNECT 的必经字段。
-038	满足	除 ClientId 外，Will/用户名/密码均作为可选字段处理。
-039	不满足	ClientId UTF-8 合法性（well-formed）未校验，无法保证非法输入断链。
-040	不满足	ClientId 未显式过滤 U+0000 编码，也未在该场景强制断链。
-041	部分满足	协议层长度字段覆盖 0..65535，但 broker 侧有实现上限（如静态内存宏限制）。
-042	满足	代码路径可识别并处理零长度 ClientId。
-043	不满足	零长度 ClientId + clean_session=0 未执行 0x02 拒绝并断链。
-044	部分满足	MQTT5 路径会给空 ClientId 分配 `auto-xxxx`，但覆盖范围受协议版本与实现条件限制。
-045	部分满足	同 ID44：有服务端分配 ID 能力，但并非统一覆盖所有允许空 ID 场景。
-046	部分满足	ClientId 超长拒绝路径会返回 0x02 并断链，但对其他应拒绝场景覆盖不全。
-047	满足	0x02(Identifier rejected) 语义在枚举定义和拒绝路径中均有对应。
-048	部分满足	实现可接受常见合法 ClientId，但未见 1..23 与字符集白名单的显式校验逻辑。
-049	部分满足	存在 0x02 拒绝路径，但应拒绝的空 ClientId+clean_session=0 场景未覆盖。
-050	不满足	通用 UTF-8 字符串接收链路未做 well-formed 校验。
+001	partialsatisfied	clean_session=0 [non-English text removed]。
+002	satisfied	SUBSCRIBE [non-English text removed] 0010。
+003	satisfied	UNSUBSCRIBE [non-English text removed] 0010。
+004	[non-English text removed]validation packet type，[non-English text removed]。
+005	[non-English text removed]satisfied	UNSUBSCRIBE [non-English text removed]path。
+006	satisfied	PUBREL [non-English text removed] 0010。
+007	satisfied	same as ID6，PUBREL [non-English text removed] 0010 semantic。
+008	[non-English text removed]。
+009	[non-English text removed]satisfied	same as ID8，PUBREL [non-English text removed]。
+010	satisfied	SUBSCRIBE [non-English text removed]。
+011	[non-English text removed]connection。
+012	satisfied	UNSUBSCRIBE [non-English text removed]。
+013	[non-English text removed]satisfied	UNSUBSCRIBE [non-English text removed]。
+014	partialsatisfied	[non-English text removed]。
+015	partialsatisfied	clean_session=0 [non-English text removed]status。
+016	satisfied	clean_session=1 [non-English text removed]semantic。
+017	[non-English text removed] clean_session=1；client[non-English text removed]。
+018	[non-English text removed] ClientId + clean_session=0 [non-English text removed]connection，MQTT5 path[non-English text removed] ID。
+019	[non-English text removed]satisfied	same as ID17：[non-English text removed] clean_session=1。
+020	[non-English text removed] ClientId + clean_session=0 [non-English text removed]。
+021	partialsatisfied	[non-English text removed]。
+022	satisfied	clean_session=1 path[non-English text removed]。
+023	not applicable	[non-English text removed] broker protocolmandatoryvalidation[non-English text removed]。
+024	not applicable	[non-English text removed]。
+025	partialsatisfied	[non-English text removed]。
+026	not applicable	[non-English text removed]。
+027	[non-English text removed]satisfied	clean_session=0 [non-English text removed]。
+028	partialsatisfied	clean_session=0 [non-English text removed]。
+029	[non-English text removed] UTF-8 well-formed validation，[non-English text removed]。
+030	satisfied	server[non-English text removed]processing。
+031	partialsatisfied	[non-English text removed]validation。
+032	[non-English text removed]rejectionvalidation。
+033	[non-English text removed]satisfied	not found U+0000 [non-English text removed]rejectionvalidation。
+034	[non-English text removed]。
+035	satisfied	CONNECT [non-English text removed]。
+036	satisfied	ClientId [non-English text removed]path。
+037	satisfied	[non-English text removed]medium ClientId field[non-English text removed]field。
+038	satisfied	[non-English text removed]fieldprocessing。
+039	[non-English text removed]satisfied	ClientId UTF-8 valid[non-English text removed]。
+040	[non-English text removed]。
+041	partialsatisfied	protocol[non-English text removed]）。
+042	satisfied	[non-English text removed]length ClientId。
+043	[non-English text removed]length ClientId + clean_session=0 [non-English text removed]。
+044	partialsatisfied	MQTT5 path[non-English text removed]。
+045	partialsatisfied	same as ID44：[non-English text removed]。
+046	partialsatisfied	ClientId [non-English text removed]。
+047	satisfied	0x02(Identifier rejected) semantic[non-English text removed]。
+048	partialsatisfied	[non-English text removed]explicitvalidationlogic。
+049	partialsatisfied	[non-English text removed] ClientId+clean_session=0 [non-English text removed]。
+050	[non-English text removed] well-formed validation。

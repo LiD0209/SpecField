@@ -1,6 +1,0 @@
-﻿linked BoringSSL probe: PASS
-client behavior: HRR cookie extension is parsed, stored, and echoed in the second ClientHello
-server behavior: product HRR sends supported_versions/key_share only and explicitly never requests a cookie
-server verification: no product stateless HRR cookie generation or validation path was found in tls13_server.cc
-runner coverage: runner covers BoringSSL as client handling HRR cookie; runner server can simulate SendHelloRetryRequestCookie
-conclusion: RFC 9147 ID 106 is confirmed partially satisfied

@@ -40,13 +40,13 @@ This is a `SHOULD`, not a `MUST`, so the result is partial rather than a hard pr
 
 ### MTU and Initial Fragmentation Support Exist
 
-wolfSSL exposes DTLS MTU state and setters. In `D:\project\wolfssl-master\wolfssl\internal.h`, the connection state includes:
+wolfSSL exposes DTLS MTU state and setters. In `wolfssl-master/wolfssl/internal.h`, the connection state includes:
 
 ```c
 word16          dtlsMtuSz;
 ```
 
-In `D:\project\wolfssl-master\src\ssl.c`, the API lets callers set an MTU:
+In `wolfssl-master/src/ssl.c`, the API lets callers set an MTU:
 
 ```c
 int wolfSSL_dtls_set_mtu(WOLFSSL* ssl, word16 newMtu)
@@ -57,7 +57,7 @@ int wolfSSL_dtls_set_mtu(WOLFSSL* ssl, word16 newMtu)
 }
 ```
 
-For DTLS 1.3 handshake sends, `D:\project\wolfssl-master\src\dtls13.c` computes the current maximum plaintext size and fragments if needed:
+For DTLS 1.3 handshake sends, `wolfssl-master/src/dtls13.c` computes the current maximum plaintext size and fragments if needed:
 
 ```c
 maxFrag = wolfssl_local_GetMaxPlaintextSize(ssl);
@@ -85,7 +85,7 @@ This satisfies the initial fragmentation part: wolfSSL can size initial handshak
 
 ### Retransmission Buffers Store Concrete Records
 
-In `D:\project\wolfssl-master\wolfssl\internal.h`, the retransmission record stores already-built record data and its length:
+In `wolfssl-master/wolfssl/internal.h`, the retransmission record stores already-built record data and its length:
 
 ```c
 typedef struct Dtls13RtxRecord {
@@ -109,7 +109,7 @@ The audited source does not use `triggeredRtxs` to count repeated failed retrans
 
 ### Timeout Retransmission Resends the Buffered Records
 
-In `D:\project\wolfssl-master\src\dtls13.c`, `Dtls13RtxTimeout` handles timeout work and then retransmits buffered messages:
+In `wolfssl-master/src/dtls13.c`, `Dtls13RtxTimeout` handles timeout work and then retransmits buffered messages:
 
 ```c
 /* Increase timeout on long timeout */
@@ -151,10 +151,10 @@ The local wolfSSL tests include DTLS MTU and fragmentation coverage:
 
 | Test location | Covered behavior |
 |---|---|
-| `D:\project\wolfssl-master\tests\api.c`, `test_wolfSSL_dtls_set_mtu` | DTLS MTU setter accepts and rejects expected values |
-| `D:\project\wolfssl-master\tests\api\test_dtls.c`, `test_dtls_mtu_fragment_headroom` | DTLS records fit within a configured MTU after normal send sizing |
-| `D:\project\wolfssl-master\tests\api\test_dtls.c`, `test_dtls_mtu_split_messages` | DTLS message splitting under configured MTU |
-| `D:\project\wolfssl-master\tests\api\test_dtls.c`, DTLS retransmission interval test | Retransmission timing behavior |
+| `wolfssl-master/tests/api/test_dtls.c`, `test_wolfSSL_dtls_set_mtu` | DTLS MTU setter accepts and rejects expected values |
+| `wolfssl-master/tests/api/test_dtls.c`, `test_dtls_mtu_fragment_headroom` | DTLS records fit within a configured MTU after normal send sizing |
+| `wolfssl-master/tests/api/test_dtls.c`, `test_dtls_mtu_split_messages` | DTLS message splitting under configured MTU |
+| `wolfssl-master/tests/api/test_dtls.c`, DTLS retransmission interval test | Retransmission timing behavior |
 
 I did not find a test that simulates unknown PMTU plus repeated no-response retransmissions and verifies that later retransmissions use smaller records.
 
@@ -165,19 +165,19 @@ I did not find a test that simulates unknown PMTU plus repeated no-response retr
 I added a focused C harness:
 
 ```text
-D:\project\SpecTrace\test-wolfssl-dtls\rfc9147\051-100\repro_pmtu_backoff_093_source_check.c
+test-wolfssl-dtls/rfc9147/051-100/repro_pmtu_backoff_093_source_check.c
 ```
 
-Build command run from `D:\project`:
+Build command run from the repository root:
 
 ```text
-D:\LLVM\bin\clang.exe D:\project\SpecTrace\test-wolfssl-dtls\rfc9147\051-100\repro_pmtu_backoff_093_source_check.c -o D:\project\SpecTrace\test-wolfssl-dtls\rfc9147\051-100\repro_pmtu_backoff_093_source_check.exe
+clang test-wolfssl-dtls/rfc9147/051-100/repro_pmtu_backoff_093_source_check.c -o test-wolfssl-dtls/rfc9147/051-100/repro_pmtu_backoff_093_source_check.exe
 ```
 
 The executable was run and its output was saved here:
 
 ```text
-D:\project\SpecTrace\test-wolfssl-dtls\rfc9147\051-100\repro_pmtu_backoff_093_source_check.log
+test-wolfssl-dtls/rfc9147/051-100/repro_pmtu_backoff_093_source_check.log
 ```
 
 Observed output:
@@ -194,7 +194,7 @@ PASS retransmission counter is not used for PMTU backoff
 RESULT confirmed: wolfSSL fragments initial DTLS 1.3 sends, but repeated retransmission does not back off to smaller records when PMTU is unknown
 ```
 
-This is a compiled source-behavior harness. It verifies the structural conditions for the finding: initial fragmentation exists, timeout retransmission exists, but the retransmission path lacks a PMTU-unknown smaller-record fallback. I did not rerun a full wolfSSL unit-test binary in this turn because no reusable `unit.test.exe` or `wolfssl.lib` was present under `D:\project\wolfssl-master`, and the existing CMake cache under this test directory has `CMAKE_MAKE_PROGRAM-NOTFOUND`.
+This is a compiled source-behavior harness. It verifies the structural conditions for the finding: initial fragmentation exists, timeout retransmission exists, but the retransmission path lacks a PMTU-unknown smaller-record fallback. I did not rerun a full wolfSSL unit-test binary in this turn because no reusable `unit.test.exe` or `wolfssl.lib` was present under `wolfssl-master`, and the existing CMake cache under this test directory has `CMAKE_MAKE_PROGRAM-NOTFOUND`.
 
 ## Inconsistency
 

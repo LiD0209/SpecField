@@ -1,929 +1,929 @@
-{
-  "meta": {
-    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
-    "scope": "source_changes_index_150_to_199",
-    "display_scope": "151-200",
-    "method": "static_code_comparison",
-    "target": "wolfMQTT-master",
-    "generated_at": "2026-04-25T21:20:23",
-    "counts": {
-      "满足": 16,
-      "部分满足": 16,
-      "不满足": 18,
-      "不适用": 0,
-      "待确认": 0
-    },
-    "evidence_validation": {
-      "total_references": 153,
-      "missing_files": [],
-      "out_of_range": [],
-      "bad_format": [],
-      "all_locatable": true
-    }
-  },
-  "results": [
-    {
-      "id": 151,
-      "source_index": 150,
-      "variable_name": "Payload",
-      "change_action": "must be present and contain at least one Topic Filter; invalid if absent",
-      "change_condition": "For an UNSUBSCRIBE packet.",
-      "old_value": "no payload",
-      "new_value": "at least one Topic Filter",
-      "related_state_or_step": "UNSUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0011",
-      "status": "不满足",
-      "comment": "UNSUBSCRIBE 解码允许空 payload（topic_count=0），未落实“至少一个 Topic Filter”约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2091",
-        "wolfMQTT-master/src/mqtt_packet.c:2154",
-        "wolfMQTT-master/src/mqtt_packet.c:2181",
-        "wolfMQTT-master/src/mqtt_broker.c:3141"
-      ]
-    },
-    {
-      "id": 152,
-      "source_index": 151,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the DISCONNECT Packet.",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "DISCONNECT packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "不满足",
-      "comment": "Broker 接收 DISCONNECT 时按包类型直接处理，未校验 Remaining Length/payload 是否为 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3509",
-        "wolfMQTT-master/src/mqtt_broker.c:3579",
-        "wolfMQTT-master/src/mqtt_broker.c:3588"
-      ]
-    },
-    {
-      "id": 153,
-      "source_index": 152,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the PINGREQ Packet.",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PINGREQ packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "不满足",
-      "comment": "Broker 接收 PINGREQ 时未验证 Remaining Length 是否为 0，直接回复 PINGRESP。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3509",
-        "wolfMQTT-master/src/mqtt_broker.c:3576",
-        "wolfMQTT-master/src/mqtt_broker.c:2591"
-      ]
-    },
-    {
-      "id": 154,
-      "source_index": 153,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the PINGRESP Packet.",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PINGRESP packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "部分满足",
-      "comment": "发送侧 PINGRESP 为固定头+0 长度；接收侧 PINGRESP 解码未强制 remain_len=0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2591",
-        "wolfMQTT-master/src/mqtt_broker.c:2592",
-        "wolfMQTT-master/src/mqtt_packet.c:2389",
-        "wolfMQTT-master/src/mqtt_packet.c:2400"
-      ]
-    },
-    {
-      "id": 155,
-      "source_index": 154,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the PUBCOMP Packet",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PUBCOMP packet format",
-      "source_chunk_id": "chunk_0010",
-      "status": "部分满足",
-      "comment": "PUBCOMP 编码在 MQTT 3.x 下仅 packet id（remain_len=2）；解码未严格限制为恰好 2。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_packet.c:1563",
-        "wolfMQTT-master/src/mqtt_packet.c:1632",
-        "wolfMQTT-master/src/mqtt_broker.c:3390"
-      ]
-    },
-    {
-      "id": 156,
-      "source_index": 155,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the PUBREL Packet",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PUBREL packet format",
-      "source_chunk_id": "chunk_0010",
-      "status": "部分满足",
-      "comment": "PUBREL 编码在 MQTT 3.x 下仅 packet id（remain_len=2）；解码未严格限制为恰好 2。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_packet.c:1563",
-        "wolfMQTT-master/src/mqtt_packet.c:1632",
-        "wolfMQTT-master/src/mqtt_broker.c:3426"
-      ]
-    },
-    {
-      "id": 157,
-      "source_index": 156,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "For the UNSUBACK Packet.",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "UNSUBACK packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "满足",
-      "comment": "UNSUBACK 在 MQTT 3.x 编码仅包含 packet id，不包含 payload。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2280",
-        "wolfMQTT-master/src/mqtt_packet.c:2308",
-        "wolfMQTT-master/src/mqtt_packet.c:2319"
-      ]
-    },
-    {
-      "id": 158,
-      "source_index": 157,
-      "variable_name": "Payload",
-      "change_action": "invalid if value check fails",
-      "change_condition": "If a SUBSCRIBE packet has no payload",
-      "old_value": "no payload",
-      "new_value": "",
-      "related_state_or_step": "SUBSCRIBE protocol violation check",
-      "source_chunk_id": "chunk_0010",
-      "status": "不满足",
-      "comment": "SUBSCRIBE 解码允许 topic_count=0，空 payload 未在解码层判为非法。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1865",
-        "wolfMQTT-master/src/mqtt_packet.c:1898",
-        "wolfMQTT-master/src/mqtt_broker.c:3066",
-        "wolfMQTT-master/src/mqtt_broker.c:3111"
-      ]
-    },
-    {
-      "id": 159,
-      "source_index": 158,
-      "variable_name": "Payload",
-      "change_action": "derived/computed from another field",
-      "change_condition": "for PUBLISH Packet payload length calculation",
-      "old_value": "",
-      "new_value": "length of payload = Remaining Length minus length of variable header",
-      "related_state_or_step": "PUBLISH payload length determination",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBLISH payload 长度按 Remaining Length 减去 variable header 长度计算。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1497",
-        "wolfMQTT-master/src/mqtt_packet.c:1500",
-        "wolfMQTT-master/src/mqtt_packet.c:1505"
-      ]
-    },
-    {
-      "id": 160,
-      "source_index": 159,
-      "variable_name": "Payload",
-      "change_action": "must not be present / must not be stored",
-      "change_condition": "for a retained message on the Server",
-      "old_value": "",
-      "new_value": "zero byte retained message not stored",
-      "related_state_or_step": "retained-message storage validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "RETAIN=1 且 payload 长度为 0 时执行删除，不会存储零字节 retained 消息。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3251",
-        "wolfMQTT-master/src/mqtt_broker.c:3252",
-        "wolfMQTT-master/src/mqtt_broker.c:3267"
-      ]
-    },
-    {
-      "id": 161,
-      "source_index": 160,
-      "variable_name": "Payload",
-      "change_action": "must equal",
-      "change_condition": "for retained-message handling in a PUBLISH Packet",
-      "old_value": "",
-      "new_value": "zero bytes",
-      "related_state_or_step": "retained-message removal handling",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "实现了“retained + payload=0 => 删除 retained message”的行为。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3252",
-        "wolfMQTT-master/src/mqtt_broker.c:3253",
-        "wolfMQTT-master/src/mqtt_broker.c:2456"
-      ]
-    },
-    {
-      "id": 162,
-      "source_index": 161,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "for the PUBACK Packet",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PUBACK validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "部分满足",
-      "comment": "PUBACK 编码无 payload；解码侧仅校验 remain_len>=2，未做 MQTT3 固定长度严格校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_packet.c:1632",
-        "wolfMQTT-master/src/mqtt_broker.c:3342"
-      ]
-    },
-    {
-      "id": 163,
-      "source_index": 162,
-      "variable_name": "Payload",
-      "change_action": "must be absent",
-      "change_condition": "for the PUBREC Packet",
-      "old_value": "",
-      "new_value": "no payload",
-      "related_state_or_step": "PUBREC validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "部分满足",
-      "comment": "PUBREC 编码无 payload；解码侧同样未做 MQTT3 固定长度严格校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_packet.c:1632",
-        "wolfMQTT-master/src/mqtt_broker.c:3343"
-      ]
-    },
-    {
-      "id": 164,
-      "source_index": 163,
-      "variable_name": "Payload",
-      "change_action": "validated range check",
-      "change_condition": "in a PUBLISH Packet",
-      "old_value": "",
-      "new_value": "zero length allowed",
-      "related_state_or_step": "PUBLISH payload validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBLISH payload 支持 0 长度并有边界处理。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1500",
-        "wolfMQTT-master/src/mqtt_packet.c:1505",
-        "wolfMQTT-master/src/mqtt_broker.c:3278"
-      ]
-    },
-    {
-      "id": 165,
-      "source_index": 164,
-      "variable_name": "QoS",
-      "change_action": "must not equal 0 when Packet Identifier is required; if QoS is set to 0 then Packet Identifier must be absent",
-      "change_condition": "A PUBLISH Packet contains Packet Identifier.",
-      "old_value": "",
-      "new_value": "0",
-      "related_state_or_step": "PUBLISH packet validation",
-      "source_chunk_id": "chunk_0017",
-      "status": "部分满足",
-      "comment": "编码侧满足 QoS>0 才携带 packet id 且非 0；解码侧未校验 packet id 非 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1308",
-        "wolfMQTT-master/src/mqtt_packet.c:1309",
-        "wolfMQTT-master/src/mqtt_packet.c:1362",
-        "wolfMQTT-master/src/mqtt_packet.c:1443",
-        "wolfMQTT-master/src/mqtt_packet.c:1449"
-      ]
-    },
-    {
-      "id": 166,
-      "source_index": 165,
-      "variable_name": "QoS",
-      "change_action": "derived/computed from another field",
-      "change_condition": "For Payload Messages sent in response to a Subscription",
-      "old_value": "",
-      "new_value": "the minimum of the QoS of the originally published message and the maximum QoS granted by the Server",
-      "related_state_or_step": "PUBLISH delivery after subscription",
-      "source_chunk_id": "chunk_0010",
-      "status": "满足",
-      "comment": "下行转发 QoS 按 min(发布 QoS, 订阅 QoS) 计算。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_broker.c:3300",
-        "wolfMQTT-master/src/mqtt_broker.c:2488"
-      ]
-    },
-    {
-      "id": 167,
-      "source_index": 166,
-      "variable_name": "QoS",
-      "change_action": "validated range check",
-      "change_condition": "For unacknowledged PUBLISH Packets to be re-sent on reconnect with CleanSession set to 0",
-      "old_value": "",
-      "new_value": "> 0",
-      "related_state_or_step": "re-sending unacknowledged PUBLISH packets",
-      "source_chunk_id": "chunk_0013",
-      "status": "不满足",
-      "comment": "未实现 clean_session=0 重连后未确认 PUBLISH 自动重发路径。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:1397",
-        "wolfMQTT-master/src/mqtt_broker.c:3497",
-        "wolfMQTT-master/src/mqtt_client.c:3031",
-        "wolfMQTT-master/src/mqtt_client.c:3042"
-      ]
-    },
-    {
-      "id": 168,
-      "source_index": 167,
-      "variable_name": "QoS",
-      "change_action": "set to constant",
-      "change_condition": "In the QoS 0 delivery protocol, when the Sender sends a PUBLISH packet",
-      "old_value": "",
-      "new_value": "0",
-      "related_state_or_step": "Sender sends PUBLISH in QoS 0 delivery protocol",
-      "source_chunk_id": "chunk_0012",
-      "status": "满足",
-      "comment": "QoS0 场景转发时 out_pub.qos 保持为 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_broker.c:3300"
-      ]
-    },
-    {
-      "id": 169,
-      "source_index": 168,
-      "variable_name": "QoS",
-      "change_action": "set to constant",
-      "change_condition": "In the QoS 1 delivery protocol, when the Sender sends a PUBLISH packet",
-      "old_value": "",
-      "new_value": "1",
-      "related_state_or_step": "QoS 1 PUBLISH sending",
-      "source_chunk_id": "chunk_0012",
-      "status": "部分满足",
-      "comment": "QoS1 发送可在路径上实现，但缺少统一强约束防止异常 QoS 值。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1343",
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_broker.c:3080"
-      ]
-    },
-    {
-      "id": 170,
-      "source_index": 169,
-      "variable_name": "QoS",
-      "change_action": "set to constant",
-      "change_condition": "In the QoS 2 delivery protocol, when the Sender sends a PUBLISH packet",
-      "old_value": "",
-      "new_value": "2",
-      "related_state_or_step": "QoS 2 PUBLISH sending",
-      "source_chunk_id": "chunk_0012",
-      "status": "部分满足",
-      "comment": "QoS2 发送可在路径上实现，但缺少统一边界与非法值拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1343",
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_broker.c:3080"
-      ]
-    },
-    {
-      "id": 171,
-      "source_index": 170,
-      "variable_name": "QoS",
-      "change_action": "must not equal 0 when Packet Identifier is required; if equal to 0 then Packet Identifier must be absent",
-      "change_condition": "PUBLISH Packet Identifier presence check",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "PUBLISH packet validation",
-      "source_chunk_id": "chunk_0005",
-      "status": "部分满足",
-      "comment": "QoS 与 packet id 存在性关系基本成立，但 packet id 非 0 的接收校验缺失。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1308",
-        "wolfMQTT-master/src/mqtt_packet.c:1362",
-        "wolfMQTT-master/src/mqtt_packet.c:1443",
-        "wolfMQTT-master/src/mqtt_packet.c:1449"
-      ]
-    },
-    {
-      "id": 172,
-      "source_index": 171,
-      "variable_name": "QoS",
-      "change_action": "validated range check with comparison > 0",
-      "change_condition": "PUBLISH packet case where Packet Identifier presence is constrained.",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "packet construction/validation",
-      "source_chunk_id": "chunk_0017",
-      "status": "部分满足",
-      "comment": "QoS>0 与 packet id 关联存在，但缺少完整的 non-zero 校验闭环。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1309",
-        "wolfMQTT-master/src/mqtt_packet.c:1443",
-        "wolfMQTT-master/src/mqtt_packet.c:1449"
-      ]
-    },
-    {
-      "id": 173,
-      "source_index": 172,
-      "variable_name": "QoS",
-      "change_action": "derived/computed from another field",
-      "change_condition": "Payload Messages sent in response to a Subscription",
-      "old_value": "",
-      "new_value": "the minimum of the QoS of the originally published message and the maximum QoS granted by the Server",
-      "related_state_or_step": "message delivery after subscription",
-      "source_chunk_id": "chunk_0019",
-      "status": "满足",
-      "comment": "响应订阅转发消息的 QoS 由发布 QoS 与订阅 QoS 推导（取较小值）。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_broker.c:2488"
-      ]
-    },
-    {
-      "id": 174,
-      "source_index": 173,
-      "variable_name": "QoS",
-      "change_action": "set/overwrite/select",
-      "change_condition": "SUBACK Packet sent by the Server to the Client for each Topic Filter/QoS pair",
-      "old_value": "",
-      "new_value": "either the maximum QoS that was granted for that Subscription or indicate that the subscription failed",
-      "related_state_or_step": "SUBACK return code generation",
-      "source_chunk_id": "chunk_0019",
-      "status": "满足",
-      "comment": "SUBACK 对每个 topic tuple 返回一个结果码，并对请求 QoS 做上限裁剪。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3073",
-        "wolfMQTT-master/src/mqtt_broker.c:3080",
-        "wolfMQTT-master/src/mqtt_broker.c:3106",
-        "wolfMQTT-master/src/mqtt_broker.c:3111"
-      ]
-    },
-    {
-      "id": 175,
-      "source_index": 174,
-      "variable_name": "QoS",
-      "change_action": "derived/computed from another field",
-      "change_condition": "Server delivering the message to the Client for matching subscriptions",
-      "old_value": "",
-      "new_value": "maximum QoS of all the matching subscriptions",
-      "related_state_or_step": "message delivery to Client",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "单订阅/同过滤器更新场景可满足，但重叠订阅“取最大 QoS”语义未形成统一汇总逻辑。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:1470",
-        "wolfMQTT-master/src/mqtt_broker.c:1478",
-        "wolfMQTT-master/src/mqtt_broker.c:3291",
-        "wolfMQTT-master/src/mqtt_broker.c:3299"
-      ]
-    },
-    {
-      "id": 176,
-      "source_index": 175,
-      "variable_name": "QoS",
-      "change_action": "validated range check",
-      "change_condition": "When a Client reconnects with CleanSession set to 0 and unacknowledged PUBLISH Packets are re-sent",
-      "old_value": "",
-      "new_value": "> 0",
-      "related_state_or_step": "re-send unacknowledged PUBLISH Packets",
-      "source_chunk_id": "chunk_0020",
-      "status": "不满足",
-      "comment": "clean_session=0 重连后的未确认 PUBLISH 重发机制缺失，无法验证该路径下 QoS 约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3497",
-        "wolfMQTT-master/src/mqtt_broker.c:3581",
-        "wolfMQTT-master/src/mqtt_client.c:3031"
-      ]
-    },
-    {
-      "id": 177,
-      "source_index": 176,
-      "variable_name": "QoS",
-      "change_action": "must equal",
-      "change_condition": "When evaluating DUP flag requirement for PUBLISH",
-      "old_value": "",
-      "new_value": "0",
-      "related_state_or_step": "PUBLISH fixed header encoding",
-      "source_chunk_id": "chunk_0008",
-      "status": "部分满足",
-      "comment": "QoS0 + DUP 约束未在通用编码接口强校验，主要依赖调用约定。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1343",
-        "wolfMQTT-master/src/mqtt_broker.c:3305"
-      ]
-    },
-    {
-      "id": 178,
-      "source_index": 177,
-      "variable_name": "QoS",
-      "change_action": "set to constant",
-      "change_condition": "When sending a PUBLISH packet in the described case",
-      "old_value": "",
-      "new_value": "0",
-      "related_state_or_step": "send PUBLISH packet",
-      "source_chunk_id": "chunk_0020",
-      "status": "部分满足",
-      "comment": "描述场景可实现指定 QoS，但未建立全局强制约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3299",
-        "wolfMQTT-master/src/mqtt_packet.c:1343"
-      ]
-    },
-    {
-      "id": 179,
-      "source_index": 178,
-      "variable_name": "QoS",
-      "change_action": "membership check",
-      "change_condition": "in the SUBSCRIBE payload",
-      "old_value": "",
-      "new_value": "0,1 or 2",
-      "related_state_or_step": "SUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0019",
-      "status": "不满足",
-      "comment": "SUBSCRIBE 请求 QoS 未做集合校验，options 仅取低 2 位，值 3 会被接受并后续裁剪。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1890",
-        "wolfMQTT-master/src/mqtt_broker.c:3080",
-        "wolfMQTT-master/src/mqtt_broker.c:3083"
-      ]
-    },
-    {
-      "id": 180,
-      "source_index": 179,
-      "variable_name": "QoS",
-      "change_action": "invalid if value check fails",
-      "change_condition": "in the SUBSCRIBE payload, if value is not 0,1,2",
-      "old_value": "not 0,1 or 2",
-      "new_value": "",
-      "related_state_or_step": "SUBSCRIBE malformed packet handling",
-      "source_chunk_id": "chunk_0019",
-      "status": "不满足",
-      "comment": "SUBSCRIBE 中非法 Requested QoS 未触发协议错误断链。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1890",
-        "wolfMQTT-master/src/mqtt_broker.c:3080",
-        "wolfMQTT-master/src/mqtt_broker.c:3570"
-      ]
-    },
-    {
-      "id": 181,
-      "source_index": 180,
-      "variable_name": "QoS",
-      "change_action": "derived/computed from another field",
-      "change_condition": "receiver of a PUBLISH Packet responding",
-      "old_value": "",
-      "new_value": "response determined by the QoS in the PUBLISH Packet",
-      "related_state_or_step": "PUBLISH response selection",
-      "source_chunk_id": "chunk_0019",
-      "status": "满足",
-      "comment": "接收 PUBLISH 后的响应类型由 QoS 推导：QoS1->PUBACK，QoS2->PUBREC，QoS0 无应答。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3333",
-        "wolfMQTT-master/src/mqtt_broker.c:3342",
-        "wolfMQTT-master/src/mqtt_broker.c:3343"
-      ]
-    },
-    {
-      "id": 182,
-      "source_index": 181,
-      "variable_name": "QoS",
-      "change_action": "selected from offered list",
-      "change_condition": "when Clients have overlapping subscriptions that match a published message",
-      "old_value": "",
-      "new_value": "maximum QoS of all the matching subscriptions",
-      "related_state_or_step": "Server delivery selection",
-      "source_chunk_id": "chunk_0009",
-      "status": "部分满足",
-      "comment": "存在按订阅 QoS 限幅逻辑，但重叠订阅的全局最大 QoS 汇总语义不完整。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:1478",
-        "wolfMQTT-master/src/mqtt_broker.c:3291",
-        "wolfMQTT-master/src/mqtt_broker.c:3299"
-      ]
-    },
-    {
-      "id": 183,
-      "source_index": 182,
-      "variable_name": "QoS bits",
-      "change_action": "invalid if value check fails",
-      "change_condition": "If a Server or Client receives a PUBLISH Packet which has both QoS bits set to 1",
-      "old_value": "",
-      "new_value": "both set to 1",
-      "related_state_or_step": "PUBLISH validation failure",
-      "source_chunk_id": "chunk_0018",
-      "status": "不满足",
-      "comment": "未实现 PUBLISH QoS bits=11 的协议级拒绝与断链。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:204",
-        "wolfMQTT-master/src/mqtt_broker.c:3207",
-        "wolfMQTT-master/src/mqtt_broker.c:3333"
-      ]
-    },
-    {
-      "id": 184,
-      "source_index": 183,
-      "variable_name": "QoS bits",
-      "change_action": "must not equal",
-      "change_condition": "PUBLISH Packet",
-      "old_value": "",
-      "new_value": "both set to 1",
-      "related_state_or_step": "PUBLISH validation",
-      "source_chunk_id": "chunk_0018",
-      "status": "不满足",
-      "comment": "PUBLISH 不允许的 QoS bits 组合（11）未被拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:204",
-        "wolfMQTT-master/src/mqtt_packet.c:1426"
-      ]
-    },
-    {
-      "id": 185,
-      "source_index": 184,
-      "variable_name": "QoS bits",
-      "change_action": "invalid if value check fails",
-      "change_condition": "if a Server or Client receives a PUBLISH Packet which has both QoS bits set to 1",
-      "old_value": "",
-      "new_value": "both QoS bits set to 1",
-      "related_state_or_step": "PUBLISH reception validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "不满足",
-      "comment": "同 ID183：收到 QoS bits=11 的 PUBLISH 时未断链。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:204",
-        "wolfMQTT-master/src/mqtt_broker.c:3537",
-        "wolfMQTT-master/src/mqtt_broker.c:3550"
-      ]
-    },
-    {
-      "id": 186,
-      "source_index": 185,
-      "variable_name": "QoS bits",
-      "change_action": "must not equal forbidden combination",
-      "change_condition": "in a PUBLISH Packet",
-      "old_value": "",
-      "new_value": "both QoS bits set to 1",
-      "related_state_or_step": "PUBLISH validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "不满足",
-      "comment": "同 ID184：forbidden QoS bits 组合未在接收侧判为非法。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:204",
-        "wolfMQTT-master/src/mqtt_packet.c:1426"
-      ]
-    },
-    {
-      "id": 187,
-      "source_index": 186,
-      "variable_name": "Remaining Length",
-      "change_action": "validated upper bound check",
-      "change_condition": "Remaining Length field is encoded",
-      "old_value": "",
-      "new_value": "maximum 4 bytes encoding; packet size up to 268,435,455",
-      "related_state_or_step": "Remaining Length encoding constraints",
-      "source_chunk_id": "chunk_0004",
-      "status": "满足",
-      "comment": "Remaining Length 编解码有上限控制：编码限制最大值，解码限制最多 4 字节。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:264",
-        "wolfMQTT-master/src/mqtt_packet.c:236",
-        "wolfMQTT-master/src/mqtt_packet.c:2957"
-      ]
-    },
-    {
-      "id": 188,
-      "source_index": 187,
-      "variable_name": "Remaining Length",
-      "change_action": "must equal number of bytes remaining within the current packet, including data in the variable header and the payload, excluding the bytes used to encode the Remaining Length",
-      "change_condition": "Remaining Length is encoded",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "Remaining Length definition",
-      "source_chunk_id": "chunk_0004",
-      "status": "部分满足",
-      "comment": "读取路径按 Remaining Length 驱动，但当报文大于接收缓冲区时会截断读取，严格一致性校验不完整。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2984",
-        "wolfMQTT-master/src/mqtt_packet.c:2991",
-        "wolfMQTT-master/src/mqtt_packet.c:2992",
-        "wolfMQTT-master/src/mqtt_packet.c:3012"
-      ]
-    },
-    {
-      "id": 189,
-      "source_index": 188,
-      "variable_name": "Remaining Length",
-      "change_action": "derived/computed from another field",
-      "change_condition": "for CONNECT Packet",
-      "old_value": "",
-      "new_value": "the length of the variable header (10 bytes) plus the length of the Payload",
-      "related_state_or_step": "CONNECT packet construction",
-      "source_chunk_id": "chunk_0005",
-      "status": "满足",
-      "comment": "CONNECT 的 Remaining Length 由各字段长度累加计算后编码。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:782",
-        "wolfMQTT-master/src/mqtt_packet.c:804",
-        "wolfMQTT-master/src/mqtt_packet.c:846",
-        "wolfMQTT-master/src/mqtt_packet.c:851"
-      ]
-    },
-    {
-      "id": 190,
-      "source_index": 189,
-      "variable_name": "Remaining Length",
-      "change_action": "derived/computed from another field",
-      "change_condition": "for PUBLISH Packet payload length calculation",
-      "old_value": "",
-      "new_value": "used with variable header length to calculate payload length",
-      "related_state_or_step": "PUBLISH payload length determination",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBLISH payload 长度按 Remaining Length 计算得到。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1497",
-        "wolfMQTT-master/src/mqtt_packet.c:1500"
-      ]
-    },
-    {
-      "id": 191,
-      "source_index": 190,
-      "variable_name": "Remaining Length",
-      "change_action": "set to constant",
-      "change_condition": "for the PUBACK Packet",
-      "old_value": "",
-      "new_value": "2",
-      "related_state_or_step": "PUBACK fixed/remaining length definition",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBACK 在 MQTT 3.x 发送路径 Remaining Length 为常量 2。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_broker.c:3342"
-      ]
-    },
-    {
-      "id": 192,
-      "source_index": 191,
-      "variable_name": "Remaining Length",
-      "change_action": "set to constant",
-      "change_condition": "for the PUBREC Packet",
-      "old_value": "",
-      "new_value": "2",
-      "related_state_or_step": "PUBREC fixed/remaining length definition",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBREC 在 MQTT 3.x 发送路径 Remaining Length 为常量 2。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1533",
-        "wolfMQTT-master/src/mqtt_broker.c:3343"
-      ]
-    },
-    {
-      "id": 193,
-      "source_index": 192,
-      "variable_name": "Remaining Length",
-      "change_action": "set to decoded value",
-      "change_condition": "when decoding algorithm terminates",
-      "old_value": "",
-      "new_value": "value",
-      "related_state_or_step": "Remaining Length decoding algorithm",
-      "source_chunk_id": "chunk_0005",
-      "status": "满足",
-      "comment": "Remaining Length 解码循环结束后返回累计解码值。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:231",
-        "wolfMQTT-master/src/mqtt_packet.c:241",
-        "wolfMQTT-master/src/mqtt_packet.c:245"
-      ]
-    },
-    {
-      "id": 194,
-      "source_index": 193,
-      "variable_name": "Requested QoS",
-      "change_action": "must equal one of allowed values",
-      "change_condition": "For each Topic Filter / QoS pair in a SUBSCRIBE payload",
-      "old_value": "",
-      "new_value": "0, 1 or 2",
-      "related_state_or_step": "SUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0010",
-      "status": "不满足",
-      "comment": "Requested QoS 未严格限制为 {0,1,2}（值 3 被接受后裁剪）。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1890",
-        "wolfMQTT-master/src/mqtt_broker.c:3080"
-      ]
-    },
-    {
-      "id": 195,
-      "source_index": 194,
-      "variable_name": "Requested QoS",
-      "change_action": "invalid if value check fails",
-      "change_condition": "If QoS in the SUBSCRIBE payload is not 0, 1, or 2",
-      "old_value": "not 0,1 or 2",
-      "new_value": "",
-      "related_state_or_step": "SUBSCRIBE malformed check",
-      "source_chunk_id": "chunk_0010",
-      "status": "不满足",
-      "comment": "Requested QoS 非法时未作为协议错误断开连接。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1890",
-        "wolfMQTT-master/src/mqtt_broker.c:3080",
-        "wolfMQTT-master/src/mqtt_broker.c:3570"
-      ]
-    },
-    {
-      "id": 196,
-      "source_index": 195,
-      "variable_name": "Requested QoS",
-      "change_action": "selected from offered list",
-      "change_condition": "Server grants a subscription",
-      "old_value": "subscriber requested value",
-      "new_value": "possibly a lower maximum QoS",
-      "related_state_or_step": "subscription grant decision",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "服务端有授权 QoS 选择与失败码路径，但策略以“裁剪/回显”为主，协商语义覆盖不完整。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3080",
-        "wolfMQTT-master/src/mqtt_broker.c:3083",
-        "wolfMQTT-master/src/mqtt_broker.c:3089",
-        "wolfMQTT-master/src/mqtt_broker.c:3106"
-      ]
-    },
-    {
-      "id": 197,
-      "source_index": 196,
-      "variable_name": "Reserved bits",
-      "change_action": "set to constant / must equal listed table value",
-      "change_condition": "A flag bit is marked as reserved in Table 2.2 - Flag Bits.",
-      "old_value": "",
-      "new_value": "the value listed in that table",
-      "related_state_or_step": "flag validation",
-      "source_chunk_id": "chunk_0017",
-      "status": "不满足",
-      "comment": "固定头 reserved bits 未按报文类型表做合法值校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:198",
-        "wolfMQTT-master/src/mqtt_packet.c:202",
-        "wolfMQTT-master/src/mqtt_packet.c:204"
-      ]
-    },
-    {
-      "id": 198,
-      "source_index": 197,
-      "variable_name": "Reserved bits",
-      "change_action": "must equal zero; invalid if not zero",
-      "change_condition": "For the DISCONNECT Packet.",
-      "old_value": "not zero",
-      "new_value": "zero",
-      "related_state_or_step": "DISCONNECT packet validation",
-      "source_chunk_id": "chunk_0011",
-      "status": "不满足",
-      "comment": "DISCONNECT reserved bits 非 0 场景未实现显式 invalid->disconnect 校验分支。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:202",
-        "wolfMQTT-master/src/mqtt_broker.c:3579",
-        "wolfMQTT-master/src/mqtt_broker.c:3588"
-      ]
-    },
-    {
-      "id": 199,
-      "source_index": 198,
-      "variable_name": "Reserved bits",
-      "change_action": "must equal",
-      "change_condition": "For the Requested QoS byte in the SUBSCRIBE payload",
-      "old_value": "",
-      "new_value": "zero",
-      "related_state_or_step": "SUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0010",
-      "status": "不满足",
-      "comment": "SUBSCRIBE 的 Requested QoS 字节高 6 位保留位未校验为 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1889",
-        "wolfMQTT-master/src/mqtt_packet.c:1890"
-      ]
-    },
-    {
-      "id": 200,
-      "source_index": 199,
-      "variable_name": "Reserved bits",
-      "change_action": "invalid if value check fails",
-      "change_condition": "if reserved bits are not zero",
-      "old_value": "not zero",
-      "new_value": "",
-      "related_state_or_step": "disconnect condition",
-      "source_chunk_id": "chunk_0019",
-      "status": "不满足",
-      "comment": "reserved bits 非法值缺少统一 invalid->disconnect 处理。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:198",
-        "wolfMQTT-master/src/mqtt_packet.c:202",
-        "wolfMQTT-master/src/mqtt_broker.c:3537"
-      ]
-    }
-  ]
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
+    "scope": "source_changes_index_150_to_199",
+    "display_scope": "151-200",
+    "method": "static_code_comparison",
+    "target": "wolfMQTT-master",
+    "generated_at": "2026-04-25T21:20:23",
+    "counts": {
+      "satisfied": 16,
+      "partialsatisfied": 16,
+      "[non-English text removed]satisfied": 18,
+      "not applicable": 0,
+      "[non-English text removed]": 0
+    },
+    "evidence_validation": {
+      "total_references": 153,
+      "missing_files": [],
+      "out_of_range": [],
+      "bad_format": [],
+      "all_locatable": true
+    }
+  },
+  "results": [
+    {
+      "id": 151,
+      "source_index": 150,
+      "variable_name": "Payload",
+      "change_action": "must be present and contain at least one Topic Filter; invalid if absent",
+      "change_condition": "For an UNSUBSCRIBE packet.",
+      "old_value": "no payload",
+      "new_value": "at least one Topic Filter",
+      "related_state_or_step": "UNSUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0011",
+      "status": "[non-English text removed]satisfied",
+      "comment": "UNSUBSCRIBE [non-English text removed] payload（topic_count=0），[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2091",
+        "wolfMQTT-master/src/mqtt_packet.c:2154",
+        "wolfMQTT-master/src/mqtt_packet.c:2181",
+        "wolfMQTT-master/src/mqtt_broker.c:3141"
+      ]
+    },
+    {
+      "id": 152,
+      "source_index": 151,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the DISCONNECT Packet.",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "DISCONNECT packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "[non-English text removed]satisfied",
+      "comment": "Broker [non-English text removed]validation Remaining Length/payload [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3509",
+        "wolfMQTT-master/src/mqtt_broker.c:3579",
+        "wolfMQTT-master/src/mqtt_broker.c:3588"
+      ]
+    },
+    {
+      "id": 153,
+      "source_index": 152,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGREQ Packet.",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PINGREQ packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "[non-English text removed]satisfied",
+      "comment": "Broker [non-English text removed]validation Remaining Length [non-English text removed] PINGRESP。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3509",
+        "wolfMQTT-master/src/mqtt_broker.c:3576",
+        "wolfMQTT-master/src/mqtt_broker.c:2591"
+      ]
+    },
+    {
+      "id": 154,
+      "source_index": 153,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGRESP Packet.",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PINGRESP packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]mandatory remain_len=0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2591",
+        "wolfMQTT-master/src/mqtt_broker.c:2592",
+        "wolfMQTT-master/src/mqtt_packet.c:2389",
+        "wolfMQTT-master/src/mqtt_packet.c:2400"
+      ]
+    },
+    {
+      "id": 155,
+      "source_index": 154,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the PUBCOMP Packet",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PUBCOMP packet format",
+      "source_chunk_id": "chunk_0010",
+      "status": "partialsatisfied",
+      "comment": "PUBCOMP [non-English text removed] packet id（remain_len=2）；[non-English text removed] 2。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_packet.c:1563",
+        "wolfMQTT-master/src/mqtt_packet.c:1632",
+        "wolfMQTT-master/src/mqtt_broker.c:3390"
+      ]
+    },
+    {
+      "id": 156,
+      "source_index": 155,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the PUBREL Packet",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PUBREL packet format",
+      "source_chunk_id": "chunk_0010",
+      "status": "partialsatisfied",
+      "comment": "PUBREL [non-English text removed] packet id（remain_len=2）；[non-English text removed] 2。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_packet.c:1563",
+        "wolfMQTT-master/src/mqtt_packet.c:1632",
+        "wolfMQTT-master/src/mqtt_broker.c:3426"
+      ]
+    },
+    {
+      "id": 157,
+      "source_index": 156,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "For the UNSUBACK Packet.",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "UNSUBACK packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "satisfied",
+      "comment": "UNSUBACK [non-English text removed] payload。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2280",
+        "wolfMQTT-master/src/mqtt_packet.c:2308",
+        "wolfMQTT-master/src/mqtt_packet.c:2319"
+      ]
+    },
+    {
+      "id": 158,
+      "source_index": 157,
+      "variable_name": "Payload",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If a SUBSCRIBE packet has no payload",
+      "old_value": "no payload",
+      "new_value": "",
+      "related_state_or_step": "SUBSCRIBE protocol violation check",
+      "source_chunk_id": "chunk_0010",
+      "status": "[non-English text removed]satisfied",
+      "comment": "SUBSCRIBE [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1865",
+        "wolfMQTT-master/src/mqtt_packet.c:1898",
+        "wolfMQTT-master/src/mqtt_broker.c:3066",
+        "wolfMQTT-master/src/mqtt_broker.c:3111"
+      ]
+    },
+    {
+      "id": 159,
+      "source_index": 158,
+      "variable_name": "Payload",
+      "change_action": "derived/computed from another field",
+      "change_condition": "for PUBLISH Packet payload length calculation",
+      "old_value": "",
+      "new_value": "length of payload = Remaining Length minus length of variable header",
+      "related_state_or_step": "PUBLISH payload length determination",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBLISH payload length[non-English text removed] variable header length[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1497",
+        "wolfMQTT-master/src/mqtt_packet.c:1500",
+        "wolfMQTT-master/src/mqtt_packet.c:1505"
+      ]
+    },
+    {
+      "id": 160,
+      "source_index": 159,
+      "variable_name": "Payload",
+      "change_action": "must not be present / must not be stored",
+      "change_condition": "for a retained message on the Server",
+      "old_value": "",
+      "new_value": "zero byte retained message not stored",
+      "related_state_or_step": "retained-message storage validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "RETAIN=1 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3251",
+        "wolfMQTT-master/src/mqtt_broker.c:3252",
+        "wolfMQTT-master/src/mqtt_broker.c:3267"
+      ]
+    },
+    {
+      "id": 161,
+      "source_index": 160,
+      "variable_name": "Payload",
+      "change_action": "must equal",
+      "change_condition": "for retained-message handling in a PUBLISH Packet",
+      "old_value": "",
+      "new_value": "zero bytes",
+      "related_state_or_step": "retained-message removal handling",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "[non-English text removed]“retained + payload=0 => [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3252",
+        "wolfMQTT-master/src/mqtt_broker.c:3253",
+        "wolfMQTT-master/src/mqtt_broker.c:2456"
+      ]
+    },
+    {
+      "id": 162,
+      "source_index": 161,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "for the PUBACK Packet",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PUBACK validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "partialsatisfied",
+      "comment": "PUBACK [non-English text removed] payload；decoding side[non-English text removed]validation remain_len>=2，[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_packet.c:1632",
+        "wolfMQTT-master/src/mqtt_broker.c:3342"
+      ]
+    },
+    {
+      "id": 163,
+      "source_index": 162,
+      "variable_name": "Payload",
+      "change_action": "must be absent",
+      "change_condition": "for the PUBREC Packet",
+      "old_value": "",
+      "new_value": "no payload",
+      "related_state_or_step": "PUBREC validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "partialsatisfied",
+      "comment": "PUBREC [non-English text removed] payload；decoding side[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_packet.c:1632",
+        "wolfMQTT-master/src/mqtt_broker.c:3343"
+      ]
+    },
+    {
+      "id": 164,
+      "source_index": 163,
+      "variable_name": "Payload",
+      "change_action": "validated range check",
+      "change_condition": "in a PUBLISH Packet",
+      "old_value": "",
+      "new_value": "zero length allowed",
+      "related_state_or_step": "PUBLISH payload validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBLISH payload [non-English text removed]boundaryprocessing。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1500",
+        "wolfMQTT-master/src/mqtt_packet.c:1505",
+        "wolfMQTT-master/src/mqtt_broker.c:3278"
+      ]
+    },
+    {
+      "id": 165,
+      "source_index": 164,
+      "variable_name": "QoS",
+      "change_action": "must not equal 0 when Packet Identifier is required; if QoS is set to 0 then Packet Identifier must be absent",
+      "change_condition": "A PUBLISH Packet contains Packet Identifier.",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "PUBLISH packet validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "partialsatisfied",
+      "comment": "encoding sidesatisfied QoS>0 [non-English text removed]validation packet id [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1362",
+        "wolfMQTT-master/src/mqtt_packet.c:1443",
+        "wolfMQTT-master/src/mqtt_packet.c:1449"
+      ]
+    },
+    {
+      "id": 166,
+      "source_index": 165,
+      "variable_name": "QoS",
+      "change_action": "derived/computed from another field",
+      "change_condition": "For Payload Messages sent in response to a Subscription",
+      "old_value": "",
+      "new_value": "the minimum of the QoS of the originally published message and the maximum QoS granted by the Server",
+      "related_state_or_step": "PUBLISH delivery after subscription",
+      "source_chunk_id": "chunk_0010",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_broker.c:3300",
+        "wolfMQTT-master/src/mqtt_broker.c:2488"
+      ]
+    },
+    {
+      "id": 167,
+      "source_index": 166,
+      "variable_name": "QoS",
+      "change_action": "validated range check",
+      "change_condition": "For unacknowledged PUBLISH Packets to be re-sent on reconnect with CleanSession set to 0",
+      "old_value": "",
+      "new_value": "> 0",
+      "related_state_or_step": "re-sending unacknowledged PUBLISH packets",
+      "source_chunk_id": "chunk_0013",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed]path。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1397",
+        "wolfMQTT-master/src/mqtt_broker.c:3497",
+        "wolfMQTT-master/src/mqtt_client.c:3031",
+        "wolfMQTT-master/src/mqtt_client.c:3042"
+      ]
+    },
+    {
+      "id": 168,
+      "source_index": 167,
+      "variable_name": "QoS",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 0 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "Sender sends PUBLISH in QoS 0 delivery protocol",
+      "source_chunk_id": "chunk_0012",
+      "status": "satisfied",
+      "comment": "QoS0 [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_broker.c:3300"
+      ]
+    },
+    {
+      "id": 169,
+      "source_index": 168,
+      "variable_name": "QoS",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 1 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "QoS 1 PUBLISH sending",
+      "source_chunk_id": "chunk_0012",
+      "status": "partialsatisfied",
+      "comment": "QoS1 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_broker.c:3080"
+      ]
+    },
+    {
+      "id": 170,
+      "source_index": 169,
+      "variable_name": "QoS",
+      "change_action": "set to constant",
+      "change_condition": "In the QoS 2 delivery protocol, when the Sender sends a PUBLISH packet",
+      "old_value": "",
+      "new_value": "2",
+      "related_state_or_step": "QoS 2 PUBLISH sending",
+      "source_chunk_id": "chunk_0012",
+      "status": "partialsatisfied",
+      "comment": "QoS2 [non-English text removed]rejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_broker.c:3080"
+      ]
+    },
+    {
+      "id": 171,
+      "source_index": 170,
+      "variable_name": "QoS",
+      "change_action": "must not equal 0 when Packet Identifier is required; if equal to 0 then Packet Identifier must be absent",
+      "change_condition": "PUBLISH Packet Identifier presence check",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "PUBLISH packet validation",
+      "source_chunk_id": "chunk_0005",
+      "status": "partialsatisfied",
+      "comment": "QoS [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1308",
+        "wolfMQTT-master/src/mqtt_packet.c:1362",
+        "wolfMQTT-master/src/mqtt_packet.c:1443",
+        "wolfMQTT-master/src/mqtt_packet.c:1449"
+      ]
+    },
+    {
+      "id": 172,
+      "source_index": 171,
+      "variable_name": "QoS",
+      "change_action": "validated range check with comparison > 0",
+      "change_condition": "PUBLISH packet case where Packet Identifier presence is constrained.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "packet construction/validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "partialsatisfied",
+      "comment": "QoS>0 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1309",
+        "wolfMQTT-master/src/mqtt_packet.c:1443",
+        "wolfMQTT-master/src/mqtt_packet.c:1449"
+      ]
+    },
+    {
+      "id": 173,
+      "source_index": 172,
+      "variable_name": "QoS",
+      "change_action": "derived/computed from another field",
+      "change_condition": "Payload Messages sent in response to a Subscription",
+      "old_value": "",
+      "new_value": "the minimum of the QoS of the originally published message and the maximum QoS granted by the Server",
+      "related_state_or_step": "message delivery after subscription",
+      "source_chunk_id": "chunk_0019",
+      "status": "satisfied",
+      "comment": "[non-English text removed]）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_broker.c:2488"
+      ]
+    },
+    {
+      "id": 174,
+      "source_index": 173,
+      "variable_name": "QoS",
+      "change_action": "set/overwrite/select",
+      "change_condition": "SUBACK Packet sent by the Server to the Client for each Topic Filter/QoS pair",
+      "old_value": "",
+      "new_value": "either the maximum QoS that was granted for that Subscription or indicate that the subscription failed",
+      "related_state_or_step": "SUBACK return code generation",
+      "source_chunk_id": "chunk_0019",
+      "status": "satisfied",
+      "comment": "SUBACK [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3073",
+        "wolfMQTT-master/src/mqtt_broker.c:3080",
+        "wolfMQTT-master/src/mqtt_broker.c:3106",
+        "wolfMQTT-master/src/mqtt_broker.c:3111"
+      ]
+    },
+    {
+      "id": 175,
+      "source_index": 174,
+      "variable_name": "QoS",
+      "change_action": "derived/computed from another field",
+      "change_condition": "Server delivering the message to the Client for matching subscriptions",
+      "old_value": "",
+      "new_value": "maximum QoS of all the matching subscriptions",
+      "related_state_or_step": "message delivery to Client",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]logic。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1470",
+        "wolfMQTT-master/src/mqtt_broker.c:1478",
+        "wolfMQTT-master/src/mqtt_broker.c:3291",
+        "wolfMQTT-master/src/mqtt_broker.c:3299"
+      ]
+    },
+    {
+      "id": 176,
+      "source_index": 175,
+      "variable_name": "QoS",
+      "change_action": "validated range check",
+      "change_condition": "When a Client reconnects with CleanSession set to 0 and unacknowledged PUBLISH Packets are re-sent",
+      "old_value": "",
+      "new_value": "> 0",
+      "related_state_or_step": "re-send unacknowledged PUBLISH Packets",
+      "source_chunk_id": "chunk_0020",
+      "status": "[non-English text removed]satisfied",
+      "comment": "clean_session=0 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3497",
+        "wolfMQTT-master/src/mqtt_broker.c:3581",
+        "wolfMQTT-master/src/mqtt_client.c:3031"
+      ]
+    },
+    {
+      "id": 177,
+      "source_index": 176,
+      "variable_name": "QoS",
+      "change_action": "must equal",
+      "change_condition": "When evaluating DUP flag requirement for PUBLISH",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "PUBLISH fixed header encoding",
+      "source_chunk_id": "chunk_0008",
+      "status": "partialsatisfied",
+      "comment": "QoS0 + DUP [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1343",
+        "wolfMQTT-master/src/mqtt_broker.c:3305"
+      ]
+    },
+    {
+      "id": 178,
+      "source_index": 177,
+      "variable_name": "QoS",
+      "change_action": "set to constant",
+      "change_condition": "When sending a PUBLISH packet in the described case",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "send PUBLISH packet",
+      "source_chunk_id": "chunk_0020",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3299",
+        "wolfMQTT-master/src/mqtt_packet.c:1343"
+      ]
+    },
+    {
+      "id": 179,
+      "source_index": 178,
+      "variable_name": "QoS",
+      "change_action": "membership check",
+      "change_condition": "in the SUBSCRIBE payload",
+      "old_value": "",
+      "new_value": "0,1 or 2",
+      "related_state_or_step": "SUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0019",
+      "status": "[non-English text removed]satisfied",
+      "comment": "SUBSCRIBE [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1890",
+        "wolfMQTT-master/src/mqtt_broker.c:3080",
+        "wolfMQTT-master/src/mqtt_broker.c:3083"
+      ]
+    },
+    {
+      "id": 180,
+      "source_index": 179,
+      "variable_name": "QoS",
+      "change_action": "invalid if value check fails",
+      "change_condition": "in the SUBSCRIBE payload, if value is not 0,1,2",
+      "old_value": "not 0,1 or 2",
+      "new_value": "",
+      "related_state_or_step": "SUBSCRIBE malformed packet handling",
+      "source_chunk_id": "chunk_0019",
+      "status": "[non-English text removed]satisfied",
+      "comment": "SUBSCRIBE medium[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1890",
+        "wolfMQTT-master/src/mqtt_broker.c:3080",
+        "wolfMQTT-master/src/mqtt_broker.c:3570"
+      ]
+    },
+    {
+      "id": 181,
+      "source_index": 180,
+      "variable_name": "QoS",
+      "change_action": "derived/computed from another field",
+      "change_condition": "receiver of a PUBLISH Packet responding",
+      "old_value": "",
+      "new_value": "response determined by the QoS in the PUBLISH Packet",
+      "related_state_or_step": "PUBLISH response selection",
+      "source_chunk_id": "chunk_0019",
+      "status": "satisfied",
+      "comment": "[non-English text removed]：QoS1->PUBACK，QoS2->PUBREC，QoS0 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3333",
+        "wolfMQTT-master/src/mqtt_broker.c:3342",
+        "wolfMQTT-master/src/mqtt_broker.c:3343"
+      ]
+    },
+    {
+      "id": 182,
+      "source_index": 181,
+      "variable_name": "QoS",
+      "change_action": "selected from offered list",
+      "change_condition": "when Clients have overlapping subscriptions that match a published message",
+      "old_value": "",
+      "new_value": "maximum QoS of all the matching subscriptions",
+      "related_state_or_step": "Server delivery selection",
+      "source_chunk_id": "chunk_0009",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1478",
+        "wolfMQTT-master/src/mqtt_broker.c:3291",
+        "wolfMQTT-master/src/mqtt_broker.c:3299"
+      ]
+    },
+    {
+      "id": 183,
+      "source_index": 182,
+      "variable_name": "QoS bits",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If a Server or Client receives a PUBLISH Packet which has both QoS bits set to 1",
+      "old_value": "",
+      "new_value": "both set to 1",
+      "related_state_or_step": "PUBLISH validation failure",
+      "source_chunk_id": "chunk_0018",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed] PUBLISH QoS bits=11 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:204",
+        "wolfMQTT-master/src/mqtt_broker.c:3207",
+        "wolfMQTT-master/src/mqtt_broker.c:3333"
+      ]
+    },
+    {
+      "id": 184,
+      "source_index": 183,
+      "variable_name": "QoS bits",
+      "change_action": "must not equal",
+      "change_condition": "PUBLISH Packet",
+      "old_value": "",
+      "new_value": "both set to 1",
+      "related_state_or_step": "PUBLISH validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "[non-English text removed]satisfied",
+      "comment": "PUBLISH [non-English text removed]rejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:204",
+        "wolfMQTT-master/src/mqtt_packet.c:1426"
+      ]
+    },
+    {
+      "id": 185,
+      "source_index": 184,
+      "variable_name": "QoS bits",
+      "change_action": "invalid if value check fails",
+      "change_condition": "if a Server or Client receives a PUBLISH Packet which has both QoS bits set to 1",
+      "old_value": "",
+      "new_value": "both QoS bits set to 1",
+      "related_state_or_step": "PUBLISH reception validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "[non-English text removed]satisfied",
+      "comment": "same as ID183：receives QoS bits=11 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:204",
+        "wolfMQTT-master/src/mqtt_broker.c:3537",
+        "wolfMQTT-master/src/mqtt_broker.c:3550"
+      ]
+    },
+    {
+      "id": 186,
+      "source_index": 185,
+      "variable_name": "QoS bits",
+      "change_action": "must not equal forbidden combination",
+      "change_condition": "in a PUBLISH Packet",
+      "old_value": "",
+      "new_value": "both QoS bits set to 1",
+      "related_state_or_step": "PUBLISH validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "[non-English text removed]satisfied",
+      "comment": "same as ID184：forbidden QoS bits [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:204",
+        "wolfMQTT-master/src/mqtt_packet.c:1426"
+      ]
+    },
+    {
+      "id": 187,
+      "source_index": 186,
+      "variable_name": "Remaining Length",
+      "change_action": "validated upper bound check",
+      "change_condition": "Remaining Length field is encoded",
+      "old_value": "",
+      "new_value": "maximum 4 bytes encoding; packet size up to 268,435,455",
+      "related_state_or_step": "Remaining Length encoding constraints",
+      "source_chunk_id": "chunk_0004",
+      "status": "satisfied",
+      "comment": "Remaining Length [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:264",
+        "wolfMQTT-master/src/mqtt_packet.c:236",
+        "wolfMQTT-master/src/mqtt_packet.c:2957"
+      ]
+    },
+    {
+      "id": 188,
+      "source_index": 187,
+      "variable_name": "Remaining Length",
+      "change_action": "must equal number of bytes remaining within the current packet, including data in the variable header and the payload, excluding the bytes used to encode the Remaining Length",
+      "change_condition": "Remaining Length is encoded",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "Remaining Length definition",
+      "source_chunk_id": "chunk_0004",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2984",
+        "wolfMQTT-master/src/mqtt_packet.c:2991",
+        "wolfMQTT-master/src/mqtt_packet.c:2992",
+        "wolfMQTT-master/src/mqtt_packet.c:3012"
+      ]
+    },
+    {
+      "id": 189,
+      "source_index": 188,
+      "variable_name": "Remaining Length",
+      "change_action": "derived/computed from another field",
+      "change_condition": "for CONNECT Packet",
+      "old_value": "",
+      "new_value": "the length of the variable header (10 bytes) plus the length of the Payload",
+      "related_state_or_step": "CONNECT packet construction",
+      "source_chunk_id": "chunk_0005",
+      "status": "satisfied",
+      "comment": "CONNECT [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:782",
+        "wolfMQTT-master/src/mqtt_packet.c:804",
+        "wolfMQTT-master/src/mqtt_packet.c:846",
+        "wolfMQTT-master/src/mqtt_packet.c:851"
+      ]
+    },
+    {
+      "id": 190,
+      "source_index": 189,
+      "variable_name": "Remaining Length",
+      "change_action": "derived/computed from another field",
+      "change_condition": "for PUBLISH Packet payload length calculation",
+      "old_value": "",
+      "new_value": "used with variable header length to calculate payload length",
+      "related_state_or_step": "PUBLISH payload length determination",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBLISH payload length[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1497",
+        "wolfMQTT-master/src/mqtt_packet.c:1500"
+      ]
+    },
+    {
+      "id": 191,
+      "source_index": 190,
+      "variable_name": "Remaining Length",
+      "change_action": "set to constant",
+      "change_condition": "for the PUBACK Packet",
+      "old_value": "",
+      "new_value": "2",
+      "related_state_or_step": "PUBACK fixed/remaining length definition",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBACK [non-English text removed]path Remaining Length [non-English text removed] 2。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_broker.c:3342"
+      ]
+    },
+    {
+      "id": 192,
+      "source_index": 191,
+      "variable_name": "Remaining Length",
+      "change_action": "set to constant",
+      "change_condition": "for the PUBREC Packet",
+      "old_value": "",
+      "new_value": "2",
+      "related_state_or_step": "PUBREC fixed/remaining length definition",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBREC [non-English text removed]path Remaining Length [non-English text removed] 2。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1533",
+        "wolfMQTT-master/src/mqtt_broker.c:3343"
+      ]
+    },
+    {
+      "id": 193,
+      "source_index": 192,
+      "variable_name": "Remaining Length",
+      "change_action": "set to decoded value",
+      "change_condition": "when decoding algorithm terminates",
+      "old_value": "",
+      "new_value": "value",
+      "related_state_or_step": "Remaining Length decoding algorithm",
+      "source_chunk_id": "chunk_0005",
+      "status": "satisfied",
+      "comment": "Remaining Length [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:231",
+        "wolfMQTT-master/src/mqtt_packet.c:241",
+        "wolfMQTT-master/src/mqtt_packet.c:245"
+      ]
+    },
+    {
+      "id": 194,
+      "source_index": 193,
+      "variable_name": "Requested QoS",
+      "change_action": "must equal one of allowed values",
+      "change_condition": "For each Topic Filter / QoS pair in a SUBSCRIBE payload",
+      "old_value": "",
+      "new_value": "0, 1 or 2",
+      "related_state_or_step": "SUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0010",
+      "status": "[non-English text removed]satisfied",
+      "comment": "Requested QoS [non-English text removed]）。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1890",
+        "wolfMQTT-master/src/mqtt_broker.c:3080"
+      ]
+    },
+    {
+      "id": 195,
+      "source_index": 194,
+      "variable_name": "Requested QoS",
+      "change_action": "invalid if value check fails",
+      "change_condition": "If QoS in the SUBSCRIBE payload is not 0, 1, or 2",
+      "old_value": "not 0,1 or 2",
+      "new_value": "",
+      "related_state_or_step": "SUBSCRIBE malformed check",
+      "source_chunk_id": "chunk_0010",
+      "status": "[non-English text removed]satisfied",
+      "comment": "Requested QoS [non-English text removed]protocolerrordisconnectconnection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1890",
+        "wolfMQTT-master/src/mqtt_broker.c:3080",
+        "wolfMQTT-master/src/mqtt_broker.c:3570"
+      ]
+    },
+    {
+      "id": 196,
+      "source_index": 195,
+      "variable_name": "Requested QoS",
+      "change_action": "selected from offered list",
+      "change_condition": "Server grants a subscription",
+      "old_value": "subscriber requested value",
+      "new_value": "possibly a lower maximum QoS",
+      "related_state_or_step": "subscription grant decision",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "server[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3080",
+        "wolfMQTT-master/src/mqtt_broker.c:3083",
+        "wolfMQTT-master/src/mqtt_broker.c:3089",
+        "wolfMQTT-master/src/mqtt_broker.c:3106"
+      ]
+    },
+    {
+      "id": 197,
+      "source_index": 196,
+      "variable_name": "Reserved bits",
+      "change_action": "set to constant / must equal listed table value",
+      "change_condition": "A flag bit is marked as reserved in Table 2.2 - Flag Bits.",
+      "old_value": "",
+      "new_value": "the value listed in that table",
+      "related_state_or_step": "flag validation",
+      "source_chunk_id": "chunk_0017",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_packet.c:204"
+      ]
+    },
+    {
+      "id": 198,
+      "source_index": 197,
+      "variable_name": "Reserved bits",
+      "change_action": "must equal zero; invalid if not zero",
+      "change_condition": "For the DISCONNECT Packet.",
+      "old_value": "not zero",
+      "new_value": "zero",
+      "related_state_or_step": "DISCONNECT packet validation",
+      "source_chunk_id": "chunk_0011",
+      "status": "[non-English text removed]satisfied",
+      "comment": "DISCONNECT reserved bits [non-English text removed]explicit invalid->disconnect validation[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3579",
+        "wolfMQTT-master/src/mqtt_broker.c:3588"
+      ]
+    },
+    {
+      "id": 199,
+      "source_index": 198,
+      "variable_name": "Reserved bits",
+      "change_action": "must equal",
+      "change_condition": "For the Requested QoS byte in the SUBSCRIBE payload",
+      "old_value": "",
+      "new_value": "zero",
+      "related_state_or_step": "SUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0010",
+      "status": "[non-English text removed]satisfied",
+      "comment": "SUBSCRIBE [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1889",
+        "wolfMQTT-master/src/mqtt_packet.c:1890"
+      ]
+    },
+    {
+      "id": 200,
+      "source_index": 199,
+      "variable_name": "Reserved bits",
+      "change_action": "invalid if value check fails",
+      "change_condition": "if reserved bits are not zero",
+      "old_value": "not zero",
+      "new_value": "",
+      "related_state_or_step": "disconnect condition",
+      "source_chunk_id": "chunk_0019",
+      "status": "[non-English text removed]satisfied",
+      "comment": "reserved bits [non-English text removed] invalid->disconnect processing。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:198",
+        "wolfMQTT-master/src/mqtt_packet.c:202",
+        "wolfMQTT-master/src/mqtt_broker.c:3537"
+      ]
+    }
+  ]
 }

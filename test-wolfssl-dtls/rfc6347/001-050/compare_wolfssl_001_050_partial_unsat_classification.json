@@ -1,244 +1,244 @@
-{
-  "meta": {
-    "scope": "001-050_rules",
-    "target": "wolfssl-master",
-    "counts": {
-      "total": 6,
-      "部分满足": 6,
-      "不满足": 0
-    },
-    "risk_counts": {
-      "low": 1,
-      "medium": 5
-    },
-    "phase2_status": "completed"
-  },
-  "groups": {
-    "DTLS 1.2 cookie 长度实现固定为哈希长度": {
-      "count": 1,
-      "items": [
-        {
-          "id": 23,
-          "status": "部分满足",
-          "variable_name": "cookie",
-          "change_action": "validated range check",
-          "change_condition": "current specification",
-          "category": "DTLS 1.2 cookie 长度实现固定为哈希长度",
-          "risk": "low",
-          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
-          "comment": "语法层的 opaque cookie<0..2^8-1> 可由 u8 长度表达，但 wolfSSL 服务端接受的 DTLS 1.2 cookie 必须等于 DTLS_COOKIE_SZ，客户端保存 HelloVerifyRequest cookie 时还受 MAX_COOKIE_LEN=32 约束。",
-          "evidence_in_wolfssl": [
-            "src/dtls.c:211",
-            "src/dtls.c:223",
-            "src/dtls.c:230",
-            "src/dtls.c:235",
-            "src/dtls.c:239",
-            "src/dtls.c:243",
-            "src/dtls.c:247",
-            "src/dtls.c:258",
-            "src/dtls.c:284",
-            "src/dtls.c:292",
-            "src/dtls.c:899",
-            "src/dtls.c:905",
-            "src/dtls.c:1003",
-            "src/dtls.c:1014",
-            "src/dtls.c:1031",
-            "src/internal.c:31323",
-            "src/internal.c:31346",
-            "src/internal.c:31350",
-            "src/internal.c:31357",
-            "src/internal.c:31380",
-            "src/internal.c:40804",
-            "src/internal.c:40840",
-            "src/internal.c:40842",
-            "src/internal.c:40845",
-            "wolfssl/internal.h:1572"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
-          "code_check": "RFC 语法允许 0..255 字节 cookie，具体 cookie 内容由服务端决定。wolfSSL 自身生成 SHA/SHA256 长度 cookie，互通同类实现没有问题；但作为通用 DTLS 1.2 客户端/服务端，它不能保存或接受 33..255 字节的合法 HelloVerifyRequest cookie，因此为部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 MAX_COOKIE_LEN=32、DoHelloVerifyRequest 的 cookieSz <= MAX_COOKIE_LEN 分支，以及 CheckDtlsCookie 固定 ch->cookie.size == DTLS_COOKIE_SZ。",
-          "decision_reason": "语法层的 opaque cookie<0..2^8-1> 可由 u8 长度表达，但 wolfSSL 服务端接受的 DTLS 1.2 cookie 必须等于 DTLS_COOKIE_SZ，客户端保存 HelloVerifyRequest cookie 时还受 MAX_COOKIE_LEN=32 约束。",
-          "phase2_decision": "confirmed_partial"
-        }
-      ]
-    },
-    "cookie secret 轮换只保留当前 secret": {
-      "count": 2,
-      "items": [
-        {
-          "id": 24,
-          "status": "部分满足",
-          "variable_name": "cookie",
-          "change_action": "membership check",
-          "change_condition": "during a limited transition window after Secret changes",
-          "category": "cookie secret 轮换只保留当前 secret",
-          "risk": "medium",
-          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
-          "comment": "wolfSSL 提供 wolfSSL_DTLS_SetCookieSecret 设置或随机生成当前 secret；CreateDtls12Cookie 和 CheckDtlsCookie 只使用 ssl->buffers.dtlsCookieSecret 当前值，没有 previous secret 列表或有限过渡窗口。",
-          "evidence_in_wolfssl": [
-            "src/ssl.c:6314",
-            "src/ssl.c:6331",
-            "src/ssl.c:6338",
-            "src/ssl.c:6361",
-            "src/dtls.c:217",
-            "src/dtls.c:225",
-            "src/dtls.c:292"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
-          "code_check": "RFC 对 secret 变化使用 SHOULD：服务端更换 Secret 后应短期接受旧 Secret 和新 Secret 生成的 cookie。wolfSSL 实现了 secret 和 HMAC cookie，但没有旧 secret membership check，因此部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 wolfSSL_DTLS_SetCookieSecret 只维护 dtlsCookieSecret 当前 buffer，CheckDtlsCookie 只对当前 HMAC 值 ConstantCompare，未发现 previous/old secret 接受窗口。",
-          "decision_reason": "wolfSSL 提供 wolfSSL_DTLS_SetCookieSecret 设置或随机生成当前 secret；CreateDtls12Cookie 和 CheckDtlsCookie 只使用 ssl->buffers.dtlsCookieSecret 当前值，没有 previous secret 列表或有限过渡窗口。",
-          "phase2_decision": "confirmed_partial"
-        },
-        {
-          "id": 31,
-          "status": "部分满足",
-          "variable_name": "cookie",
-          "change_action": "invalid if value check fails",
-          "change_condition": "when the server changes the Secret value frequently",
-          "category": "cookie secret 轮换只保留当前 secret",
-          "risk": "medium",
-          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
-          "comment": "wolfSSL 提供 wolfSSL_DTLS_SetCookieSecret 设置或随机生成当前 secret；CreateDtls12Cookie 和 CheckDtlsCookie 只使用 ssl->buffers.dtlsCookieSecret 当前值，没有 previous secret 列表或有限过渡窗口。",
-          "evidence_in_wolfssl": [
-            "src/ssl.c:6314",
-            "src/ssl.c:6331",
-            "src/ssl.c:6338",
-            "src/ssl.c:6361",
-            "src/dtls.c:217",
-            "src/dtls.c:225",
-            "src/dtls.c:292"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
-          "code_check": "RFC 对 secret 变化使用 SHOULD：服务端更换 Secret 后应短期接受旧 Secret 和新 Secret 生成的 cookie。wolfSSL 实现了 secret 和 HMAC cookie，但没有旧 secret membership check，因此部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 wolfSSL_DTLS_SetCookieSecret 只维护 dtlsCookieSecret 当前 buffer，CheckDtlsCookie 只对当前 HMAC 值 ConstantCompare，未发现 previous/old secret 接受窗口。",
-          "decision_reason": "wolfSSL 提供 wolfSSL_DTLS_SetCookieSecret 设置或随机生成当前 secret；CreateDtls12Cookie 和 CheckDtlsCookie 只使用 ssl->buffers.dtlsCookieSecret 当前值，没有 previous secret 列表或有限过渡窗口。",
-          "phase2_decision": "confirmed_partial"
-        }
-      ]
-    },
-    "epoch 不复用依赖会话生命周期而非 MSL 计时": {
-      "count": 1,
-      "items": [
-        {
-          "id": 41,
-          "status": "部分满足",
-          "variable_name": "epoch",
-          "change_action": "must not equal previously used epoch value",
-          "change_condition": "within two times the TCP maximum segment lifetime",
-          "category": "epoch 不复用依赖会话生命周期而非 MSL 计时",
-          "risk": "medium",
-          "standard_section": "RFC 6347 Section 4.1, Record Layer",
-          "comment": "wolfSSL 在单个 WOLFSSL 对象内递增 dtls_epoch 并重置 sequence，但没有发现跨 association 的 2*MSL epoch reuse 计时器或持久 epoch 禁用窗口。",
-          "evidence_in_wolfssl": [
-            "src/internal.c:8085",
-            "src/internal.c:9423",
-            "src/internal.c:9459",
-            "src/internal.c:9465",
-            "src/internal.c:9487",
-            "src/internal.c:12263",
-            "src/internal.c:12270",
-            "src/internal.c:18311",
-            "src/internal.c:23865",
-            "src/internal.c:24833",
-            "src/internal.c:24836"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.1, Record Layer：The DTLSPlaintext structure contains type, version, epoch, sequence_number, length, and fragment. The epoch is initially zero and is incremented each time a ChangeCipherSpec message is sent. The epoch and sequence number are concatenated to form the nonce/MAC sequence value. Implementations MUST NOT allow the same epoch value to be reused within two times the TCP maximum segment lifetime.",
-          "code_check": "RFC 要求两倍 TCP MSL 内不得复用同一 epoch 值。wolfSSL 单连接内不复用，但库没有在同一 host/port quartet 的新 association 上实现时间窗口约束，因此部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 dtls_epoch 自增和记录编码，但未发现 MSL、maximum segment lifetime 或 association epoch reuse 计时器。",
-          "decision_reason": "wolfSSL 在单个 WOLFSSL 对象内递增 dtls_epoch 并重置 sequence，但没有发现跨 association 的 2*MSL epoch reuse 计时器或持久 epoch 禁用窗口。",
-          "phase2_decision": "confirmed_partial"
-        }
-      ]
-    },
-    "PMTU 黑洞探测依赖显式 MTU/配置": {
-      "count": 2,
-      "items": [
-        {
-          "id": 42,
-          "status": "部分满足",
-          "variable_name": "fragment",
-          "change_action": "must be fragmented",
-          "change_condition": "if repeated retransmissions do not result in a response, and the PMTU is unknown",
-          "category": "PMTU 黑洞探测依赖显式 MTU/配置",
-          "risk": "medium",
-          "standard_section": "RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly",
-          "comment": "SendHandshakeMsg 根据 wolfssl_local_GetMaxPlaintextSize 和当前 MTU 分片；wolfSSL_dtls_set_mtu 可设置 MTU。但 repeated retransmissions no response 且 PMTU unknown 时自动降低片长/探测黑洞的状态机未在 DTLS 1.2 timeout 路径中出现。",
-          "evidence_in_wolfssl": [
-            "src/internal.c:10875",
-            "src/internal.c:10900",
-            "src/internal.c:10901",
-            "src/internal.c:10902",
-            "src/internal.c:10949",
-            "src/internal.c:10990",
-            "src/internal.c:11022",
-            "src/internal.c:11055",
-            "src/internal.c:11076",
-            "src/internal.c:12403",
-            "src/internal.c:12423",
-            "src/internal.c:12425",
-            "src/internal.c:19524",
-            "src/internal.c:19647",
-            "src/internal.c:9790",
-            "src/internal.c:9793",
-            "src/internal.c:9794",
-            "src/ssl.c:1588",
-            "src/ssl.c:1598",
-            "src/internal.c:11624",
-            "src/internal.c:11646",
-            "src/internal.c:42150",
-            "src/internal.c:42170",
-            "src/internal.c:42177"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly：If a handshake message is too large to fit into a single DTLS record, it MUST be fragmented. Each fragment contains the same message_seq and length, with fragment_offset and fragment_length describing its position. If repeated retransmissions do not result in a response and PMTU is unknown, implementations SHOULD fragment handshake messages.",
-          "code_check": "RFC 对 PMTU 未知且重复重传无响应时的分片是 SHOULD。wolfSSL 有基于配置 MTU 的分片和重传池，但没有自动 PMTU 黑洞降级逻辑，因此部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 MTU 分片函数、timeout 重传函数，并确认 DtlsMsgPoolTimeout 只指数退避重传，不调整 MTU 或 fragment size。",
-          "decision_reason": "SendHandshakeMsg 根据 wolfssl_local_GetMaxPlaintextSize 和当前 MTU 分片；wolfSSL_dtls_set_mtu 可设置 MTU。但 repeated retransmissions no response 且 PMTU unknown 时自动降低片长/探测黑洞的状态机未在 DTLS 1.2 timeout 路径中出现。",
-          "phase2_decision": "confirmed_partial"
-        },
-        {
-          "id": 43,
-          "status": "部分满足",
-          "variable_name": "fragment",
-          "change_action": "must be fragmented",
-          "change_condition": "if the DTLS record layer informs the DTLS handshake layer that a message is too big",
-          "category": "PMTU 黑洞探测依赖显式 MTU/配置",
-          "risk": "medium",
-          "standard_section": "RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly",
-          "comment": "SendHandshakeMsg 根据 wolfssl_local_GetMaxPlaintextSize 和当前 MTU 分片；wolfSSL_dtls_set_mtu 可设置 MTU。但 repeated retransmissions no response 且 PMTU unknown 时自动降低片长/探测黑洞的状态机未在 DTLS 1.2 timeout 路径中出现。",
-          "evidence_in_wolfssl": [
-            "src/internal.c:10875",
-            "src/internal.c:10900",
-            "src/internal.c:10901",
-            "src/internal.c:10902",
-            "src/internal.c:10949",
-            "src/internal.c:10990",
-            "src/internal.c:11022",
-            "src/internal.c:11055",
-            "src/internal.c:11076",
-            "src/internal.c:12403",
-            "src/internal.c:12423",
-            "src/internal.c:12425",
-            "src/internal.c:19524",
-            "src/internal.c:19647",
-            "src/internal.c:9790",
-            "src/internal.c:9793",
-            "src/internal.c:9794",
-            "src/ssl.c:1588",
-            "src/ssl.c:1598",
-            "src/internal.c:11624",
-            "src/internal.c:11646",
-            "src/internal.c:42150",
-            "src/internal.c:42170",
-            "src/internal.c:42177"
-          ],
-          "standard_check": "复核 RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly：If a handshake message is too large to fit into a single DTLS record, it MUST be fragmented. Each fragment contains the same message_seq and length, with fragment_offset and fragment_length describing its position. If repeated retransmissions do not result in a response and PMTU is unknown, implementations SHOULD fragment handshake messages.",
-          "code_check": "RFC 对 PMTU 未知且重复重传无响应时的分片是 SHOULD。wolfSSL 有基于配置 MTU 的分片和重传池，但没有自动 PMTU 黑洞降级逻辑，因此部分满足。",
-          "test_check": "verify_wolfssl_dtls12_001_050.py 检查 MTU 分片函数、timeout 重传函数，并确认 DtlsMsgPoolTimeout 只指数退避重传，不调整 MTU 或 fragment size。",
-          "decision_reason": "SendHandshakeMsg 根据 wolfssl_local_GetMaxPlaintextSize 和当前 MTU 分片；wolfSSL_dtls_set_mtu 可设置 MTU。但 repeated retransmissions no response 且 PMTU unknown 时自动降低片长/探测黑洞的状态机未在 DTLS 1.2 timeout 路径中出现。",
-          "phase2_decision": "confirmed_partial"
-        }
-      ]
-    }
-  }
+{
+  "meta": {
+    "scope": "001-050_rules",
+    "target": "wolfssl-master",
+    "counts": {
+      "total": 6,
+      "partialsatisfied": 6,
+      "[non-English text removed]satisfied": 0
+    },
+    "risk_counts": {
+      "low": 1,
+      "medium": 5
+    },
+    "phase2_status": "completed"
+  },
+  "groups": {
+    "DTLS 1.2 cookie length[non-English text removed]length": {
+      "count": 1,
+      "items": [
+        {
+          "id": 23,
+          "status": "partialsatisfied",
+          "variable_name": "cookie",
+          "change_action": "validated range check",
+          "change_condition": "current specification",
+          "category": "DTLS 1.2 cookie length[non-English text removed]length",
+          "risk": "low",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "[non-English text removed] opaque cookie<0..2^8-1> [non-English text removed] DTLS_COOKIE_SZ，client[non-English text removed] HelloVerifyRequest cookie [non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/dtls.c:211",
+            "src/dtls.c:223",
+            "src/dtls.c:230",
+            "src/dtls.c:235",
+            "src/dtls.c:239",
+            "src/dtls.c:243",
+            "src/dtls.c:247",
+            "src/dtls.c:258",
+            "src/dtls.c:284",
+            "src/dtls.c:292",
+            "src/dtls.c:899",
+            "src/dtls.c:905",
+            "src/dtls.c:1003",
+            "src/dtls.c:1014",
+            "src/dtls.c:1031",
+            "src/internal.c:31323",
+            "src/internal.c:31346",
+            "src/internal.c:31350",
+            "src/internal.c:31357",
+            "src/internal.c:31380",
+            "src/internal.c:40804",
+            "src/internal.c:40840",
+            "src/internal.c:40842",
+            "src/internal.c:40845",
+            "wolfssl/internal.h:1572"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
+          "code_check": "RFC [non-English text removed] SHA/SHA256 length cookie，[non-English text removed] DTLS 1.2 client/server，[non-English text removed]valid HelloVerifyRequest cookie，[non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed] MAX_COOKIE_LEN=32、DoHelloVerifyRequest [non-English text removed] cookieSz <= MAX_COOKIE_LEN [non-English text removed] ch->cookie.size == DTLS_COOKIE_SZ。",
+          "decision_reason": "[non-English text removed] opaque cookie<0..2^8-1> [non-English text removed] DTLS_COOKIE_SZ，client[non-English text removed] HelloVerifyRequest cookie [non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    },
+    "cookie secret [non-English text removed] secret": {
+      "count": 2,
+      "items": [
+        {
+          "id": 24,
+          "status": "partialsatisfied",
+          "variable_name": "cookie",
+          "change_action": "membership check",
+          "change_condition": "during a limited transition window after Secret changes",
+          "category": "cookie secret [non-English text removed] secret",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "wolfSSL [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] secret；CreateDtls12Cookie [non-English text removed]use ssl->buffers.dtlsCookieSecret [non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/ssl.c:6314",
+            "src/ssl.c:6331",
+            "src/ssl.c:6338",
+            "src/ssl.c:6361",
+            "src/dtls.c:217",
+            "src/dtls.c:225",
+            "src/dtls.c:292"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
+          "code_check": "RFC [non-English text removed] secret membership check，[non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] buffer，CheckDtlsCookie [non-English text removed] ConstantCompare，not found previous/old secret [non-English text removed]。",
+          "decision_reason": "wolfSSL [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] secret；CreateDtls12Cookie [non-English text removed]use ssl->buffers.dtlsCookieSecret [non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        },
+        {
+          "id": 31,
+          "status": "partialsatisfied",
+          "variable_name": "cookie",
+          "change_action": "invalid if value check fails",
+          "change_condition": "when the server changes the Secret value frequently",
+          "category": "cookie secret [non-English text removed] secret",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures",
+          "comment": "wolfSSL [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] secret；CreateDtls12Cookie [non-English text removed]use ssl->buffers.dtlsCookieSecret [non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/ssl.c:6314",
+            "src/ssl.c:6331",
+            "src/ssl.c:6338",
+            "src/ssl.c:6361",
+            "src/dtls.c:217",
+            "src/dtls.c:225",
+            "src/dtls.c:292"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.2.1, Denial-of-Service Countermeasures：The server responds with a HelloVerifyRequest containing a stateless cookie. The client retransmits the ClientHello with the cookie added. The server verifies the cookie before continuing. Cookies SHOULD be generated as HMAC(Secret, Client-IP, Client-Parameters). When the server changes the Secret value, it SHOULD retain the previous value for a limited period and accept cookies generated with either secret.",
+          "code_check": "RFC [non-English text removed] secret membership check，[non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] buffer，CheckDtlsCookie [non-English text removed] ConstantCompare，not found previous/old secret [non-English text removed]。",
+          "decision_reason": "wolfSSL [non-English text removed] wolfSSL_DTLS_SetCookieSecret [non-English text removed] secret；CreateDtls12Cookie [non-English text removed]use ssl->buffers.dtlsCookieSecret [non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    },
+    "epoch [non-English text removed]": {
+      "count": 1,
+      "items": [
+        {
+          "id": 41,
+          "status": "partialsatisfied",
+          "variable_name": "epoch",
+          "change_action": "must not equal previously used epoch value",
+          "change_condition": "within two times the TCP maximum segment lifetime",
+          "category": "epoch [non-English text removed]",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.1, Record Layer",
+          "comment": "wolfSSL [non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/internal.c:8085",
+            "src/internal.c:9423",
+            "src/internal.c:9459",
+            "src/internal.c:9465",
+            "src/internal.c:9487",
+            "src/internal.c:12263",
+            "src/internal.c:12270",
+            "src/internal.c:18311",
+            "src/internal.c:23865",
+            "src/internal.c:24833",
+            "src/internal.c:24836"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.1, Record Layer：The DTLSPlaintext structure contains type, version, epoch, sequence_number, length, and fragment. The epoch is initially zero and is incremented each time a ChangeCipherSpec message is sent. The epoch and sequence number are concatenated to form the nonce/MAC sequence value. Implementations MUST NOT allow the same epoch value to be reused within two times the TCP maximum segment lifetime.",
+          "code_check": "RFC [non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed]not found MSL、maximum segment lifetime [non-English text removed] association epoch reuse [non-English text removed]。",
+          "decision_reason": "wolfSSL [non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    },
+    "PMTU [non-English text removed]": {
+      "count": 2,
+      "items": [
+        {
+          "id": 42,
+          "status": "partialsatisfied",
+          "variable_name": "fragment",
+          "change_action": "must be fragmented",
+          "change_condition": "if repeated retransmissions do not result in a response, and the PMTU is unknown",
+          "category": "PMTU [non-English text removed]",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly",
+          "comment": "SendHandshakeMsg [non-English text removed] wolfssl_local_GetMaxPlaintextSize [non-English text removed]；wolfSSL_dtls_set_mtu [non-English text removed] repeated retransmissions no response [non-English text removed] DTLS 1.2 timeout pathmedium[non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/internal.c:10875",
+            "src/internal.c:10900",
+            "src/internal.c:10901",
+            "src/internal.c:10902",
+            "src/internal.c:10949",
+            "src/internal.c:10990",
+            "src/internal.c:11022",
+            "src/internal.c:11055",
+            "src/internal.c:11076",
+            "src/internal.c:12403",
+            "src/internal.c:12423",
+            "src/internal.c:12425",
+            "src/internal.c:19524",
+            "src/internal.c:19647",
+            "src/internal.c:9790",
+            "src/internal.c:9793",
+            "src/internal.c:9794",
+            "src/ssl.c:1588",
+            "src/ssl.c:1598",
+            "src/internal.c:11624",
+            "src/internal.c:11646",
+            "src/internal.c:42150",
+            "src/internal.c:42170",
+            "src/internal.c:42177"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly：If a handshake message is too large to fit into a single DTLS record, it MUST be fragmented. Each fragment contains the same message_seq and length, with fragment_offset and fragment_length describing its position. If repeated retransmissions do not result in a response and PMTU is unknown, implementations SHOULD fragment handshake messages.",
+          "code_check": "RFC [non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed] fragment size。",
+          "decision_reason": "SendHandshakeMsg [non-English text removed] wolfssl_local_GetMaxPlaintextSize [non-English text removed]；wolfSSL_dtls_set_mtu [non-English text removed] repeated retransmissions no response [non-English text removed] DTLS 1.2 timeout pathmedium[non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        },
+        {
+          "id": 43,
+          "status": "partialsatisfied",
+          "variable_name": "fragment",
+          "change_action": "must be fragmented",
+          "change_condition": "if the DTLS record layer informs the DTLS handshake layer that a message is too big",
+          "category": "PMTU [non-English text removed]",
+          "risk": "medium",
+          "standard_section": "RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly",
+          "comment": "SendHandshakeMsg [non-English text removed] wolfssl_local_GetMaxPlaintextSize [non-English text removed]；wolfSSL_dtls_set_mtu [non-English text removed] repeated retransmissions no response [non-English text removed] DTLS 1.2 timeout pathmedium[non-English text removed]。",
+          "evidence_in_wolfssl": [
+            "src/internal.c:10875",
+            "src/internal.c:10900",
+            "src/internal.c:10901",
+            "src/internal.c:10902",
+            "src/internal.c:10949",
+            "src/internal.c:10990",
+            "src/internal.c:11022",
+            "src/internal.c:11055",
+            "src/internal.c:11076",
+            "src/internal.c:12403",
+            "src/internal.c:12423",
+            "src/internal.c:12425",
+            "src/internal.c:19524",
+            "src/internal.c:19647",
+            "src/internal.c:9790",
+            "src/internal.c:9793",
+            "src/internal.c:9794",
+            "src/ssl.c:1588",
+            "src/ssl.c:1598",
+            "src/internal.c:11624",
+            "src/internal.c:11646",
+            "src/internal.c:42150",
+            "src/internal.c:42170",
+            "src/internal.c:42177"
+          ],
+          "standard_check": "[non-English text removed] RFC 6347 Section 4.2.3, Handshake Message Fragmentation and Reassembly：If a handshake message is too large to fit into a single DTLS record, it MUST be fragmented. Each fragment contains the same message_seq and length, with fragment_offset and fragment_length describing its position. If repeated retransmissions do not result in a response and PMTU is unknown, implementations SHOULD fragment handshake messages.",
+          "code_check": "RFC [non-English text removed]partialsatisfied。",
+          "test_check": "verify_wolfssl_dtls12_001_050.py [non-English text removed] fragment size。",
+          "decision_reason": "SendHandshakeMsg [non-English text removed] wolfssl_local_GetMaxPlaintextSize [non-English text removed]；wolfSSL_dtls_set_mtu [non-English text removed] repeated retransmissions no response [non-English text removed] DTLS 1.2 timeout pathmedium[non-English text removed]。",
+          "phase2_decision": "confirmed_partial"
+        }
+      ]
+    }
+  }
 }

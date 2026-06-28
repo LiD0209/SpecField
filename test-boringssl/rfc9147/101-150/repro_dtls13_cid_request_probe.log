@@ -1,5 +1,0 @@
-﻿linked BoringSSL probe: PASS
-record behavior: DTLS 1.3 CID bit is rejected as not negotiated, and sent records force C=0
-source behavior: no RequestConnectionId/NewConnectionId/num_cids state machine or handshake type support was found in ssl/*.cc or ssl/*.h
-runner coverage: runner has DTLS13RecordHeader-CIDBit negative coverage, but no RequestConnectionId/NewConnectionId tests
-conclusion: RFC 9147 IDs 145 and 146 are confirmed unsatisfied with the same root cause

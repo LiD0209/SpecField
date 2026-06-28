@@ -1,5 +1,0 @@
-﻿go test ./ssl/test/runner -run 'TestRunner/(DTLS13RecordHeader-CIDBit|DTLS-Retransmit-Server-ACKForwards-TLS13|KeyUpdate-ToClient-PacketLoss-DTLS)' -count=1
-
-RESULT: blocked
-PowerShell error: go : 无法将“go”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。
-Reason: The BoringSSL runner is Go-based and no Go toolchain is available in PATH in this workspace. Static verification script verify_dtls13_static_paths.py was run successfully instead.

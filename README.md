@@ -1,88 +1,177 @@
-# SpecTrace
+# SpecField: Field-Level Conformance Checking Between Protocol Standards and Implementations
 
-SpecTrace 是一个面向协议规范（当前以 TLS 1.3 / RFC 8446 为例）的自动化抽取与代码关联项目，目标是把规范中的字段定义、取值约束、变化规则，逐步映射到代码上下文，辅助审查与条件追踪。
+This repository contains the prototype code and selected artifacts for SpecField, a framework for checking field-level conformance between natural-language protocol standards and source-code implementations.
 
-## 主要能力
+SpecField treats protocol fields as anchors between specification text and implementation behavior. It extracts structured field rules, retrieves related code contexts, and records traceable evidence for consistency judgments, reports, and follow-up validation.
 
-- 对规范文本进行预处理与分块
-- 抽取协议字段定义（definition）
-- 抽取字段取值变化与判断规则（change / judgment）
-- 汇总为结构化结果并生成后续分析输入
-- 扫描代码符号并进行跨文件相关性检索
+## Main Modules
 
-## 项目结构
+- Protocol standard preprocessing and chunking
+- Field-space and field-rule extraction
+- Code symbol scanning and context retrieval
+- Rule-to-code alignment and evidence-bounded reasoning
+- Validation artifact and issue-report generation
+- Agent workflow support for multi-step auditing tasks
+- Evaluation helpers for rule discovery, alignment, cost, and ablation studies
+
+## Repository Layout
 
 ```text
 .
-├─ document/                     # 规范原文（如 TLS1.3.txt）
-├─ output/                       # 各阶段输出结果
-├─ utils/                        # 辅助流程与二次分析脚本
-├─ scan_symbols.py               # 扫描 C/Java 符号，输出 symbols.csv/json
-├─ step0_preprocess.py           # 规范预处理与分块
-├─ step1_variable_definitions.py # 抽取字段定义
-├─ step2_variable_changes.py     # 抽取字段变化/约束规则
-├─ step3_variable_summary.py     # 汇总输出
-├─ step4_find_related_names.py   # 从变更记录检索相关文件/变量
-├─ step5_describe_code_with_context.py # 结合代码上下文生成描述
-├─ result.json                   # 聚合结果示例
-└─ symbols.csv / symbols.json    # 符号索引
+|- agent/                          # Agent prompts, task plans, and workflow configurations
+|- document/                       # Protocol standards and source documents
+|  |- dtls/
+|  |- mqtt/
+|  |- quic/
+|  \- coap/
+|- specfield/                      # End-to-end SpecField pipeline
+|  |- core.py                      # Field extraction, alignment, reasoning, validation, reports
+|  |- experiments.py               # Component configurations for ablation runs
+|  \- evaluate.py                  # RQ3/RQ4/RQ5 aggregation utilities
+|- evalute/
+|  |- field/                       # RQ1 field-rule discovery baselines and gold construction
+|  \- context/                     # RQ2 rule-to-code alignment baselines and metrics
+|- reports/                        # Confirmed issue analyses grouped by implementation
+|  |- wolfssl/
+|  |- wolfssl-dtls/
+|  |- wolfmqtt/
+|  |- openssl/
+|  |- mbedtls/
+|  |- libcoap/
+|  \- quiche/
+|- output/                         # Generated pipeline outputs and sample artifacts
+|- utils/                          # Follow-up analysis and recheck utilities
+|- wolfMQTT/                       # MQTT audit artifacts
+|- step0_preprocess.py             # Standard preprocessing
+|- step1_variable_definitions.py   # Field definition extraction
+|- step2_variable_changes.py       # Field rule/change extraction
+|- step3_variable_summary.py       # Summary generation
+|- scan_symbols.py                 # Source symbol scanner
+|- pipeline_utils.py               # Shared helpers
+\- README.md
 ```
 
-## 环境要求
+## Environment Setup
 
-- Python 3.10+
-- 依赖包（按脚本使用情况安装）：
-  - `tree-sitter`
-  - `tree-sitter-c`
-  - `tree-sitter-java`
+Python **3.10+** is recommended.
 
-示例安装：
-
-```bash
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install tree-sitter tree-sitter-c tree-sitter-java
 ```
 
-## 快速开始
+Some pipeline stages call an OpenAI-compatible LLM endpoint. Pass API settings on the command line, or set environment variables used by your local wrapper:
 
-1. 预处理规范文本：
-
-```bash
-python step0_preprocess.py --doc document/TLS1.3.txt --output-dir output
+```powershell
+$env:OPENAI_API_KEY="your_api_key"
 ```
 
-2. 抽取字段定义（需要模型 API Key）：
+Most scripts also accept:
 
-```bash
-python step1_variable_definitions.py --api-key YOUR_API_KEY
+```text
+--api-key
+--base-url
+--model
 ```
 
-3. 抽取字段变化规则：
+## Reproducible Pipeline
 
-```bash
-python step2_variable_changes.py --api-key YOUR_API_KEY
+The commands below use the included TLS 1.3 standard as a small starting point. Replace paths as needed for other protocol standards or implementations.
+
+### 1) Preprocess the standard
+
+```powershell
+python .\step0_preprocess.py --doc .\document\TLS1.3.txt --output-dir .\output
 ```
 
-4. 汇总输出：
+Outputs:
 
-```bash
-python step3_variable_summary.py --api-key YOUR_API_KEY
+- `output/preprocessed_text.txt`
+- `output/preprocessed_chunks.json`
+
+### 2) Extract field definitions
+
+```powershell
+python .\step1_variable_definitions.py --api-key YOUR_API_KEY
 ```
 
-5. 扫描代码符号（用于后续代码关联）：
+Typical output:
 
-```bash
-python scan_symbols.py . --csv symbols.csv --json symbols.json
+- `output/01_variable_definitions.json`
+
+### 3) Extract field rules and changes
+
+```powershell
+python .\step2_variable_changes.py --api-key YOUR_API_KEY
 ```
 
-## 输出说明
+Typical output:
 
-- `output/01_variable_definitions.json`：字段定义抽取结果
-- `output/02_variable_changes.json`：字段变化/约束规则结果
-- `output/03_variable_summary.md`：汇总表
-- `output/04_related_files*.json`：相关文件检索结果
-- `result.json`：聚合后的审查结果
+- `output/02_variable_changes.json`
 
-## 说明
+### 4) Generate a field summary
 
-- 当前仓库已包含一批示例输出文件，便于离线查看流程产物。
-- 部分脚本依赖外部 LLM API，请根据实际服务商填写 `--base-url` 与 `--model` 参数。
+```powershell
+python .\step3_variable_summary.py --api-key YOUR_API_KEY
+```
+
+## SpecField End-to-End Run
+
+Run the paper-side SpecField workflow:
+
+```powershell
+python .\specfield\core.py `
+  --standard-doc .\document\TLS1.3.txt `
+  --repo-root . `
+  --output-dir .\output\specfield_full `
+  --max-rules 50
+```
+
+Useful outputs:
+
+- `output/specfield_full/01_field_space.json`
+- `output/specfield_full/02_field_rules.json`
+- `output/specfield_full/03_alignments_and_judgments.json`
+- `output/specfield_full/reports/`
+- `output/specfield_full/summary.json`
+
+## Evaluation Helpers
+
+Build RQ1 gold field-level obligations from the curated rule files:
+
+```powershell
+python .\evalute\field\build_gold_obligations.py --repo-root .
+```
+
+Run RQ1 field-rule discovery baselines:
+
+```powershell
+python .\evalute\field\rule_discovery_baselines.py `
+  --method schema-only `
+  --chunks .\output\preprocessed_chunks.json `
+  --output .\output\schema_only_field_rules.json `
+  --api-key YOUR_API_KEY
+```
+
+Run RQ5 component configurations:
+
+```powershell
+python .\specfield\experiments.py `
+  --config all `
+  --rules .\output\specfield_full\02_field_rules.json `
+  --repo-root . `
+  --output-dir .\output\specfield_components
+```
+
+Aggregate evaluation outputs:
+
+```powershell
+python .\specfield\evaluate.py rq3 --input .\output\specfield_full\03_alignments_and_judgments.json
+python .\specfield\evaluate.py rq4 --input .\output\specfield_full\03_alignments_and_judgments.json
+```
+
+## Notes
+
+- Generated reports should be reviewed manually before disclosure or submission.
+- Some artifacts may be partial or redacted when direct reproduction inputs cannot be shared safely.

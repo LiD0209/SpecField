@@ -1,50 +1,50 @@
-051	不满足	空 ClientId + clean_session=0 未返回 0x02（Identifier rejected）。
-052	部分满足	部分校验失败会返回非零 CONNACK，但并非所有失败路径都发送 CONNACK。
-053	满足	CONNECT 验证成功时，CONNACK 返回码为 0。
-054	满足	发送非零 CONNACK 后会立即走断链流程。
-055	不满足	同 ID51：空 ClientId + clean_session=0 未返回 0x02。
-056	满足	接受 clean_session=0 连接时返回码为 0。
-057	满足	接受 clean_session=1 连接时返回码为 0。
-058	满足	无已存会话状态时，接受连接返回码为 0。
-059	部分满足	存在 ClientId 被拒绝并返回 0x02 的路径（如过长 ID），但覆盖不完整。
-060	部分满足	同 ID59：0x02 返回码仅在部分 ClientId 拒绝路径生效。
-061	满足	服务端确认 CONNECT 时使用零返回码。
-062	不满足	未见对不支持 protocol level 的显式 0x01 响应校验与分支。
-063	部分满足	发送侧 CONNACK flags 置 0，但接收侧未显式校验 bits7..1 为 0。
-064	满足	Connect Flags 同时用于连接行为参数和 payload 字段存在性判定。
-065	满足	对可处理的“well-formed 但无法处理”场景，会给出表内非零返回码。
-066	部分满足	存在不发 CONNACK 直接断链路径，但非以“无适用返回码”统一决策实现。
-067	满足	Remaining Length 编码时，有后续字节会置 continuation bit。
-068	满足	Remaining Length 解码循环条件为 `(encodedByte & 128) != 0`。
-069	满足	接收侧未基于 DUP 位做重复抑制判定，同包标识重来仍按发布流程处理。
-070	部分满足	broker 转发 QoS0 时固定 DUP=0，但通用编码接口未硬性禁止 QoS0+dup=1。
-071	部分满足	QoS1 首发在 broker 流程为 DUP=0；通用客户端编码由调用方提供 duplicate。
-072	部分满足	QoS2 首发同样依赖调用侧 duplicate 输入，未统一强制。
-073	部分满足	QoS0 发送常见路径 DUP=0，但非所有调用路径都强制该常量。
-074	部分满足	“所有 QoS0 消息 DUP=0”未在通用编码层做强制校验。
-075	部分满足	broker 转发不会传播 incoming DUP，但也未实现“重传时按状态置位”的完整机制。
-076	不满足	未发现重投递时自动将 DUP 置 1 的实现路径。
-077	部分满足	同 ID74：QoS0 DUP=0 在主要路径满足，但通用层不强制。
-078	不满足	同 ID76：Client/Server 重投递场景未见 DUP=1 自动置位。
-079	部分满足	转发 DUP 不继承入站值（固定 0），但“仅按是否重传决定”仍未完整实现。
-080	满足	Variable Byte Integer 编码实现了 `encodedByte = X MOD 128`。
-081	满足	解码时 `encodedByte` 从后续字节流读取。
-082	满足	存在后续编码数据时执行 `encodedByte |= 128`。
-083	不满足	接收侧固定报头 flags 未按包类型做保留位合法性校验。
-084	不满足	未实现通用“invalid flags -> close connection”处理。
-085	不满足	同 ID84：非法 flags 场景未覆盖到协议级断链处理。
-086	部分满足	客户端携带 Keep Alive 并提供 PING API，但未自动调度保证发送间隔不超时。
-087	部分满足	同 ID86：发送间隔控制主要由应用层负责。
-088	满足	服务端实现了 1.5 倍 Keep Alive 超时断链。
-089	满足	Keep Alive 为 0 时不会进入超时断链逻辑（机制关闭）。
-090	满足	超过 1.5 倍 Keep Alive 无控制报文时会判定超时并断开。
-091	满足	Keep Alive 使用 16 位字段（最大 65535 秒）。
-092	满足	UTF-8 字符串编码使用 2 字节长度前缀，长度为字符串字节数。
-093	满足	Password 存在时通过长度前缀编码，长度来自实际字节数。
-094	满足	UTF-8 字符串长度有 65535 上限且解码时做边界验证。
-095	满足	Will Message 长度前缀来自数据长度，且不包含前缀自身长度。
-096	部分满足	packet_id 在发送过程中保持调用方提供值，但未实现统一自动重发管理策略。
-097	满足	PUBACK/PUBREC/PUBREL 响应路径都复用原始 PUBLISH 的 packet_id。
-098	满足	QoS0 的 PUBLISH 不编码 packet_id，解码也仅在 QoS>0 时读取。
-099	满足	SUBACK/UNSUBACK 都使用对应 SUBSCRIBE/UNSUBSCRIBE 的 packet_id。
-100	满足	接收端对同 packet_id 的后续 PUBLISH 仍按新发布流程处理，不依赖 DUP 位判断。
+051	[non-English text removed] ClientId + clean_session=0 [non-English text removed] 0x02（Identifier rejected）。
+052	partialsatisfied	partialvalidation[non-English text removed] CONNACK。
+053	satisfied	CONNECT validation[non-English text removed] 0。
+054	satisfied	[non-English text removed]。
+055	[non-English text removed]satisfied	same as ID51：[non-English text removed] ClientId + clean_session=0 [non-English text removed] 0x02。
+056	satisfied	[non-English text removed] clean_session=0 connection[non-English text removed] 0。
+057	satisfied	[non-English text removed] clean_session=1 connection[non-English text removed] 0。
+058	satisfied	[non-English text removed] 0。
+059	partialsatisfied	[non-English text removed]。
+060	partialsatisfied	same as ID59：0x02 [non-English text removed]partial ClientId rejectionpath[non-English text removed]。
+061	satisfied	server[non-English text removed]。
+062	[non-English text removed]。
+063	partialsatisfied	[non-English text removed]explicitvalidation bits7..1 [non-English text removed] 0。
+064	satisfied	Connect Flags [non-English text removed]。
+065	satisfied	[non-English text removed]。
+066	partialsatisfied	[non-English text removed]。
+067	satisfied	Remaining Length [non-English text removed] continuation bit。
+068	satisfied	Remaining Length [non-English text removed] `(encodedByte & 128) != 0`。
+069	satisfied	[non-English text removed]processing。
+070	partialsatisfied	broker [non-English text removed] QoS0+dup=1。
+071	partialsatisfied	QoS1 [non-English text removed] duplicate。
+072	partialsatisfied	QoS2 [non-English text removed]mandatory。
+073	partialsatisfied	QoS0 [non-English text removed]。
+074	partialsatisfied	“[non-English text removed]mandatoryvalidation。
+075	partialsatisfied	broker [non-English text removed]。
+076	[non-English text removed]path。
+077	partialsatisfied	same as ID74：QoS0 DUP=0 [non-English text removed]mandatory。
+078	[non-English text removed]satisfied	same as ID76：Client/Server [non-English text removed]。
+079	partialsatisfied	[non-English text removed]。
+080	satisfied	Variable Byte Integer [non-English text removed] `encodedByte = X MOD 128`。
+081	satisfied	[non-English text removed]。
+082	satisfied	[non-English text removed] `encodedByte |= 128`。
+083	[non-English text removed]validation。
+084	[non-English text removed]“invalid flags -> close connection”processing。
+085	[non-English text removed]satisfied	same as ID84：[non-English text removed]processing。
+086	partialsatisfied	client[non-English text removed]。
+087	partialsatisfied	same as ID86：[non-English text removed]。
+088	satisfied	server[non-English text removed]。
+089	satisfied	Keep Alive [non-English text removed]）。
+090	satisfied	[non-English text removed]disconnect。
+091	satisfied	Keep Alive use 16 [non-English text removed]）。
+092	satisfied	UTF-8 string[non-English text removed]。
+093	satisfied	Password [non-English text removed]。
+094	satisfied	UTF-8 stringlength[non-English text removed]boundaryvalidation。
+095	satisfied	Will Message length[non-English text removed]length。
+096	partialsatisfied	packet_id [non-English text removed]。
+097	satisfied	PUBACK/PUBREC/PUBREL [non-English text removed] packet_id。
+098	satisfied	QoS0 [non-English text removed]。
+099	satisfied	SUBACK/UNSUBACK [non-English text removed] SUBSCRIBE/UNSUBSCRIBE [non-English text removed] packet_id。
+100	satisfied	[non-English text removed]。

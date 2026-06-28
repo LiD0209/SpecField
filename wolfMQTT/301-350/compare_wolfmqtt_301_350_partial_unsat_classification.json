@@ -1,330 +1,330 @@
-{
-  "scope": "wolfMQTT-master 301-336 partial+unsatisfied",
-  "total_reviewed": 16,
-  "status_summary": {
-    "部分满足": 12,
-    "不满足": 4
-  },
-  "risk_summary": {
-    "low": 0,
-    "medium": 0,
-    "high": 16
-  },
-  "category_summary": {
-    "Will Flag=0 的载荷一致性校验不足": {
-      "count": 4,
-      "partial": 4,
-      "unsatisfied": 0
-    },
-    "Will QoS 合法取值校验缺失": {
-      "count": 3,
-      "partial": 0,
-      "unsatisfied": 3
-    },
-    "Will QoS/Retain 与 Will Flag 的联动校验不足": {
-      "count": 5,
-      "partial": 5,
-      "unsatisfied": 0
-    },
-    "Will topic UTF-8 语义校验缺失": {
-      "count": 3,
-      "partial": 3,
-      "unsatisfied": 0
-    },
-    "Will topic 禁用字符校验缺失（U+0000）": {
-      "count": 1,
-      "partial": 0,
-      "unsatisfied": 1
-    }
-  },
-  "results": [
-    {
-      "id": 305,
-      "status": "部分满足",
-      "category": "Will Flag=0 的载荷一致性校验不足",
-      "risk_level": "high",
-      "reason": "可能放行 Flag 与载荷不一致的 CONNECT 报文。",
-      "variable_name": "Will Message",
-      "change_action": "must be absent",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 304,
-      "source_chunk_id": "chunk_0006",
-      "original_comment": "Will Flag=0 时不解析 Will 字段，但未做“剩余载荷必须恰好消费完”的强校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1048",
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 306,
-      "status": "部分满足",
-      "category": "Will Flag=0 的载荷一致性校验不足",
-      "risk_level": "high",
-      "reason": "协议一致性约束不完整。",
-      "variable_name": "Will Message",
-      "change_action": "must be absent",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 305,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID305：缺少对 Will Flag=0 且载荷仍含 Will 内容的显式拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1048",
-        "wolfMQTT-master/src/mqtt_packet.c:1142",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 315,
-      "status": "部分满足",
-      "category": "Will QoS/Retain 与 Will Flag 的联动校验不足",
-      "risk_level": "high",
-      "reason": "入站 CONNECT 可能携带规范外标志位组合。",
-      "variable_name": "Will QoS",
-      "change_action": "set to constant",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 314,
-      "source_chunk_id": "chunk_0006",
-      "original_comment": "编码侧仅在 `enable_lwt` 时设置 Will QoS 位；但解码侧未验证 Will Flag=0 时 QoS 位必须为 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:872",
-        "wolfMQTT-master/src/mqtt_packet.c:875",
-        "wolfMQTT-master/src/mqtt_packet.c:1053"
-      ]
-    },
-    {
-      "id": 316,
-      "status": "部分满足",
-      "category": "Will QoS/Retain 与 Will Flag 的联动校验不足",
-      "risk_level": "high",
-      "reason": "标志位一致性校验不完整。",
-      "variable_name": "Will QoS",
-      "change_action": "must equal",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 315,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID315：缺少对 Will Flag=0 下 Will QoS 位非零的协议拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1000",
-        "wolfMQTT-master/src/mqtt_packet.c:1053",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 317,
-      "status": "部分满足",
-      "category": "Will QoS/Retain 与 Will Flag 的联动校验不足",
-      "risk_level": "high",
-      "reason": "协议位约束未被严格执行。",
-      "variable_name": "Will QoS",
-      "change_action": "set to constant",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 316,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID315/316：未做 Will Flag=0 时 Will QoS=0 的强制验证。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1001",
-        "wolfMQTT-master/src/mqtt_packet.c:1054",
-        "wolfMQTT-master/src/mqtt_packet.c:1142"
-      ]
-    },
-    {
-      "id": 318,
-      "status": "不满足",
-      "category": "Will QoS 合法取值校验缺失",
-      "risk_level": "high",
-      "reason": "Will QoS 保留值可能进入后续处理路径。",
-      "variable_name": "Will QoS",
-      "change_action": "validated range check",
-      "change_condition": "If the Will Flag is set to 1",
-      "source_index": 317,
-      "source_chunk_id": "chunk_0006",
-      "original_comment": "未发现对 Will QoS=3（保留值）的拒绝逻辑，解码直接取两位值。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1053",
-        "wolfMQTT-master/src/mqtt_packet.c:1054",
-        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:323"
-      ]
-    },
-    {
-      "id": 319,
-      "status": "不满足",
-      "category": "Will QoS 合法取值校验缺失",
-      "risk_level": "high",
-      "reason": "协议保留值未被拦截。",
-      "variable_name": "Will QoS",
-      "change_action": "validated membership check",
-      "change_condition": "If the Will Flag is set to 1",
-      "source_index": 318,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID318：未限制 Will QoS 仅允许 {0,1,2}。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1054",
-        "wolfMQTT-master/src/mqtt_broker.c:2833",
-        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:335"
-      ]
-    },
-    {
-      "id": 320,
-      "status": "不满足",
-      "category": "Will QoS 合法取值校验缺失",
-      "risk_level": "high",
-      "reason": "可能导致非标准 QoS 分发行为。",
-      "variable_name": "Will QoS",
-      "change_action": "must not equal",
-      "change_condition": "If the Will Flag is set to 1",
-      "source_index": 319,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID318/319：Will QoS=3 未被判定为错误。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1054",
-        "wolfMQTT-master/src/mqtt_broker.c:2833",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 322,
-      "status": "部分满足",
-      "category": "Will QoS/Retain 与 Will Flag 的联动校验不足",
-      "risk_level": "high",
-      "reason": "入站 CONNECT 位组合校验缺失。",
-      "variable_name": "Will Retain",
-      "change_action": "set to constant",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 321,
-      "source_chunk_id": "chunk_0006",
-      "original_comment": "编码侧可保证 Will Flag=0 时不会置位 Will Retain；但解码侧未显式拒绝违规置位。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:872",
-        "wolfMQTT-master/src/mqtt_packet.c:879",
-        "wolfMQTT-master/src/mqtt_packet.c:1056"
-      ]
-    },
-    {
-      "id": 323,
-      "status": "部分满足",
-      "category": "Will QoS/Retain 与 Will Flag 的联动校验不足",
-      "risk_level": "high",
-      "reason": "协议一致性约束不完整。",
-      "variable_name": "Will Retain",
-      "change_action": "must equal",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 322,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID322：Will Flag=0 时 Will Retain 必为 0 的接收侧强校验不存在。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1000",
-        "wolfMQTT-master/src/mqtt_packet.c:1056",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 327,
-      "status": "部分满足",
-      "category": "Will Flag=0 的载荷一致性校验不足",
-      "risk_level": "high",
-      "reason": "可兼容接受不符合字段出现规则的报文。",
-      "variable_name": "Will topic",
-      "change_action": "must be absent",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 326,
-      "source_chunk_id": "chunk_0006",
-      "original_comment": "Will Flag=0 时不解析 Will topic，但未严格拒绝多余 Will topic 载荷。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1048",
-        "wolfMQTT-master/src/mqtt_packet.c:1087",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 328,
-      "status": "部分满足",
-      "category": "Will Flag=0 的载荷一致性校验不足",
-      "risk_level": "high",
-      "reason": "与协议字段出现条件存在偏差。",
-      "variable_name": "Will topic",
-      "change_action": "must be absent",
-      "change_condition": "If the Will Flag is set to 0",
-      "source_index": 327,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "同 ID327：缺乏对 Flag=0 且出现 Will topic 字段的显式无效判定。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1000",
-        "wolfMQTT-master/src/mqtt_packet.c:1048",
-        "wolfMQTT-master/src/mqtt_packet.c:1142"
-      ]
-    },
-    {
-      "id": 330,
-      "status": "部分满足",
-      "category": "Will topic UTF-8 语义校验缺失",
-      "risk_level": "high",
-      "reason": "无法拦截 malformed UTF-8 Will topic。",
-      "variable_name": "Will topic",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
-      "source_index": 329,
-      "source_chunk_id": "chunk_0017",
-      "original_comment": "Will topic 仅做长度前缀字符串解码，无 UTF-8 语义合法性校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1087",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 333,
-      "status": "部分满足",
-      "category": "Will topic UTF-8 语义校验缺失",
-      "risk_level": "high",
-      "reason": "仅完成长度层校验。",
-      "variable_name": "Will topic",
-      "change_action": "must satisfy validity check",
-      "change_condition": "Will Topic field validation",
-      "source_index": 332,
-      "source_chunk_id": "chunk_0018",
-      "original_comment": "Will topic 采用长度前缀字符串格式，但未校验 UTF-8 码点合法性。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1087",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:366"
-      ]
-    },
-    {
-      "id": 334,
-      "status": "部分满足",
-      "category": "Will topic UTF-8 语义校验缺失",
-      "risk_level": "high",
-      "reason": "不能保证 UTF-8 数据严格合规。",
-      "variable_name": "Will topic",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "Will topic contains UTF-8 character data",
-      "source_index": 333,
-      "source_chunk_id": "chunk_0004",
-      "original_comment": "同 ID330/333：Will topic 缺失 UTF-8 字符语义校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1087",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 335,
-      "status": "不满足",
-      "category": "Will topic 禁用字符校验缺失（U+0000）",
-      "risk_level": "high",
-      "reason": "NUL 会破坏字符串一致性并影响后续匹配/日志。",
-      "variable_name": "Will topic",
-      "change_action": "must not equal or include U+0000; invalid if value check fails",
-      "change_condition": "Will topic contains encoding of null character U+0000",
-      "source_index": 334,
-      "source_chunk_id": "chunk_0004",
-      "original_comment": "未发现对 Will topic 中 U+0000 的显式拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1087",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_broker.c:2803"
-      ]
-    }
-  ]
+{
+  "scope": "wolfMQTT-master 301-336 partial+unsatisfied",
+  "total_reviewed": 16,
+  "status_summary": {
+    "partialsatisfied": 12,
+    "[non-English text removed]satisfied": 4
+  },
+  "risk_summary": {
+    "low": 0,
+    "medium": 0,
+    "high": 16
+  },
+  "category_summary": {
+    "Will Flag=0 [non-English text removed]": {
+      "count": 4,
+      "partial": 4,
+      "unsatisfied": 0
+    },
+    "Will QoS validvaluevalidation[non-English text removed]": {
+      "count": 3,
+      "partial": 0,
+      "unsatisfied": 3
+    },
+    "Will QoS/Retain [non-English text removed]": {
+      "count": 5,
+      "partial": 5,
+      "unsatisfied": 0
+    },
+    "Will topic UTF-8 semanticvalidation[non-English text removed]": {
+      "count": 3,
+      "partial": 3,
+      "unsatisfied": 0
+    },
+    "Will topic [non-English text removed]（U+0000）": {
+      "count": 1,
+      "partial": 0,
+      "unsatisfied": 1
+    }
+  },
+  "results": [
+    {
+      "id": 305,
+      "status": "partialsatisfied",
+      "category": "Will Flag=0 [non-English text removed]",
+      "risk_level": "high",
+      "reason": "may[non-English text removed]。",
+      "variable_name": "Will Message",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 304,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "Will Flag=0 [non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 306,
+      "status": "partialsatisfied",
+      "category": "Will Flag=0 [non-English text removed]",
+      "risk_level": "high",
+      "reason": "protocol[non-English text removed]。",
+      "variable_name": "Will Message",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 305,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID305：missing[non-English text removed]explicitrejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 315,
+      "status": "partialsatisfied",
+      "category": "Will QoS/Retain [non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]。",
+      "variable_name": "Will QoS",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 314,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "encoding side[non-English text removed]validation Will Flag=0 [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:875",
+        "wolfMQTT-master/src/mqtt_packet.c:1053"
+      ]
+    },
+    {
+      "id": 316,
+      "status": "partialsatisfied",
+      "category": "Will QoS/Retain [non-English text removed]",
+      "risk_level": "high",
+      "reason": "flag bits[non-English text removed]。",
+      "variable_name": "Will QoS",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 315,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID315：missing[non-English text removed]protocolrejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1053",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 317,
+      "status": "partialsatisfied",
+      "category": "Will QoS/Retain [non-English text removed]",
+      "risk_level": "high",
+      "reason": "protocol[non-English text removed]。",
+      "variable_name": "Will QoS",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 316,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID315/316：[non-English text removed]mandatoryvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1001",
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_packet.c:1142"
+      ]
+    },
+    {
+      "id": 318,
+      "status": "[non-English text removed]satisfied",
+      "category": "Will QoS validvaluevalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "Will QoS reserved valuemay[non-English text removed]processingpath。",
+      "variable_name": "Will QoS",
+      "change_action": "validated range check",
+      "change_condition": "If the Will Flag is set to 1",
+      "source_index": 317,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "not found[non-English text removed] Will QoS=3（reserved value）[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1053",
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:323"
+      ]
+    },
+    {
+      "id": 319,
+      "status": "[non-English text removed]satisfied",
+      "category": "Will QoS validvaluevalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "protocolreserved value[non-English text removed]。",
+      "variable_name": "Will QoS",
+      "change_action": "validated membership check",
+      "change_condition": "If the Will Flag is set to 1",
+      "source_index": 318,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID318：[non-English text removed] {0,1,2}。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_broker.c:2833",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:335"
+      ]
+    },
+    {
+      "id": 320,
+      "status": "[non-English text removed]satisfied",
+      "category": "Will QoS validvaluevalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "may[non-English text removed]。",
+      "variable_name": "Will QoS",
+      "change_action": "must not equal",
+      "change_condition": "If the Will Flag is set to 1",
+      "source_index": 319,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID318/319：Will QoS=3 [non-English text removed]error。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1054",
+        "wolfMQTT-master/src/mqtt_broker.c:2833",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 322,
+      "status": "partialsatisfied",
+      "category": "Will QoS/Retain [non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]。",
+      "variable_name": "Will Retain",
+      "change_action": "set to constant",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 321,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "encoding side[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:872",
+        "wolfMQTT-master/src/mqtt_packet.c:879",
+        "wolfMQTT-master/src/mqtt_packet.c:1056"
+      ]
+    },
+    {
+      "id": 323,
+      "status": "partialsatisfied",
+      "category": "Will QoS/Retain [non-English text removed]",
+      "risk_level": "high",
+      "reason": "protocol[non-English text removed]。",
+      "variable_name": "Will Retain",
+      "change_action": "must equal",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 322,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID322：Will Flag=0 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1056",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 327,
+      "status": "partialsatisfied",
+      "category": "Will Flag=0 [non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]。",
+      "variable_name": "Will topic",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 326,
+      "source_chunk_id": "chunk_0006",
+      "original_comment": "Will Flag=0 [non-English text removed] Will topic payload。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 328,
+      "status": "partialsatisfied",
+      "category": "Will Flag=0 [non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]。",
+      "variable_name": "Will topic",
+      "change_action": "must be absent",
+      "change_condition": "If the Will Flag is set to 0",
+      "source_index": 327,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "same as ID327：[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_packet.c:1048",
+        "wolfMQTT-master/src/mqtt_packet.c:1142"
+      ]
+    },
+    {
+      "id": 330,
+      "status": "partialsatisfied",
+      "category": "Will topic UTF-8 semanticvalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed] malformed UTF-8 Will topic。",
+      "variable_name": "Will topic",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "source_index": 329,
+      "source_chunk_id": "chunk_0017",
+      "original_comment": "Will topic [non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 333,
+      "status": "partialsatisfied",
+      "category": "Will topic UTF-8 semanticvalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]validation。",
+      "variable_name": "Will topic",
+      "change_action": "must satisfy validity check",
+      "change_condition": "Will Topic field validation",
+      "source_index": 332,
+      "source_chunk_id": "chunk_0018",
+      "original_comment": "Will topic [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:366"
+      ]
+    },
+    {
+      "id": 334,
+      "status": "partialsatisfied",
+      "category": "Will topic UTF-8 semanticvalidation[non-English text removed]",
+      "risk_level": "high",
+      "reason": "[non-English text removed]。",
+      "variable_name": "Will topic",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "Will topic contains UTF-8 character data",
+      "source_index": 333,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "same as ID330/333：Will topic [non-English text removed]semanticvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 335,
+      "status": "[non-English text removed]satisfied",
+      "category": "Will topic [non-English text removed]（U+0000）",
+      "risk_level": "high",
+      "reason": "NUL [non-English text removed]。",
+      "variable_name": "Will topic",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "Will topic contains encoding of null character U+0000",
+      "source_index": 334,
+      "source_chunk_id": "chunk_0004",
+      "original_comment": "not found[non-English text removed] Will topic medium U+0000 [non-English text removed]explicitrejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1087",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_broker.c:2803"
+      ]
+    }
+  ]
 }

@@ -1,927 +1,927 @@
-{
-  "meta": {
-    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
-    "scope": "source_changes_index_250_to_299",
-    "display_scope": "251-300",
-    "method": "static_code_comparison",
-    "target": "wolfMQTT-master",
-    "generated_at": "2026-04-25T21:42:49",
-    "counts": {
-      "满足": 19,
-      "部分满足": 23,
-      "不满足": 8,
-      "不适用": 0,
-      "待确认": 0
-    },
-    "evidence_validation": {
-      "total_references": 151,
-      "missing_files": [],
-      "out_of_range": [],
-      "bad_format": [],
-      "all_locatable": true
-    }
-  },
-  "results": [
-    {
-      "id": 251,
-      "source_index": 250,
-      "variable_name": "Topic Filter",
-      "change_action": "must not equal / include forbidden character",
-      "change_condition": "for all Topic Filters",
-      "old_value": "",
-      "new_value": "MUST NOT include the null character (Unicode U+0000)",
-      "related_state_or_step": "Topic Filter validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "不满足",
-      "comment": "未发现对 Topic Filter 中 U+0000 的显式拒绝；仅解码长度和边界，不校验禁用字符。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346",
-        "wolfMQTT-master/src/mqtt_packet.c:1877",
-        "wolfMQTT-master/src/mqtt_broker.c:1464"
-      ]
-    },
-    {
-      "id": 252,
-      "source_index": 251,
-      "variable_name": "Topic Filter",
-      "change_action": "validated range check",
-      "change_condition": "for all Topic Filters as UTF-8 encoded strings",
-      "old_value": "",
-      "new_value": "MUST NOT encode to more than 65535 bytes",
-      "related_state_or_step": "Topic Filter validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "字符串采用 2 字节长度字段解码，编码侧也限制 >65535 字节，满足长度上限约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:285",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:366"
-      ]
-    },
-    {
-      "id": 253,
-      "source_index": 252,
-      "variable_name": "Topic Filter",
-      "change_action": "must equal corresponding Topic Name level character for character",
-      "change_condition": "for each non-wildcarded level during subscription matching",
-      "old_value": "",
-      "new_value": "corresponding level in Topic Name",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "订阅匹配时，非通配符层级按字符逐个比较实现。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2533",
-        "wolfMQTT-master/src/mqtt_broker.c:2544",
-        "wolfMQTT-master/src/mqtt_broker.c:2547"
-      ]
-    },
-    {
-      "id": 254,
-      "source_index": 253,
-      "variable_name": "Topic Filter",
-      "change_action": "invalid if value check fails",
-      "change_condition": "if the Server chooses not to support topic filters that contain wildcard characters",
-      "old_value": "contains wildcard characters",
-      "new_value": "",
-      "related_state_or_step": "SUBSCRIBE request validation",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "支持通过编译开关禁用通配符匹配，但禁用后并未在 SUBSCRIBE 入站阶段拒绝含通配符的 Topic Filter。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2572",
-        "wolfMQTT-master/src/mqtt_broker.c:3066",
-        "wolfMQTT-master/src/mqtt_broker.c:3087"
-      ]
-    },
-    {
-      "id": 255,
-      "source_index": 254,
-      "variable_name": "Topic Filter",
-      "change_action": "validity check",
-      "change_condition": "in a SUBSCRIBE packet payload",
-      "old_value": "",
-      "new_value": "UTF-8 encoded strings",
-      "related_state_or_step": "SUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "SUBSCRIBE 的 Topic Filter 走长度前缀字符串解码，但无 UTF-8 语义校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1877",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 256,
-      "source_index": 255,
-      "variable_name": "Topic Filter",
-      "change_action": "validity check",
-      "change_condition": "in an UNSUBSCRIBE packet",
-      "old_value": "",
-      "new_value": "UTF-8 encoded strings",
-      "related_state_or_step": "UNSUBSCRIBE payload validation",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "UNSUBSCRIBE 的 Topic Filter 同样仅做长度解码，无 UTF-8 合法性判断。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2165",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 257,
-      "source_index": 256,
-      "variable_name": "Topic Filter",
-      "change_action": "must equal",
-      "change_condition": "new Subscription replacing an existing Subscription",
-      "old_value": "Topic Filter in the previous Subscription",
-      "new_value": "identical Topic Filter in the new Subscription",
-      "related_state_or_step": "subscription replacement",
-      "source_chunk_id": "chunk_0019",
-      "status": "满足",
-      "comment": "同一客户端对同一 Topic Filter 重复订阅时执行更新 QoS，而非创建重复订阅。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:1470",
-        "wolfMQTT-master/src/mqtt_broker.c:1476",
-        "wolfMQTT-master/src/mqtt_broker.c:1490"
-      ]
-    },
-    {
-      "id": 258,
-      "source_index": 257,
-      "variable_name": "Topic Filter",
-      "change_action": "must not equal wildcard-start pattern for matching with '$'-prefixed Topic Name",
-      "change_condition": "when matching subscriptions against Topic Names",
-      "old_value": "",
-      "new_value": "Topic Filters starting with a wildcard character (# or +) must not be matched with Topic Names beginning with a $ character",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "实现了 $ 前缀 Topic Name 与前导通配符过滤器（#/+）不匹配的约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2528",
-        "wolfMQTT-master/src/mqtt_broker.c:2529",
-        "wolfMQTT-master/src/mqtt_broker.c:2530"
-      ]
-    },
-    {
-      "id": 259,
-      "source_index": 258,
-      "variable_name": "Topic Filter",
-      "change_action": "must not be modified or normalized",
-      "change_condition": "when performing subscription matching",
-      "old_value": "",
-      "new_value": "no normalization, modification, or substitution of unrecognized characters",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "匹配逻辑基于字符逐位比较与通配符规则分支，未做归一化或字符替换。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2533",
-        "wolfMQTT-master/src/mqtt_broker.c:2544",
-        "wolfMQTT-master/src/mqtt_broker.c:2569"
-      ]
-    },
-    {
-      "id": 260,
-      "source_index": 259,
-      "variable_name": "Topic Filter",
-      "change_action": "must equal wildcard placement constraint",
-      "change_condition": "when the multi-level wildcard is used in a Topic Filter",
-      "old_value": "",
-      "new_value": "the wildcard MUST be the last character specified in the Topic Filter",
-      "related_state_or_step": "Topic Filter validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "部分满足",
-      "comment": "匹配阶段仅当 # 为末尾字符才返回匹配；但未在订阅入站阶段显式判定非法位置。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2534",
-        "wolfMQTT-master/src/mqtt_broker.c:2535",
-        "wolfMQTT-master/src/mqtt_broker.c:3066"
-      ]
-    },
-    {
-      "id": 261,
-      "source_index": 260,
-      "variable_name": "Topic Filter",
-      "change_action": "must equal whole-level placement constraint",
-      "change_condition": "when the single-level wildcard '+' is used",
-      "old_value": "",
-      "new_value": "it MUST occupy an entire level of the filter",
-      "related_state_or_step": "Topic Filter validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "不满足",
-      "comment": "未实现“+ 必须占据整级”的显式语法校验；匹配器会将 + 作为字符位置通配处理。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2537",
-        "wolfMQTT-master/src/mqtt_broker.c:2541",
-        "wolfMQTT-master/src/mqtt_broker.c:2543"
-      ]
-    },
-    {
-      "id": 262,
-      "source_index": 261,
-      "variable_name": "Topic Name",
-      "change_action": "validated range check",
-      "change_condition": "General validity requirement",
-      "old_value": "",
-      "new_value": "at least one character long",
-      "related_state_or_step": "Topic Name validity",
-      "source_chunk_id": "chunk_0020",
-      "status": "不满足",
-      "comment": "未发现 Topic Name 最小长度（>=1）的显式拒绝；空 Topic Name 可进入后续流程。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_broker.c:3214",
-        "wolfMQTT-master/src/mqtt_broker.c:3227"
-      ]
-    },
-    {
-      "id": 263,
-      "source_index": 262,
-      "variable_name": "Topic Name",
-      "change_action": "must not contain",
-      "change_condition": "General validity requirement",
-      "old_value": "",
-      "new_value": "null character (Unicode U+0000)",
-      "related_state_or_step": "Topic Name validity",
-      "source_chunk_id": "chunk_0020",
-      "status": "不满足",
-      "comment": "未对 Topic Name 的 U+0000 做拒绝校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_broker.c:3233"
-      ]
-    },
-    {
-      "id": 264,
-      "source_index": 263,
-      "variable_name": "Topic Name",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "UTF-8 validation on packet reception",
-      "source_chunk_id": "chunk_0017",
-      "status": "部分满足",
-      "comment": "接收侧使用长度前缀解码字符串，但未进行 UTF-8 编码合法性检查。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 265,
-      "source_index": 264,
-      "variable_name": "Topic Name",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "Topic Name contains UTF-8 character data",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "receiver validation of UTF-8 encoded string",
-      "source_chunk_id": "chunk_0004",
-      "status": "部分满足",
-      "comment": "Topic Name 解析流程仅完成长度与边界校验，未做 UTF-8 语义验证。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 266,
-      "source_index": 265,
-      "variable_name": "Topic Name",
-      "change_action": "must not equal or include U+0000; invalid if value check fails",
-      "change_condition": "Topic Name contains encoding of null character U+0000",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "receiver validation of UTF-8 encoded string",
-      "source_chunk_id": "chunk_0004",
-      "status": "不满足",
-      "comment": "Topic Name 未实现 U+0000 特判拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_broker.c:3239"
-      ]
-    },
-    {
-      "id": 267,
-      "source_index": 266,
-      "variable_name": "Topic Name",
-      "change_action": "validated range check",
-      "change_condition": "Topic Name is carried as a UTF-8 encoded string",
-      "old_value": "",
-      "new_value": "0 to 65535 bytes",
-      "related_state_or_step": "UTF-8 encoded string validation",
-      "source_chunk_id": "chunk_0004",
-      "status": "满足",
-      "comment": "Topic Name 使用 2 字节长度字段（0..65535）并带边界检查。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:285",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 268,
-      "source_index": 267,
-      "variable_name": "Topic Name",
-      "change_action": "validated range check",
-      "change_condition": "UTF-8 encoding validity requirement",
-      "old_value": "",
-      "new_value": "must not encode to more than 65535 bytes",
-      "related_state_or_step": "Topic Name validity",
-      "source_chunk_id": "chunk_0020",
-      "status": "满足",
-      "comment": "编码侧限制 UTF-8 字符串长度不得超过 65535 字节。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:361",
-        "wolfMQTT-master/src/mqtt_packet.c:366",
-        "wolfMQTT-master/src/mqtt_packet.c:367"
-      ]
-    },
-    {
-      "id": 269,
-      "source_index": 268,
-      "variable_name": "Topic Name",
-      "change_action": "must not contain",
-      "change_condition": "When using wildcard characters",
-      "old_value": "",
-      "new_value": "wildcard characters absent",
-      "related_state_or_step": "Topic Name validity",
-      "source_chunk_id": "chunk_0013",
-      "status": "部分满足",
-      "comment": "Broker 入站 PUBLISH 会拒绝 Topic Name 中的 +/#；但编码 API 未做同等限制。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3213",
-        "wolfMQTT-master/src/mqtt_broker.c:3217",
-        "wolfMQTT-master/src/mqtt_packet.c:1307"
-      ]
-    },
-    {
-      "id": 270,
-      "source_index": 269,
-      "variable_name": "Topic Name",
-      "change_action": "must not contain",
-      "change_condition": "Whenever wildcard characters are considered for use",
-      "old_value": "",
-      "new_value": "wildcard characters",
-      "related_state_or_step": "Topic Name validity",
-      "source_chunk_id": "chunk_0020",
-      "status": "部分满足",
-      "comment": "与 ID269 一致：仅 Broker 接收路径显式拒绝通配符 Topic Name。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3213",
-        "wolfMQTT-master/src/mqtt_broker.c:3217",
-        "wolfMQTT-master/src/mqtt_packet.c:1361"
-      ]
-    },
-    {
-      "id": 271,
-      "source_index": 270,
-      "variable_name": "Topic Name",
-      "change_action": "validated range check",
-      "change_condition": "for all Topic Names",
-      "old_value": "",
-      "new_value": "MUST be at least one character long",
-      "related_state_or_step": "Topic Name validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "不满足",
-      "comment": "未实现“所有 Topic Name 至少 1 字符”的统一校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1307",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_broker.c:3227"
-      ]
-    },
-    {
-      "id": 272,
-      "source_index": 271,
-      "variable_name": "Topic Name",
-      "change_action": "must not equal / include forbidden character",
-      "change_condition": "for all Topic Names",
-      "old_value": "",
-      "new_value": "MUST NOT include the null character (Unicode U+0000)",
-      "related_state_or_step": "Topic Name validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "不满足",
-      "comment": "未发现 Topic Name 的 NUL 字符全局拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_broker.c:3233"
-      ]
-    },
-    {
-      "id": 273,
-      "source_index": 272,
-      "variable_name": "Topic Name",
-      "change_action": "validated range check",
-      "change_condition": "for all Topic Names as UTF-8 encoded strings",
-      "old_value": "",
-      "new_value": "MUST NOT encode to more than 65535 bytes",
-      "related_state_or_step": "Topic Name validation",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "Topic Name 长度上限通过编码限制和 2 字节长度字段机制得到保证。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:366",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 274,
-      "source_index": 273,
-      "variable_name": "Topic Name",
-      "change_action": "must equal corresponding Topic Filter level character for character",
-      "change_condition": "for each corresponding level during subscription matching against a non-wildcarded Topic Filter level",
-      "old_value": "",
-      "new_value": "corresponding non-wildcarded level in Topic Filter",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "订阅匹配中，非通配符层级按字符精确相等进行比较。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2533",
-        "wolfMQTT-master/src/mqtt_broker.c:2544",
-        "wolfMQTT-master/src/mqtt_broker.c:2569"
-      ]
-    },
-    {
-      "id": 275,
-      "source_index": 274,
-      "variable_name": "Topic Name",
-      "change_action": "must match",
-      "change_condition": "in a PUBLISH Packet sent by a Server to a subscribing Client",
-      "old_value": "",
-      "new_value": "the Subscription's Topic Filter according to the matching process",
-      "related_state_or_step": "Server sending PUBLISH to subscriber",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "Broker 向订阅者转发前通过 BrokerTopicMatch 判定 Topic Name 与 Topic Filter 是否匹配。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3293",
-        "wolfMQTT-master/src/mqtt_broker.c:3294",
-        "wolfMQTT-master/src/mqtt_broker.c:3315"
-      ]
-    },
-    {
-      "id": 276,
-      "source_index": 275,
-      "variable_name": "Topic Name",
-      "change_action": "must equal required type/format",
-      "change_condition": "in the PUBLISH Packet",
-      "old_value": "",
-      "new_value": "UTF-8 encoded string",
-      "related_state_or_step": "PUBLISH variable header validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "部分满足",
-      "comment": "PUBLISH 的 Topic Name 以长度前缀字符串编解码，但无 UTF-8 语义校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1361",
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_packet.c:338"
-      ]
-    },
-    {
-      "id": 277,
-      "source_index": 276,
-      "variable_name": "Topic Name",
-      "change_action": "must not contain",
-      "change_condition": "in the PUBLISH Packet",
-      "old_value": "",
-      "new_value": "wildcard characters",
-      "related_state_or_step": "PUBLISH topic validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "部分满足",
-      "comment": "接收侧 Broker 拒绝 Topic Name 中 +/#，但发送编码路径未统一校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:3213",
-        "wolfMQTT-master/src/mqtt_broker.c:3217",
-        "wolfMQTT-master/src/mqtt_packet.c:1307"
-      ]
-    },
-    {
-      "id": 278,
-      "source_index": 277,
-      "variable_name": "Topic Name",
-      "change_action": "validity check",
-      "change_condition": "in the PUBLISH Packet",
-      "old_value": "",
-      "new_value": "UTF-8 encoded string",
-      "related_state_or_step": "PUBLISH Topic Name validation",
-      "source_chunk_id": "chunk_0019",
-      "status": "部分满足",
-      "comment": "PUBLISH Topic Name 的 UTF-8 校验仍停留在长度层，缺少编码语义验证。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1434",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 279,
-      "source_index": 278,
-      "variable_name": "Topic Name",
-      "change_action": "must be present",
-      "change_condition": "in the PUBLISH Packet Variable header",
-      "old_value": "",
-      "new_value": "present as the first field",
-      "related_state_or_step": "PUBLISH variable header validation",
-      "source_chunk_id": "chunk_0009",
-      "status": "满足",
-      "comment": "PUBLISH 可变头首字段按实现先编解码 Topic Name，再处理 Packet Identifier/属性。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1360",
-        "wolfMQTT-master/src/mqtt_packet.c:1361",
-        "wolfMQTT-master/src/mqtt_packet.c:1434"
-      ]
-    },
-    {
-      "id": 280,
-      "source_index": 279,
-      "variable_name": "Topic Name",
-      "change_action": "invalid if value check fails",
-      "change_condition": "when matching subscriptions against Topic Names",
-      "old_value": "",
-      "new_value": "a Topic Name beginning with a $ character must not be matched with Topic Filters starting with a wildcard character (# or +)",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "Topic Name 以 $ 开头时不会与前导 +/# 的 Topic Filter 匹配。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2528",
-        "wolfMQTT-master/src/mqtt_broker.c:2529",
-        "wolfMQTT-master/src/mqtt_broker.c:2530"
-      ]
-    },
-    {
-      "id": 281,
-      "source_index": 280,
-      "variable_name": "Topic Name",
-      "change_action": "must not be modified or normalized",
-      "change_condition": "when performing subscription matching",
-      "old_value": "",
-      "new_value": "no normalization, modification, or substitution of unrecognized characters",
-      "related_state_or_step": "Server subscription matching",
-      "source_chunk_id": "chunk_0014",
-      "status": "满足",
-      "comment": "匹配算法未做归一化或替换，按原始字符流进行判断。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2533",
-        "wolfMQTT-master/src/mqtt_broker.c:2544",
-        "wolfMQTT-master/src/mqtt_broker.c:2569"
-      ]
-    },
-    {
-      "id": 282,
-      "source_index": 281,
-      "variable_name": "User Name",
-      "change_action": "must be absent",
-      "change_condition": "If the User Name Flag is set to 0",
-      "old_value": "",
-      "new_value": "not present in the payload",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0006",
-      "status": "部分满足",
-      "comment": "CONNECT 解码仅在 User Name Flag=1 时解析用户名；但未校验“Flag=0 时剩余载荷必须不含用户名字段”。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1142",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 283,
-      "source_index": 282,
-      "variable_name": "User Name",
-      "change_action": "must be absent",
-      "change_condition": "If the User Name Flag is set to 0",
-      "old_value": "",
-      "new_value": "not present in payload",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0018",
-      "status": "部分满足",
-      "comment": "同 ID282：条件分支存在，但未做“多余用户名字段”一致性拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1130",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 284,
-      "source_index": 283,
-      "variable_name": "User Name",
-      "change_action": "must be present",
-      "change_condition": "If the User Name Flag is set to 1",
-      "old_value": "",
-      "new_value": "present in the payload",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0006",
-      "status": "满足",
-      "comment": "当 User Name Flag=1 时，解码路径会读取用户名字段；字段缺失将触发边界错误返回。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1121",
-        "wolfMQTT-master/src/mqtt_packet.c:1125"
-      ]
-    },
-    {
-      "id": 285,
-      "source_index": 284,
-      "variable_name": "User Name",
-      "change_action": "must be present",
-      "change_condition": "If the User Name Flag is set to 1",
-      "old_value": "",
-      "new_value": "present in payload",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0018",
-      "status": "满足",
-      "comment": "同 ID284：Flag=1 会触发用户名字段读取，满足存在性约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:1127"
-      ]
-    },
-    {
-      "id": 286,
-      "source_index": 285,
-      "variable_name": "User Name",
-      "change_action": "invalid if value check fails",
-      "change_condition": "Return code 0x04 is used",
-      "old_value": "",
-      "new_value": "malformed",
-      "related_state_or_step": "Connect Return code interpretation",
-      "source_chunk_id": "chunk_0008",
-      "status": "部分满足",
-      "comment": "实现中确实使用返回码 0x04（v3）表示用户名/密码问题，但覆盖了“认证失败”与“格式错误”两类语义。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:389",
-        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:390",
-        "wolfMQTT-master/src/mqtt_broker.c:2959"
-      ]
-    },
-    {
-      "id": 287,
-      "source_index": 286,
-      "variable_name": "User Name",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "UTF-8 validation on packet reception",
-      "source_chunk_id": "chunk_0017",
-      "status": "部分满足",
-      "comment": "User Name 字段接收侧仅做长度解码，无 UTF-8 合法性校验。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 288,
-      "source_index": 287,
-      "variable_name": "User Name",
-      "change_action": "must be present as next field",
-      "change_condition": "User Name Flag is set to 1",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "CONNECT payload field presence",
-      "source_chunk_id": "chunk_0007",
-      "status": "满足",
-      "comment": "CONNECT 载荷解析顺序中，User Name Flag=1 时用户名字段作为后续字段被读取。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1127",
-        "wolfMQTT-master/src/mqtt_packet.c:1130"
-      ]
-    },
-    {
-      "id": 289,
-      "source_index": 288,
-      "variable_name": "User Name",
-      "change_action": "must be valid UTF-8; invalid if value check fails",
-      "change_condition": "User Name contains UTF-8 character data",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "receiver validation of UTF-8 encoded string",
-      "source_chunk_id": "chunk_0004",
-      "status": "部分满足",
-      "comment": "User Name 未做 UTF-8 语义级合法性判断，仅长度边界检查。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 290,
-      "source_index": 289,
-      "variable_name": "User Name",
-      "change_action": "must not equal or include U+0000; invalid if value check fails",
-      "change_condition": "User Name contains encoding of null character U+0000",
-      "old_value": "",
-      "new_value": "",
-      "related_state_or_step": "receiver validation of UTF-8 encoded string",
-      "source_chunk_id": "chunk_0004",
-      "status": "不满足",
-      "comment": "未发现对 User Name 中 U+0000 的显式拒绝。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_broker.c:2860"
-      ]
-    },
-    {
-      "id": 291,
-      "source_index": 290,
-      "variable_name": "User Name",
-      "change_action": "validated range check",
-      "change_condition": "User Name is carried as a UTF-8 encoded string",
-      "old_value": "",
-      "new_value": "0 to 65535 bytes",
-      "related_state_or_step": "UTF-8 encoded string validation",
-      "source_chunk_id": "chunk_0004",
-      "status": "满足",
-      "comment": "User Name 解析基于 2 字节长度字段并做边界检查，满足 0..65535 字节范围。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:285",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:1124"
-      ]
-    },
-    {
-      "id": 292,
-      "source_index": 291,
-      "variable_name": "User Name",
-      "change_action": "must equal valid UTF-8 encoded string format",
-      "change_condition": "when present in the CONNECT packet",
-      "old_value": "",
-      "new_value": "a UTF-8 encoded string as defined in Section 1.5.3",
-      "related_state_or_step": "CONNECT packet validation",
-      "source_chunk_id": "chunk_0001",
-      "status": "部分满足",
-      "comment": "CONNECT 中 User Name 使用长度前缀字符串格式，但未校验 UTF-8 语义合法性。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:338",
-        "wolfMQTT-master/src/mqtt_packet.c:346"
-      ]
-    },
-    {
-      "id": 293,
-      "source_index": 292,
-      "variable_name": "User Name Flag",
-      "change_action": "must equal",
-      "change_condition": "Constraint between user name and password signaling",
-      "old_value": "0",
-      "new_value": "0",
-      "related_state_or_step": "CONNECT flag cross-field validation",
-      "source_chunk_id": "chunk_0006",
-      "status": "部分满足",
-      "comment": "发送侧编码已实现“Password 不能在 Username 为空时单独出现”；接收侧 CONNECT 解码未显式验证该约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:774",
-        "wolfMQTT-master/src/mqtt_packet.c:776",
-        "wolfMQTT-master/src/mqtt_packet.c:1130"
-      ]
-    },
-    {
-      "id": 294,
-      "source_index": 293,
-      "variable_name": "User Name Flag",
-      "change_action": "must equal",
-      "change_condition": "If the User Name Flag is set to 0",
-      "old_value": "",
-      "new_value": "0",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0006",
-      "status": "部分满足",
-      "comment": "实现通过 Flag 位驱动字段解析，但未严格拒绝 Flag=0 时附带用户名数据的异常载荷。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1142",
-        "wolfMQTT-master/src/mqtt_packet.c:1145"
-      ]
-    },
-    {
-      "id": 295,
-      "source_index": 294,
-      "variable_name": "User Name Flag",
-      "change_action": "must equal",
-      "change_condition": "If the User Name Flag is set to 1",
-      "old_value": "",
-      "new_value": "1",
-      "related_state_or_step": "CONNECT payload validation",
-      "source_chunk_id": "chunk_0006",
-      "status": "满足",
-      "comment": "编码侧当用户名存在时会设置 User Name Flag=1。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:882",
-        "wolfMQTT-master/src/mqtt_packet.c:883",
-        "wolfMQTT-master/src/mqtt_packet.c:937"
-      ]
-    },
-    {
-      "id": 296,
-      "source_index": 295,
-      "variable_name": "User Name Flag",
-      "change_action": "must equal",
-      "change_condition": "User Name Flag is set to 1",
-      "old_value": "",
-      "new_value": "1",
-      "related_state_or_step": "CONNECT payload field presence",
-      "source_chunk_id": "chunk_0007",
-      "status": "满足",
-      "comment": "当 User Name Flag=1 时，CONNECT 解析会读取用户名字段。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1118",
-        "wolfMQTT-master/src/mqtt_packet.c:1119",
-        "wolfMQTT-master/src/mqtt_packet.c:1127"
-      ]
-    },
-    {
-      "id": 297,
-      "source_index": 296,
-      "variable_name": "Variable header",
-      "change_action": "must be absent",
-      "change_condition": "For the DISCONNECT Packet.",
-      "old_value": "",
-      "new_value": "no variable header",
-      "related_state_or_step": "DISCONNECT packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "部分满足",
-      "comment": "DISCONNECT 编码在 MQTT3 场景为无可变头；但实现同时支持 MQTT5 可变头，且 broker 收包路径未显式校验 remaining length=0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2446",
-        "wolfMQTT-master/src/mqtt_packet.c:2492",
-        "wolfMQTT-master/src/mqtt_broker.c:3579"
-      ]
-    },
-    {
-      "id": 298,
-      "source_index": 297,
-      "variable_name": "Variable header",
-      "change_action": "must be absent",
-      "change_condition": "For the PINGREQ Packet.",
-      "old_value": "",
-      "new_value": "no variable header",
-      "related_state_or_step": "PINGREQ packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "部分满足",
-      "comment": "PINGREQ 发送侧固定 remaining length=0；broker 收到 PINGREQ 后直接回 PINGRESP，未显式拒绝附加可变头/载荷。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:2355",
-        "wolfMQTT-master/src/mqtt_packet.c:2365",
-        "wolfMQTT-master/src/mqtt_broker.c:3576"
-      ]
-    },
-    {
-      "id": 299,
-      "source_index": 298,
-      "variable_name": "Variable header",
-      "change_action": "must be absent",
-      "change_condition": "For the PINGRESP Packet.",
-      "old_value": "",
-      "new_value": "no variable header",
-      "related_state_or_step": "PINGRESP packet format",
-      "source_chunk_id": "chunk_0011",
-      "status": "部分满足",
-      "comment": "PINGRESP 编码为无可变头；但 PINGRESP 解码未校验 remaining length 必须为 0。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_broker.c:2591",
-        "wolfMQTT-master/src/mqtt_broker.c:2592",
-        "wolfMQTT-master/src/mqtt_packet.c:2389"
-      ]
-    },
-    {
-      "id": 300,
-      "source_index": 299,
-      "variable_name": "Will Flag",
-      "change_action": "must equal",
-      "change_condition": "If the Connect request is accepted",
-      "old_value": "",
-      "new_value": "1",
-      "related_state_or_step": "will message handling",
-      "source_chunk_id": "chunk_0006",
-      "status": "部分满足",
-      "comment": "Will 处理逻辑在 Will Flag=1 时会存储并置位 has_will；但条目中的“Connect accepted => Will Flag=1”并非实现的普遍约束。",
-      "evidence_in_wolfmqtt": [
-        "wolfMQTT-master/src/mqtt_packet.c:1000",
-        "wolfMQTT-master/src/mqtt_broker.c:2789",
-        "wolfMQTT-master/src/mqtt_broker.c:2845"
-      ]
-    }
-  ]
+{
+  "meta": {
+    "source_file": "D:\\project\\conditionFuzzing\\output\\02_variable_changes.json",
+    "scope": "source_changes_index_250_to_299",
+    "display_scope": "251-300",
+    "method": "static_code_comparison",
+    "target": "wolfMQTT-master",
+    "generated_at": "2026-04-25T21:42:49",
+    "counts": {
+      "satisfied": 19,
+      "partialsatisfied": 23,
+      "[non-English text removed]satisfied": 8,
+      "not applicable": 0,
+      "[non-English text removed]": 0
+    },
+    "evidence_validation": {
+      "total_references": 151,
+      "missing_files": [],
+      "out_of_range": [],
+      "bad_format": [],
+      "all_locatable": true
+    }
+  },
+  "results": [
+    {
+      "id": 251,
+      "source_index": 250,
+      "variable_name": "Topic Filter",
+      "change_action": "must not equal / include forbidden character",
+      "change_condition": "for all Topic Filters",
+      "old_value": "",
+      "new_value": "MUST NOT include the null character (Unicode U+0000)",
+      "related_state_or_step": "Topic Filter validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "[non-English text removed]satisfied",
+      "comment": "not found[non-English text removed] Topic Filter medium U+0000 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346",
+        "wolfMQTT-master/src/mqtt_packet.c:1877",
+        "wolfMQTT-master/src/mqtt_broker.c:1464"
+      ]
+    },
+    {
+      "id": 252,
+      "source_index": 251,
+      "variable_name": "Topic Filter",
+      "change_action": "validated range check",
+      "change_condition": "for all Topic Filters as UTF-8 encoded strings",
+      "old_value": "",
+      "new_value": "MUST NOT encode to more than 65535 bytes",
+      "related_state_or_step": "Topic Filter validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "string[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:285",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:366"
+      ]
+    },
+    {
+      "id": 253,
+      "source_index": 252,
+      "variable_name": "Topic Filter",
+      "change_action": "must equal corresponding Topic Name level character for character",
+      "change_condition": "for each non-wildcarded level during subscription matching",
+      "old_value": "",
+      "new_value": "corresponding level in Topic Name",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2533",
+        "wolfMQTT-master/src/mqtt_broker.c:2544",
+        "wolfMQTT-master/src/mqtt_broker.c:2547"
+      ]
+    },
+    {
+      "id": 254,
+      "source_index": 253,
+      "variable_name": "Topic Filter",
+      "change_action": "invalid if value check fails",
+      "change_condition": "if the Server chooses not to support topic filters that contain wildcard characters",
+      "old_value": "contains wildcard characters",
+      "new_value": "",
+      "related_state_or_step": "SUBSCRIBE request validation",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed] Topic Filter。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2572",
+        "wolfMQTT-master/src/mqtt_broker.c:3066",
+        "wolfMQTT-master/src/mqtt_broker.c:3087"
+      ]
+    },
+    {
+      "id": 255,
+      "source_index": 254,
+      "variable_name": "Topic Filter",
+      "change_action": "validity check",
+      "change_condition": "in a SUBSCRIBE packet payload",
+      "old_value": "",
+      "new_value": "UTF-8 encoded strings",
+      "related_state_or_step": "SUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "SUBSCRIBE [non-English text removed] UTF-8 semanticvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1877",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 256,
+      "source_index": 255,
+      "variable_name": "Topic Filter",
+      "change_action": "validity check",
+      "change_condition": "in an UNSUBSCRIBE packet",
+      "old_value": "",
+      "new_value": "UTF-8 encoded strings",
+      "related_state_or_step": "UNSUBSCRIBE payload validation",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "UNSUBSCRIBE [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2165",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 257,
+      "source_index": 256,
+      "variable_name": "Topic Filter",
+      "change_action": "must equal",
+      "change_condition": "new Subscription replacing an existing Subscription",
+      "old_value": "Topic Filter in the previous Subscription",
+      "new_value": "identical Topic Filter in the new Subscription",
+      "related_state_or_step": "subscription replacement",
+      "source_chunk_id": "chunk_0019",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:1470",
+        "wolfMQTT-master/src/mqtt_broker.c:1476",
+        "wolfMQTT-master/src/mqtt_broker.c:1490"
+      ]
+    },
+    {
+      "id": 258,
+      "source_index": 257,
+      "variable_name": "Topic Filter",
+      "change_action": "must not equal wildcard-start pattern for matching with '$'-prefixed Topic Name",
+      "change_condition": "when matching subscriptions against Topic Names",
+      "old_value": "",
+      "new_value": "Topic Filters starting with a wildcard character (# or +) must not be matched with Topic Names beginning with a $ character",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2528",
+        "wolfMQTT-master/src/mqtt_broker.c:2529",
+        "wolfMQTT-master/src/mqtt_broker.c:2530"
+      ]
+    },
+    {
+      "id": 259,
+      "source_index": 258,
+      "variable_name": "Topic Filter",
+      "change_action": "must not be modified or normalized",
+      "change_condition": "when performing subscription matching",
+      "old_value": "",
+      "new_value": "no normalization, modification, or substitution of unrecognized characters",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2533",
+        "wolfMQTT-master/src/mqtt_broker.c:2544",
+        "wolfMQTT-master/src/mqtt_broker.c:2569"
+      ]
+    },
+    {
+      "id": 260,
+      "source_index": 259,
+      "variable_name": "Topic Filter",
+      "change_action": "must equal wildcard placement constraint",
+      "change_condition": "when the multi-level wildcard is used in a Topic Filter",
+      "old_value": "",
+      "new_value": "the wildcard MUST be the last character specified in the Topic Filter",
+      "related_state_or_step": "Topic Filter validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2534",
+        "wolfMQTT-master/src/mqtt_broker.c:2535",
+        "wolfMQTT-master/src/mqtt_broker.c:3066"
+      ]
+    },
+    {
+      "id": 261,
+      "source_index": 260,
+      "variable_name": "Topic Filter",
+      "change_action": "must equal whole-level placement constraint",
+      "change_condition": "when the single-level wildcard '+' is used",
+      "old_value": "",
+      "new_value": "it MUST occupy an entire level of the filter",
+      "related_state_or_step": "Topic Filter validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed]processing。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2537",
+        "wolfMQTT-master/src/mqtt_broker.c:2541",
+        "wolfMQTT-master/src/mqtt_broker.c:2543"
+      ]
+    },
+    {
+      "id": 262,
+      "source_index": 261,
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "General validity requirement",
+      "old_value": "",
+      "new_value": "at least one character long",
+      "related_state_or_step": "Topic Name validity",
+      "source_chunk_id": "chunk_0020",
+      "status": "[non-English text removed]satisfied",
+      "comment": "not found Topic Name [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3214",
+        "wolfMQTT-master/src/mqtt_broker.c:3227"
+      ]
+    },
+    {
+      "id": 263,
+      "source_index": 262,
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "General validity requirement",
+      "old_value": "",
+      "new_value": "null character (Unicode U+0000)",
+      "related_state_or_step": "Topic Name validity",
+      "source_chunk_id": "chunk_0020",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed]rejectionvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3233"
+      ]
+    },
+    {
+      "id": 264,
+      "source_index": 263,
+      "variable_name": "Topic Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "UTF-8 validation on packet reception",
+      "source_chunk_id": "chunk_0017",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 265,
+      "source_index": 264,
+      "variable_name": "Topic Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "Topic Name contains UTF-8 character data",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "partialsatisfied",
+      "comment": "Topic Name [non-English text removed] UTF-8 semanticvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 266,
+      "source_index": 265,
+      "variable_name": "Topic Name",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "Topic Name contains encoding of null character U+0000",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "[non-English text removed]satisfied",
+      "comment": "Topic Name [non-English text removed]rejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3239"
+      ]
+    },
+    {
+      "id": 267,
+      "source_index": 266,
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "Topic Name is carried as a UTF-8 encoded string",
+      "old_value": "",
+      "new_value": "0 to 65535 bytes",
+      "related_state_or_step": "UTF-8 encoded string validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "satisfied",
+      "comment": "Topic Name use 2 [non-English text removed]lengthfield（0..65535）[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:285",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 268,
+      "source_index": 267,
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "UTF-8 encoding validity requirement",
+      "old_value": "",
+      "new_value": "must not encode to more than 65535 bytes",
+      "related_state_or_step": "Topic Name validity",
+      "source_chunk_id": "chunk_0020",
+      "status": "satisfied",
+      "comment": "encoding side[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:361",
+        "wolfMQTT-master/src/mqtt_packet.c:366",
+        "wolfMQTT-master/src/mqtt_packet.c:367"
+      ]
+    },
+    {
+      "id": 269,
+      "source_index": 268,
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "When using wildcard characters",
+      "old_value": "",
+      "new_value": "wildcard characters absent",
+      "related_state_or_step": "Topic Name validity",
+      "source_chunk_id": "chunk_0013",
+      "status": "partialsatisfied",
+      "comment": "Broker [non-English text removed]rejection Topic Name medium[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1307"
+      ]
+    },
+    {
+      "id": 270,
+      "source_index": 269,
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "Whenever wildcard characters are considered for use",
+      "old_value": "",
+      "new_value": "wildcard characters",
+      "related_state_or_step": "Topic Name validity",
+      "source_chunk_id": "chunk_0020",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]pathexplicitrejection[non-English text removed] Topic Name。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1361"
+      ]
+    },
+    {
+      "id": 271,
+      "source_index": 270,
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "for all Topic Names",
+      "old_value": "",
+      "new_value": "MUST be at least one character long",
+      "related_state_or_step": "Topic Name validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "[non-English text removed]satisfied",
+      "comment": "[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1307",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3227"
+      ]
+    },
+    {
+      "id": 272,
+      "source_index": 271,
+      "variable_name": "Topic Name",
+      "change_action": "must not equal / include forbidden character",
+      "change_condition": "for all Topic Names",
+      "old_value": "",
+      "new_value": "MUST NOT include the null character (Unicode U+0000)",
+      "related_state_or_step": "Topic Name validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "[non-English text removed]satisfied",
+      "comment": "not found Topic Name [non-English text removed]rejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_broker.c:3233"
+      ]
+    },
+    {
+      "id": 273,
+      "source_index": 272,
+      "variable_name": "Topic Name",
+      "change_action": "validated range check",
+      "change_condition": "for all Topic Names as UTF-8 encoded strings",
+      "old_value": "",
+      "new_value": "MUST NOT encode to more than 65535 bytes",
+      "related_state_or_step": "Topic Name validation",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "Topic Name length[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:366",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 274,
+      "source_index": 273,
+      "variable_name": "Topic Name",
+      "change_action": "must equal corresponding Topic Filter level character for character",
+      "change_condition": "for each corresponding level during subscription matching against a non-wildcarded Topic Filter level",
+      "old_value": "",
+      "new_value": "corresponding non-wildcarded level in Topic Filter",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2533",
+        "wolfMQTT-master/src/mqtt_broker.c:2544",
+        "wolfMQTT-master/src/mqtt_broker.c:2569"
+      ]
+    },
+    {
+      "id": 275,
+      "source_index": 274,
+      "variable_name": "Topic Name",
+      "change_action": "must match",
+      "change_condition": "in a PUBLISH Packet sent by a Server to a subscribing Client",
+      "old_value": "",
+      "new_value": "the Subscription's Topic Filter according to the matching process",
+      "related_state_or_step": "Server sending PUBLISH to subscriber",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "Broker [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3293",
+        "wolfMQTT-master/src/mqtt_broker.c:3294",
+        "wolfMQTT-master/src/mqtt_broker.c:3315"
+      ]
+    },
+    {
+      "id": 276,
+      "source_index": 275,
+      "variable_name": "Topic Name",
+      "change_action": "must equal required type/format",
+      "change_condition": "in the PUBLISH Packet",
+      "old_value": "",
+      "new_value": "UTF-8 encoded string",
+      "related_state_or_step": "PUBLISH variable header validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "partialsatisfied",
+      "comment": "PUBLISH [non-English text removed] UTF-8 semanticvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1361",
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338"
+      ]
+    },
+    {
+      "id": 277,
+      "source_index": 276,
+      "variable_name": "Topic Name",
+      "change_action": "must not contain",
+      "change_condition": "in the PUBLISH Packet",
+      "old_value": "",
+      "new_value": "wildcard characters",
+      "related_state_or_step": "PUBLISH topic validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed] Broker rejection Topic Name medium +/#，[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:3213",
+        "wolfMQTT-master/src/mqtt_broker.c:3217",
+        "wolfMQTT-master/src/mqtt_packet.c:1307"
+      ]
+    },
+    {
+      "id": 278,
+      "source_index": 277,
+      "variable_name": "Topic Name",
+      "change_action": "validity check",
+      "change_condition": "in the PUBLISH Packet",
+      "old_value": "",
+      "new_value": "UTF-8 encoded string",
+      "related_state_or_step": "PUBLISH Topic Name validation",
+      "source_chunk_id": "chunk_0019",
+      "status": "partialsatisfied",
+      "comment": "PUBLISH Topic Name [non-English text removed]semanticvalidation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1434",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 279,
+      "source_index": 278,
+      "variable_name": "Topic Name",
+      "change_action": "must be present",
+      "change_condition": "in the PUBLISH Packet Variable header",
+      "old_value": "",
+      "new_value": "present as the first field",
+      "related_state_or_step": "PUBLISH variable header validation",
+      "source_chunk_id": "chunk_0009",
+      "status": "satisfied",
+      "comment": "PUBLISH [non-English text removed]processing Packet Identifier/[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1360",
+        "wolfMQTT-master/src/mqtt_packet.c:1361",
+        "wolfMQTT-master/src/mqtt_packet.c:1434"
+      ]
+    },
+    {
+      "id": 280,
+      "source_index": 279,
+      "variable_name": "Topic Name",
+      "change_action": "invalid if value check fails",
+      "change_condition": "when matching subscriptions against Topic Names",
+      "old_value": "",
+      "new_value": "a Topic Name beginning with a $ character must not be matched with Topic Filters starting with a wildcard character (# or +)",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "Topic Name [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2528",
+        "wolfMQTT-master/src/mqtt_broker.c:2529",
+        "wolfMQTT-master/src/mqtt_broker.c:2530"
+      ]
+    },
+    {
+      "id": 281,
+      "source_index": 280,
+      "variable_name": "Topic Name",
+      "change_action": "must not be modified or normalized",
+      "change_condition": "when performing subscription matching",
+      "old_value": "",
+      "new_value": "no normalization, modification, or substitution of unrecognized characters",
+      "related_state_or_step": "Server subscription matching",
+      "source_chunk_id": "chunk_0014",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2533",
+        "wolfMQTT-master/src/mqtt_broker.c:2544",
+        "wolfMQTT-master/src/mqtt_broker.c:2569"
+      ]
+    },
+    {
+      "id": 282,
+      "source_index": 281,
+      "variable_name": "User Name",
+      "change_action": "must be absent",
+      "change_condition": "If the User Name Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "partialsatisfied",
+      "comment": "CONNECT [non-English text removed]field”。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 283,
+      "source_index": 282,
+      "variable_name": "User Name",
+      "change_action": "must be absent",
+      "change_condition": "If the User Name Flag is set to 0",
+      "old_value": "",
+      "new_value": "not present in payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "partialsatisfied",
+      "comment": "same as ID282：[non-English text removed]rejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1130",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 284,
+      "source_index": 283,
+      "variable_name": "User Name",
+      "change_action": "must be present",
+      "change_condition": "If the User Name Flag is set to 1",
+      "old_value": "",
+      "new_value": "present in the payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "satisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1121",
+        "wolfMQTT-master/src/mqtt_packet.c:1125"
+      ]
+    },
+    {
+      "id": 285,
+      "source_index": 284,
+      "variable_name": "User Name",
+      "change_action": "must be present",
+      "change_condition": "If the User Name Flag is set to 1",
+      "old_value": "",
+      "new_value": "present in payload",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0018",
+      "status": "satisfied",
+      "comment": "same as ID284：Flag=1 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:1127"
+      ]
+    },
+    {
+      "id": 286,
+      "source_index": 285,
+      "variable_name": "User Name",
+      "change_action": "invalid if value check fails",
+      "change_condition": "Return code 0x04 is used",
+      "old_value": "",
+      "new_value": "malformed",
+      "related_state_or_step": "Connect Return code interpretation",
+      "source_chunk_id": "chunk_0008",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]semantic。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:389",
+        "wolfMQTT-master/wolfmqtt/mqtt_packet.h:390",
+        "wolfMQTT-master/src/mqtt_broker.c:2959"
+      ]
+    },
+    {
+      "id": 287,
+      "source_index": 286,
+      "variable_name": "User Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "The character data in a UTF-8 encoded string is carried in a Control Packet.",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "UTF-8 validation on packet reception",
+      "source_chunk_id": "chunk_0017",
+      "status": "partialsatisfied",
+      "comment": "User Name field[non-English text removed]validation。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 288,
+      "source_index": 287,
+      "variable_name": "User Name",
+      "change_action": "must be present as next field",
+      "change_condition": "User Name Flag is set to 1",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "CONNECT payload field presence",
+      "source_chunk_id": "chunk_0007",
+      "status": "satisfied",
+      "comment": "CONNECT payload[non-English text removed]medium，User Name Flag=1 [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1127",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 289,
+      "source_index": 288,
+      "variable_name": "User Name",
+      "change_action": "must be valid UTF-8; invalid if value check fails",
+      "change_condition": "User Name contains UTF-8 character data",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "partialsatisfied",
+      "comment": "User Name [non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 290,
+      "source_index": 289,
+      "variable_name": "User Name",
+      "change_action": "must not equal or include U+0000; invalid if value check fails",
+      "change_condition": "User Name contains encoding of null character U+0000",
+      "old_value": "",
+      "new_value": "",
+      "related_state_or_step": "receiver validation of UTF-8 encoded string",
+      "source_chunk_id": "chunk_0004",
+      "status": "[non-English text removed]satisfied",
+      "comment": "not found[non-English text removed] User Name medium U+0000 [non-English text removed]explicitrejection。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_broker.c:2860"
+      ]
+    },
+    {
+      "id": 291,
+      "source_index": 290,
+      "variable_name": "User Name",
+      "change_action": "validated range check",
+      "change_condition": "User Name is carried as a UTF-8 encoded string",
+      "old_value": "",
+      "new_value": "0 to 65535 bytes",
+      "related_state_or_step": "UTF-8 encoded string validation",
+      "source_chunk_id": "chunk_0004",
+      "status": "satisfied",
+      "comment": "User Name [non-English text removed]range。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:285",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:1124"
+      ]
+    },
+    {
+      "id": 292,
+      "source_index": 291,
+      "variable_name": "User Name",
+      "change_action": "must equal valid UTF-8 encoded string format",
+      "change_condition": "when present in the CONNECT packet",
+      "old_value": "",
+      "new_value": "a UTF-8 encoded string as defined in Section 1.5.3",
+      "related_state_or_step": "CONNECT packet validation",
+      "source_chunk_id": "chunk_0001",
+      "status": "partialsatisfied",
+      "comment": "CONNECT medium User Name uselength[non-English text removed]validation UTF-8 semanticvalid[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:338",
+        "wolfMQTT-master/src/mqtt_packet.c:346"
+      ]
+    },
+    {
+      "id": 293,
+      "source_index": 292,
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "Constraint between user name and password signaling",
+      "old_value": "0",
+      "new_value": "0",
+      "related_state_or_step": "CONNECT flag cross-field validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:774",
+        "wolfMQTT-master/src/mqtt_packet.c:776",
+        "wolfMQTT-master/src/mqtt_packet.c:1130"
+      ]
+    },
+    {
+      "id": 294,
+      "source_index": 293,
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "If the User Name Flag is set to 0",
+      "old_value": "",
+      "new_value": "0",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "partialsatisfied",
+      "comment": "[non-English text removed]payload。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1142",
+        "wolfMQTT-master/src/mqtt_packet.c:1145"
+      ]
+    },
+    {
+      "id": 295,
+      "source_index": 294,
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "If the User Name Flag is set to 1",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "CONNECT payload validation",
+      "source_chunk_id": "chunk_0006",
+      "status": "satisfied",
+      "comment": "encoding side[non-English text removed] User Name Flag=1。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:882",
+        "wolfMQTT-master/src/mqtt_packet.c:883",
+        "wolfMQTT-master/src/mqtt_packet.c:937"
+      ]
+    },
+    {
+      "id": 296,
+      "source_index": 295,
+      "variable_name": "User Name Flag",
+      "change_action": "must equal",
+      "change_condition": "User Name Flag is set to 1",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "CONNECT payload field presence",
+      "source_chunk_id": "chunk_0007",
+      "status": "satisfied",
+      "comment": "[non-English text removed]field。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1118",
+        "wolfMQTT-master/src/mqtt_packet.c:1119",
+        "wolfMQTT-master/src/mqtt_packet.c:1127"
+      ]
+    },
+    {
+      "id": 297,
+      "source_index": 296,
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the DISCONNECT Packet.",
+      "old_value": "",
+      "new_value": "no variable header",
+      "related_state_or_step": "DISCONNECT packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "partialsatisfied",
+      "comment": "DISCONNECT [non-English text removed]explicitvalidation remaining length=0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2446",
+        "wolfMQTT-master/src/mqtt_packet.c:2492",
+        "wolfMQTT-master/src/mqtt_broker.c:3579"
+      ]
+    },
+    {
+      "id": 298,
+      "source_index": 297,
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGREQ Packet.",
+      "old_value": "",
+      "new_value": "no variable header",
+      "related_state_or_step": "PINGREQ packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "partialsatisfied",
+      "comment": "PINGREQ [non-English text removed] remaining length=0；broker receives PINGREQ [non-English text removed]/payload。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:2355",
+        "wolfMQTT-master/src/mqtt_packet.c:2365",
+        "wolfMQTT-master/src/mqtt_broker.c:3576"
+      ]
+    },
+    {
+      "id": 299,
+      "source_index": 298,
+      "variable_name": "Variable header",
+      "change_action": "must be absent",
+      "change_condition": "For the PINGRESP Packet.",
+      "old_value": "",
+      "new_value": "no variable header",
+      "related_state_or_step": "PINGRESP packet format",
+      "source_chunk_id": "chunk_0011",
+      "status": "partialsatisfied",
+      "comment": "PINGRESP [non-English text removed]validation remaining length [non-English text removed] 0。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_broker.c:2591",
+        "wolfMQTT-master/src/mqtt_broker.c:2592",
+        "wolfMQTT-master/src/mqtt_packet.c:2389"
+      ]
+    },
+    {
+      "id": 300,
+      "source_index": 299,
+      "variable_name": "Will Flag",
+      "change_action": "must equal",
+      "change_condition": "If the Connect request is accepted",
+      "old_value": "",
+      "new_value": "1",
+      "related_state_or_step": "will message handling",
+      "source_chunk_id": "chunk_0006",
+      "status": "partialsatisfied",
+      "comment": "Will processinglogic[non-English text removed]“Connect accepted => Will Flag=1”[non-English text removed]。",
+      "evidence_in_wolfmqtt": [
+        "wolfMQTT-master/src/mqtt_packet.c:1000",
+        "wolfMQTT-master/src/mqtt_broker.c:2789",
+        "wolfMQTT-master/src/mqtt_broker.c:2845"
+      ]
+    }
+  ]
 }

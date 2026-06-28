@@ -1,40 +1,40 @@
-{
-  "files": [
-    "compare_wolfssl_101_150.json",
-    "compare_wolfssl_101_150.md",
-    "compare_wolfssl_101_150_partial_unsat_classification.json",
-    "compare_wolfssl_101_150_partial_unsat_classification.md",
-    "compare_wolfssl_101_150_simple.txt",
-    "generate_wolfssl_dtls13_101_150_audit.py",
-    "id101_dtls_1_3_cookie_secret_transition_window_is_application_only_partial.md",
-    "id103_dtls_1_3_cookie_secret_rotation_has_no_built_in_window_policy_partial.md",
-    "id104_dtls_1_3_cookie_timestamp_expiration_is_not_implemented_partial.md",
-    "id114_pre_dtls_1_3_cached_legacy_session_id_handling_is_not_proven_partial.md",
-    "id123_unified_header_length_omission_relies_on_remainder_consumption_partial.md",
-    "id125_explicit_dtls_1_3_record_length_lacks_direct_datagram_bounds_check_partial.md",
-    "id139_post_handshake_message_sequence_continuity_is_only_partially_proven_partial.md",
-    "id145_dynamic_connection_id_messages_unsatisfied.md",
-    "id146_dynamic_connection_id_messages_unsatisfied.md",
-    "round_101_150_summary.json",
-    "source_assertion_tests.json",
-    "source_assertion_tests.log"
-  ],
-  "counts": {
-    "部分满足": 8,
-    "满足": 30,
-    "不适用": 10,
-    "不满足": 2
-  },
-  "classified_count": 10,
-  "confirmed_reports": [
-    "id101_dtls_1_3_cookie_secret_transition_window_is_application_only_partial.md",
-    "id103_dtls_1_3_cookie_secret_rotation_has_no_built_in_window_policy_partial.md",
-    "id104_dtls_1_3_cookie_timestamp_expiration_is_not_implemented_partial.md",
-    "id114_pre_dtls_1_3_cached_legacy_session_id_handling_is_not_proven_partial.md",
-    "id123_unified_header_length_omission_relies_on_remainder_consumption_partial.md",
-    "id125_explicit_dtls_1_3_record_length_lacks_direct_datagram_bounds_check_partial.md",
-    "id139_post_handshake_message_sequence_continuity_is_only_partially_proven_partial.md",
-    "id145_dynamic_connection_id_messages_unsatisfied.md",
-    "id146_dynamic_connection_id_messages_unsatisfied.md"
-  ]
+{
+  "files": [
+    "compare_wolfssl_101_150.json",
+    "compare_wolfssl_101_150.md",
+    "compare_wolfssl_101_150_partial_unsat_classification.json",
+    "compare_wolfssl_101_150_partial_unsat_classification.md",
+    "compare_wolfssl_101_150_simple.txt",
+    "generate_wolfssl_dtls13_101_150_audit.py",
+    "id101_dtls_1_3_cookie_secret_transition_window_is_application_only_partial.md",
+    "id103_dtls_1_3_cookie_secret_rotation_has_no_built_in_window_policy_partial.md",
+    "id104_dtls_1_3_cookie_timestamp_expiration_is_not_implemented_partial.md",
+    "id114_pre_dtls_1_3_cached_legacy_session_id_handling_is_not_proven_partial.md",
+    "id123_unified_header_length_omission_relies_on_remainder_consumption_partial.md",
+    "id125_explicit_dtls_1_3_record_length_lacks_direct_datagram_bounds_check_partial.md",
+    "id139_post_handshake_message_sequence_continuity_is_only_partially_proven_partial.md",
+    "id145_dynamic_connection_id_messages_unsatisfied.md",
+    "id146_dynamic_connection_id_messages_unsatisfied.md",
+    "round_101_150_summary.json",
+    "source_assertion_tests.json",
+    "source_assertion_tests.log"
+  ],
+  "counts": {
+    "partialsatisfied": 8,
+    "satisfied": 30,
+    "not applicable": 10,
+    "[non-English text removed]satisfied": 2
+  },
+  "classified_count": 10,
+  "confirmed_reports": [
+    "id101_dtls_1_3_cookie_secret_transition_window_is_application_only_partial.md",
+    "id103_dtls_1_3_cookie_secret_rotation_has_no_built_in_window_policy_partial.md",
+    "id104_dtls_1_3_cookie_timestamp_expiration_is_not_implemented_partial.md",
+    "id114_pre_dtls_1_3_cached_legacy_session_id_handling_is_not_proven_partial.md",
+    "id123_unified_header_length_omission_relies_on_remainder_consumption_partial.md",
+    "id125_explicit_dtls_1_3_record_length_lacks_direct_datagram_bounds_check_partial.md",
+    "id139_post_handshake_message_sequence_continuity_is_only_partially_proven_partial.md",
+    "id145_dynamic_connection_id_messages_unsatisfied.md",
+    "id146_dynamic_connection_id_messages_unsatisfied.md"
+  ]
 }

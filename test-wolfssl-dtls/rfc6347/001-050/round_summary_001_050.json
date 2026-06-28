@@ -1,21 +1,21 @@
-{
-  "round": "001-050",
-  "output_dir": "D:\\project\\conditionFuzzing\\test-wolfssl-dtls\\rfc6347\\001-050",
-  "status_counts": {
-    "满足": 43,
-    "部分满足": 6,
-    "不适用": 1
-  },
-  "partial_unsatisfied_total": 6,
-  "confirmed_partial": 6,
-  "confirmed_unsatisfied": 0,
-  "false_positive": 0,
-  "not_testable": 0,
-  "reports": [
-    "id023_dtls12_cookie_length_limit_partial.md",
-    "id024_031_dtls12_cookie_secret_rotation_partial.md",
-    "id041_dtls12_epoch_reuse_timer_partial.md",
-    "id042_043_dtls12_pmtu_blackhole_fragmentation_partial.md"
-  ],
-  "next_round": "051-098"
+{
+  "round": "001-050",
+  "output_dir": "D:\\project\\conditionFuzzing\\test-wolfssl-dtls\\rfc6347\\001-050",
+  "status_counts": {
+    "satisfied": 43,
+    "partialsatisfied": 6,
+    "not applicable": 1
+  },
+  "partial_unsatisfied_total": 6,
+  "confirmed_partial": 6,
+  "confirmed_unsatisfied": 0,
+  "false_positive": 0,
+  "not_testable": 0,
+  "reports": [
+    "id023_dtls12_cookie_length_limit_partial.md",
+    "id024_031_dtls12_cookie_secret_rotation_partial.md",
+    "id041_dtls12_epoch_reuse_timer_partial.md",
+    "id042_043_dtls12_pmtu_blackhole_fragmentation_partial.md"
+  ],
+  "next_round": "051-098"
 }

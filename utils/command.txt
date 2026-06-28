@@ -1,32 +1,32 @@
-python d:\project\conditionFuzzingPaper\step4_find_related_files.py 
-  --files-from d:\project\conditionFuzzingPaper\symbols.csv 
-  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json 
-  --api-key YOUR_API_KEY 
-  --base-url https://api.zhizengzeng.com/v1/ 
-  --model gpt-5.4 
-  --top-k 5 
-  --output d:\project\conditionFuzzingPaper\output\04_related_files_by_change.json
-
-
-
-python d:\project\conditionFuzzingPaper\step4_find_related_files.py ^
-  --files-from d:\project\conditionFuzzingPaper\symbols.csv ^
-  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json ^
-  --max-items 10 ^
-  --api-key YOUR_API_KEY
-
-
-python .\utils\variable_context_pipeline.py `
-  --repo-root . `
-  --var-name alert,quota `
-  --desc "告警和配额相关变量" `
-  --use-llm `
-  --api-key "你的key"
-
-
-python utils/recheck_not_satisfied_reason.py --input result.json --output output/recheck_not_satisfied_final.json --api-key sk-8CC9gb2d5LKEySehX1Wy0oUL6uWDpcC2btO79ZSjH1t8hcWK --review-model gpt-5.4 --test-model gpt-5.3-codex
-
-
-extract_tls_change_contexts2.py (line 13) 会导入并调用 extract_tls_change_contexts.py (line 494) 的 extract_change_contexts()（调用点在 158 行 (line 158)）。
-extract_tls_change_contexts.py (line 612) 自己也可以作为脚本直接运行（main()）。
-除了上面这层关系，仓库里没有其他脚本再去调用这两个文件（output/*.json 里出现的是文本引用，不是代码调用）。
+python d:\project\conditionFuzzingPaper\step4_find_related_files.py 
+  --files-from d:\project\conditionFuzzingPaper\symbols.csv 
+  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json 
+  --api-key YOUR_API_KEY 
+  --base-url https://api.zhizengzeng.com/v1/ 
+  --model gpt-5.4 
+  --top-k 5 
+  --output d:\project\conditionFuzzingPaper\output\04_related_files_by_change.json
+
+
+
+python d:\project\conditionFuzzingPaper\step4_find_related_files.py ^
+  --files-from d:\project\conditionFuzzingPaper\symbols.csv ^
+  --changes-file d:\project\conditionFuzzingPaper\output\02_variable_changes.json ^
+  --max-items 10 ^
+  --api-key YOUR_API_KEY
+
+
+python .\utils\variable_context_pipeline.py `
+  --repo-root . `
+  --var-name alert,quota `
+  --desc "[non-English text removed]" `
+  --use-llm `
+  --api-key "[non-English text removed]key"
+
+
+python utils/recheck_not_satisfied_reason.py --input result.json --output output/recheck_not_satisfied_final.json --api-key sk-8CC9gb2d5LKEySehX1Wy0oUL6uWDpcC2btO79ZSjH1t8hcWK --review-model gpt-5.4 --test-model gpt-5.3-codex
+
+
+extract_tls_change_contexts2.py (line 13) [non-English text removed] extract_tls_change_contexts.py (line 494) [non-English text removed] extract_change_contexts()（[non-English text removed] (line 158)）。
+extract_tls_change_contexts.py (line 612) [non-English text removed]（main()）。
+[non-English text removed]）。

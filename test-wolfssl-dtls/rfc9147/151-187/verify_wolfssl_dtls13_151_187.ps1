@@ -1,11 +1,13 @@
 $ErrorActionPreference = 'Stop'
 
-$repo = "D:\project\conditionFuzzing\wolfssl-master"
-$out = "D:\project\conditionFuzzing\test-wolfssl-dtls\rfc9147\151-187"
+$out = $PSScriptRoot
+$workspace = Resolve-Path (Join-Path $PSScriptRoot "..\..\..")
+$repo = Resolve-Path (Join-Path $workspace "wolfssl-master")
+$repoPath = $repo.Path
 $log = Join-Path $out "verify_wolfssl_dtls13_151_187.log"
 
 "wolfSSL DTLS 1.3 RFC9147 151-187 verification" | Set-Content -Encoding UTF8 $log
-"Repository: $repo" | Add-Content -Encoding UTF8 $log
+"Repository: wolfssl-master" | Add-Content -Encoding UTF8 $log
 
 function Add-Section($name) {
     "" | Add-Content -Encoding UTF8 $log
@@ -17,6 +19,20 @@ function Run-Rg($pattern, $paths) {
     $result = & rg @args 2>&1
     $code = $LASTEXITCODE
     return [pscustomobject]@{ Code = $code; Output = $result }
+}
+
+function Run-RgFixed($pattern, $paths) {
+    $args = @("-n", "--fixed-strings", $pattern) + $paths
+    $result = & rg @args 2>&1
+    $code = $LASTEXITCODE
+    return [pscustomobject]@{ Code = $code; Output = $result }
+}
+
+function Normalize-Output($lines) {
+    $escapedRepo = [regex]::Escape($repoPath)
+    $lines | ForEach-Object {
+        ($_ -replace $escapedRepo, "wolfssl-master") -replace "\\", "/"
+    }
 }
 
 $sourcePaths = @(
@@ -32,37 +48,47 @@ if (Test-Path $cache) {
     $flags | ForEach-Object { $_.Line } | Add-Content -Encoding UTF8 $log
 }
 else {
-    "No CMakeCache.txt found under build." | Add-Content -Encoding UTF8 $log
+    "No CMakeCache.txt found under wolfssl-master/build." | Add-Content -Encoding UTF8 $log
 }
 
 Add-Section "Dynamic CID message symbol scan"
-$missing = @("NewConnectionId", "RequestConnectionId", "cid_immediate", "cid_spare")
+$missing = @(
+    "request_connection_id",
+    "new_connection_id",
+    "RequestConnectionId",
+    "NewConnectionId",
+    "ConnectionIdUsage",
+    "cid_spare",
+    "cid_immediate",
+    "num_cids",
+    "too_many_cids_requested"
+)
 foreach ($m in $missing) {
-    $r = Run-Rg $m $sourcePaths
+    $r = Run-RgFixed $m $sourcePaths
     if ($r.Code -eq 0) {
         "FOUND $m" | Add-Content -Encoding UTF8 $log
-        $r.Output | Select-Object -First 20 | Add-Content -Encoding UTF8 $log
+        Normalize-Output ($r.Output | Select-Object -First 20) |
+            Add-Content -Encoding UTF8 $log
     }
     else {
         "ABSENT $m" | Add-Content -Encoding UTF8 $log
     }
 }
 
-Add-Section "Static positive-control scans"
+Add-Section "Static CID positive-control scans"
 $positive = @{
-    "ACK enum" = "ack\s*=+\s*26|ack\s+={1}\s+26"
-    "ACK parser" = "DoDtls13Ack"
-    "ACK writer" = "Dtls13WriteAckMessage"
-    "ACK ordering insertion" = "w64LT\(epoch, cur->epoch\)|w64LT\(seq, cur->seq\)"
-    "Unified header sequence length" = "DTLS13_SEQ_16_LEN|DTLS13_SEQ_8_LEN"
-    "Record-number encryption" = "Dtls13EncryptDecryptRecordNumber"
-    "Replay window after deprotect" = "Dtls13CheckWindow|Dtls13UpdateWindow"
+    "CIDInfo current-CID storage" = "ConnectionID\* tx;|ConnectionID\* rx;"
+    "connection_id extension parser" = "TLSX_ConnectionID_Parse"
+    "DTLS 1.3 unified header adds CID" = "\*flags \|= DTLS13_CID_BIT"
+    "DTLS 1.3 unified header checks CID" = "DtlsCIDCheck\(ssl"
+    "CID API rejects in-connection CID changes" = "doesn't support changing the CID during a"
 }
 foreach ($name in $positive.Keys) {
     $r = Run-Rg $positive[$name] $sourcePaths
     if ($r.Code -eq 0) {
         "PASS $name" | Add-Content -Encoding UTF8 $log
-        $r.Output | Select-Object -First 8 | Add-Content -Encoding UTF8 $log
+        Normalize-Output ($r.Output | Select-Object -First 4) |
+            Add-Content -Encoding UTF8 $log
     }
     else {
         "FAIL $name" | Add-Content -Encoding UTF8 $log
@@ -70,7 +96,29 @@ foreach ($name in $positive.Keys) {
     }
 }
 
+Add-Section "Dispatcher checks"
+$tls13 = Get-Content -Path (Join-Path $repo "src\tls13.c") -Raw
+$dispatcherStart = $tls13.IndexOf("int DoTls13HandShakeMsgType(")
+$dispatcherEnd = $tls13.IndexOf("#if defined(WOLFSSL_ASYNC_CRYPT) || defined(WOLFSSL_ASYNC_IO)", $dispatcherStart)
+$dispatcher = $tls13.Substring($dispatcherStart, $dispatcherEnd - $dispatcherStart)
+if ($dispatcher.Contains("ret = UNKNOWN_HANDSHAKE_TYPE;")) {
+    "PASS dispatcher unknown-message fallback returns UNKNOWN_HANDSHAKE_TYPE" | Add-Content -Encoding UTF8 $log
+}
+else {
+    "FAIL dispatcher unknown-message fallback was not found" | Add-Content -Encoding UTF8 $log
+    exit 1
+}
+foreach ($caseName in @("case request_connection_id", "case new_connection_id")) {
+    if ($dispatcher.Contains($caseName)) {
+        "FOUND $caseName" | Add-Content -Encoding UTF8 $log
+        exit 1
+    }
+    else {
+        "ABSENT $caseName" | Add-Content -Encoding UTF8 $log
+    }
+}
+
 Add-Section "Decision"
-"The dynamic CID update message symbols are absent, while DTLS 1.3 ACK, unified header sequence-number, record-number encryption, and anti-replay paths are present in source. Current CMake cache also has WOLFSSL_DTLS13=no and WOLFSSL_DTLS_CID=no, so built executable tests for the missing dynamic CID messages are not available in this build tree." | Add-Content -Encoding UTF8 $log
+"PASS dynamic CID update support is absent in wolfssl-master: the static CID extension/header paths are present, but no RequestConnectionId/NewConnectionId message types, ConnectionIdUsage values, num_cids handling, or cid_spare/cid_immediate state machine were found." | Add-Content -Encoding UTF8 $log
 
 exit 0

@@ -1,7 +1,7 @@
-{
-  "status": "no_not_satisfied",
-  "input": "D:\\project\\conditionFuzzingPaper\\output\\mock_cases\\case_no_not_satisfied.json",
-  "total_items": 2,
-  "llm_calls": 0,
-  "message": "result.json 中未找到 result == 不满足，已直接结束。"
+{
+  "status": "no_not_satisfied",
+  "input": "D:\\project\\conditionFuzzingPaper\\output\\mock_cases\\case_no_not_satisfied.json",
+  "total_items": 2,
+  "llm_calls": 0,
+  "message": "result.json medium[non-English text removed]。"
 }

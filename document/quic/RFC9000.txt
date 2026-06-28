@@ -1,4 +1,4 @@
-
+﻿
 
 
 
@@ -8451,7 +8451,7 @@ Contributors
    *  Gorry Fairhurst
    *  Ian Swett
    *  Igor Lubashev
-   *  奥 一穂 (Kazuho Oku)
+   *  Kazuho Oku
    *  Lars Eggert
    *  Lucas Pardue
    *  Magnus Westerlund

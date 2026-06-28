@@ -1,34 +1,38 @@
-# DTLS 1.3 ConnectionIdUsage and RequestConnectionId Response Are Not Implemented
+# DTLS 1.3 Dynamic Connection ID Updates Are Not Implemented
 
 ## Summary
 
 This report covers IDs 185, 186, and 187.
 
-RFC 9147 defines dynamic DTLS 1.3 Connection ID update messages. `NewConnectionId` carries a `usage` field with two defined semantics: `cid_immediate` and `cid_spare`. `RequestConnectionId` carries `num_cids`, and endpoints should respond by sending `NewConnectionId` with `usage = cid_spare`.
+The finding is about RFC 9147 Section 9 dynamic Connection ID updates, not about basic DTLS CID negotiation. wolfSSL supports a static/configured DTLS CID: it can negotiate the `connection_id` extension, put a negotiated CID into the DTLS 1.3 unified record header, and reject records with the wrong CID.
 
-wolfSSL has static DTLS CID support. It can negotiate/configure a CID with the `connection_id` extension and can carry that CID in the DTLS 1.3 unified record header. However, the audited source does not define or dispatch `RequestConnectionId` or `NewConnectionId`, does not define `ConnectionIdUsage`, and has no `cid_spare`, `cid_immediate`, or `num_cids` state machine.
+The missing part is the post-handshake dynamic CID mechanism. The audited wolfSSL source does not define or dispatch `RequestConnectionId` or `NewConnectionId`, does not define `ConnectionIdUsage`, and does not implement the `cid_immediate`, `cid_spare`, or `num_cids` state machine.
 
-This confirms IDs 185, 186, and 187 as **unsatisfied**. The root cause is the same as the earlier dynamic CID finding for IDs 145 and 146: wolfSSL implements static CID negotiation/header use, but not RFC 9147 Section 9 dynamic CID updates.
+Conclusion: IDs 185, 186, and 187 are **confirmed unsatisfied**. This is a static-CID-only implementation gap against RFC 9147 dynamic CID update requirements.
 
 ## Standard Requirement
 
 Official standard: <https://www.rfc-editor.org/rfc/rfc9147>
 
+Local standard text: `document/dtls/RFC9147.txt`
+
 Relevant section: RFC 9147 Section 9, `Connection ID Updates`.
 
-Relevant original English text from RFC 9147:
+Relevant normative text:
 
 ```text
-If the client and server have negotiated the "connection_id" extension [RFC9146], either side can send a new CID that it wishes the other side to use in a NewConnectionId message.
+If the client and server have negotiated the "connection_id"
+extension [RFC9146], either side can send a new CID that it wishes
+the other side to use in a NewConnectionId message.
 ```
 
 ```text
 enum {
     cid_immediate(0), cid_spare(1), (255)
 } ConnectionIdUsage;
-```
 
-```text
+opaque ConnectionId<0..2^8-1>;
+
 struct {
     ConnectionId cids<0..2^16-1>;
     ConnectionIdUsage usage;
@@ -36,45 +40,39 @@ struct {
 ```
 
 ```text
-usage:  Indicates whether the new CIDs should be used immediately or are spare.
-```
-
-```text
-If usage is set to "cid_immediate", then one of the new CIDs MUST be used immediately for all future records.
-```
-
-```text
-If it is set to "cid_spare", then either an existing or new CID MAY be used.
+usage:  Indicates whether the new CIDs should be used immediately or
+   are spare.  If usage is set to "cid_immediate", then one of the
+   new CIDs MUST be used immediately for all future records.  If it
+   is set to "cid_spare", then either an existing or new CID MAY be
+   used.
 ```
 
 ```text
 struct {
   uint8 num_cids;
 } RequestConnectionId;
-```
 
-```text
 num_cids:  The number of CIDs desired.
+
+Endpoints SHOULD respond to RequestConnectionId by sending a
+NewConnectionId with usage "cid_spare" containing num_cids CIDs as
+soon as possible.
 ```
 
-```text
-Endpoints SHOULD respond to RequestConnectionId by sending a NewConnectionId with usage "cid_spare" containing num_cids CIDs as soon as possible.
-```
-
-RFC 9147 Appendix A.2 also lists these DTLS 1.3 handshake message body alternatives:
+RFC 9147 Appendix A.2 also lists these DTLS 1.3 handshake body alternatives:
 
 ```text
 case request_connection_id: RequestConnectionId;
 case new_connection_id:     NewConnectionId;
 ```
 
-These are post-handshake protocol messages. Static CID negotiation through the `connection_id` extension is not enough to satisfy the Section 9 update semantics.
+In protocol terms, RFC 9147 expects DTLS 1.3 peers to process CID update messages after the connection has already been established. Static `connection_id` extension negotiation alone is not enough.
 
 ## Relevant Source Code
 
 ### Static CID Support Exists
 
-`D:\project\wolfssl-master\wolfssl\internal.h:6042`
+`wolfssl-master/wolfssl/internal.h:6047`
 
 ```c
 typedef struct ConnectionID {
@@ -83,7 +81,7 @@ typedef struct ConnectionID {
 } ConnectionID;
 ```
 
-`D:\project\wolfssl-master\wolfssl\internal.h:6052`
+`wolfssl-master/wolfssl/internal.h:6057`
 
 ```c
 typedef struct CIDInfo {
@@ -93,60 +91,37 @@ typedef struct CIDInfo {
 } CIDInfo;
 ```
 
-`CIDInfo` stores one current transmit CID and one current receive CID. It does not store a spare CID list, receiver-provided CID queue, usage value, or outstanding RequestConnectionId state.
+`CIDInfo` stores one transmit CID and one receive CID. It does not store a spare CID list, a receiver-provided CID queue, a `usage` value, or outstanding `RequestConnectionId` state.
 
-`D:\project\wolfssl-master\src\dtls.c:1258`
+`wolfssl-master/src/dtls.c:1264`
 
 ```c
 int TLSX_ConnectionID_Parse(WOLFSSL* ssl, const byte* input, word16 length,
     byte isRequest)
 ```
 
-The `connection_id` extension parser can negotiate the current transmit CID:
+This parser supports the `connection_id` extension negotiation path.
 
-```c
-else if (cidSz > 0) {
-    ConnectionID* id = (ConnectionID*)XMALLOC(sizeof(*id) + cidSz,
-            ssl->heap, DYNAMIC_TYPE_TLSX);
-    ...
-    info->tx = id;
-}
-```
-
-`D:\project\wolfssl-master\src\dtls13.c:1170`
+`wolfssl-master/src/dtls13.c:1170`
 
 ```c
 static int Dtls13AddCID(WOLFSSL* ssl, byte* flags, byte* out, word16* idx)
 ```
 
-The DTLS 1.3 unified header sender can include a negotiated CID:
+The DTLS 1.3 sender can add CID bytes to the unified record header.
 
-```c
-*flags |= DTLS13_CID_BIT;
-ret = wolfSSL_dtls_cid_get_tx(ssl, out + *idx, cidSz);
-```
-
-`D:\project\wolfssl-master\src\dtls13.c:1192`
+`wolfssl-master/src/dtls13.c:1192`
 
 ```c
 static int Dtls13UnifiedHeaderParseCID(WOLFSSL* ssl, byte flags,
     const byte* input, word16 inputSize, word16* idx)
 ```
 
-The receiver checks that a record's CID matches the configured receive CID:
-
-```c
-if (!DtlsCIDCheck(ssl, input + *idx, inputSize - *idx)) {
-    WOLFSSL_MSG("Not matching or wrong CID, ignoring");
-    return DTLS_CID_ERROR;
-}
-```
-
-This is valid static CID support, but it is not dynamic CID update support.
+The receiver validates an incoming record CID. These paths prove static CID support, but they do not implement dynamic Section 9 updates.
 
 ### Dynamic CID Handshake Types Are Missing
 
-`D:\project\wolfssl-master\wolfssl\internal.h:6752`
+`wolfssl-master/wolfssl/internal.h:6753`
 
 ```c
 enum HandShakeType {
@@ -170,18 +145,16 @@ enum HandShakeType {
 
 There is no `request_connection_id = 9` and no `new_connection_id = 10`.
 
-In `D:\project\wolfssl-master\src\tls13.c`, `DoTls13HandShakeMsgType` dispatches supported TLS 1.3 handshake messages. It has cases for `session_ticket`, `certificate_request`, `finished`, and `key_update`, but no `case request_connection_id` and no `case new_connection_id`. Unknown messages fall to:
+`wolfssl-master/src/tls13.c:13741`
 
 ```c
-default:
-    WOLFSSL_MSG("Unknown handshake message type");
-    ret = UNKNOWN_HANDSHAKE_TYPE;
-    break;
+WOLFSSL_MSG("Unknown handshake message type");
+ret = UNKNOWN_HANDSHAKE_TYPE;
 ```
 
-Therefore a peer-sent `RequestConnectionId` or `NewConnectionId` cannot reach a parser or state transition.
+The TLS 1.3 handshake dispatcher has cases for ordinary TLS 1.3 post-handshake messages such as `session_ticket`, `certificate_request`, `finished`, and `key_update`, but no `case request_connection_id` and no `case new_connection_id`. A peer-sent dynamic CID update message therefore cannot reach a parser or state transition.
 
-### cid_spare and cid_immediate Semantics Are Missing
+### CID Usage Semantics Are Missing
 
 Repository-wide source checks found no protocol symbols or state for:
 
@@ -194,120 +167,107 @@ RequestConnectionId
 NewConnectionId
 ```
 
-Without those symbols, wolfSSL cannot implement:
-
-| RFC 9147 behavior | wolfSSL audited behavior |
-|---|---|
-| Parse `NewConnectionId.usage` | No `NewConnectionId` parser |
-| Apply `cid_immediate` by switching to one of the new CIDs for all future records | No `cid_immediate` state or handler |
-| Store `cid_spare` CIDs for later use | `CIDInfo` has only one `tx` and one `rx` pointer |
-| Parse `RequestConnectionId.num_cids` | No `RequestConnectionId` parser |
-| Respond with `NewConnectionId(usage = cid_spare)` | No sender or response state machine |
+Without those symbols and handlers, wolfSSL cannot implement the RFC 9147 behaviors for parsing `NewConnectionId.usage`, switching immediately on `cid_immediate`, storing spare CIDs on `cid_spare`, parsing `RequestConnectionId.num_cids`, or responding with `NewConnectionId(usage = cid_spare)`.
 
 ### Existing API Rejects In-Connection CID Changes
 
-`D:\project\wolfssl-master\src\dtls.c:1364`
+`wolfssl-master/src/dtls.c:1383`
 
 ```c
-int wolfSSL_dtls_cid_set(WOLFSSL* ssl, unsigned char* cid, unsigned int size)
+WOLFSSL_MSG("wolfSSL doesn't support changing the CID during a "
+            "connection");
+return WOLFSSL_FAILURE;
 ```
 
-`D:\project\wolfssl-master\src\dtls.c:1375`
+This API behavior reinforces the static-CID conclusion: wolfSSL supports setting/negotiating a CID, but does not support changing the CID dynamically during the connection.
 
-```c
-if (cidInfo->rx != NULL) {
-    WOLFSSL_MSG("wolfSSL doesn't support changing the CID during a "
-                "connection");
-    return WOLFSSL_FAILURE;
-}
-```
-
-The extension parser also rejects changing the negotiated transmit CID:
-
-```c
-/* For now we don't support changing the CID on a rehandshake */
-if (cidSz != info->tx->length ||
-        XMEMCMP(info->tx->id, input + OPAQUE8_LEN, cidSz) != 0)
-    return DTLS_CID_ERROR;
-```
-
-This reinforces the conclusion that wolfSSL's CID model is static/configured, not the dynamic Section 9 update model.
-
-## Existing wolfSSL Test Coverage
-
-`D:\project\wolfssl-master\tests\api\test_dtls.c` contains `test_dtls13_basic_connection_id`. That test enables CID, configures client/server CIDs with `wolfSSL_dtls_cid_set`, and verifies that DTLS 1.3 traffic carries and validates the configured CID.
-
-This proves basic static CID support. It does not send `RequestConnectionId`, parse `num_cids`, generate `NewConnectionId`, or assert `usage = cid_spare` / `usage = cid_immediate` behavior.
-
-## Runtime Evidence
-
-Compiled source-behavior harness:
-
-`D:\project\SpecTrace\test-wolfssl-dtls\rfc9147\151-187\repro_usage_185_186_187_source_check.c`
-
-Observed result:
-
-```text
-Conclusion: PASS - source behavior confirms IDs 185/186/187 are unsatisfied: wolfSSL supports static DTLS CID negotiation/header parsing, but it has no RequestConnectionId/NewConnectionId message types, no cid_spare/cid_immediate usage semantics, and no response state machine.
-```
-
-Selected assertions:
-
-```text
-PASS CIDInfo has tx CID pointer                                           contains "ConnectionID* tx;"
-PASS CIDInfo has rx CID pointer                                           contains "ConnectionID* rx;"
-PASS DTLS 1.3 unified header can add CID                                  contains "*flags |= DTLS13_CID_BIT;"
-PASS no request_connection_id handshake enum                              does not contain "request_connection_id"
-PASS no new_connection_id handshake enum                                  does not contain "new_connection_id"
-PASS no ConnectionIdUsage enum                                            does not contain "ConnectionIdUsage"
-PASS no cid_spare usage                                                   does not contain "cid_spare"
-PASS no cid_immediate usage                                               does not contain "cid_immediate"
-PASS no RequestConnectionId response code                                 does not contain "RequestConnectionId"
-PASS CID API rejects changing CID during connection                       contains "wolfSSL doesn't support changing the CID during a "
-```
-
-This is a compiled and executed source-behavior check. It confirms the implemented static CID path and the missing dynamic usage/update path.
-
-## Inconsistency Reason
+## Implementation Behavior
 
 Implemented behavior:
 
 | Area | wolfSSL behavior |
 |---|---|
-| `connection_id` extension negotiation | Implemented. |
-| DTLS 1.3 unified header CID bit and CID bytes | Implemented. |
-| CID mismatch rejection | Implemented. |
-| Static CID API and tests | Implemented. |
+| `connection_id` extension negotiation | Implemented |
+| DTLS 1.3 unified record header CID bit and CID bytes | Implemented |
+| Incoming CID mismatch rejection | Implemented |
+| Static DTLS 1.3 CID API/test path | Implemented |
 
 Missing behavior:
 
 | RFC 9147 Section 9 behavior | wolfSSL audited behavior |
 |---|---|
-| `NewConnectionId` message | Not defined or dispatched. |
-| `RequestConnectionId` message | Not defined or dispatched. |
-| `ConnectionIdUsage` enum | Not defined. |
-| `cid_spare` semantics | Not implemented. |
-| `cid_immediate` semantics | Not implemented. |
-| `RequestConnectionId.num_cids` response | Not implemented. |
-| Spare CID list / receiver-provided CID queue | Not present in `CIDInfo`. |
+| `NewConnectionId` post-handshake message | Not defined or dispatched |
+| `RequestConnectionId` post-handshake message | Not defined or dispatched |
+| `ConnectionIdUsage` enum | Not defined |
+| `cid_immediate` switch semantics | Not implemented |
+| `cid_spare` storage semantics | Not implemented |
+| `RequestConnectionId.num_cids` parsing | Not implemented |
+| `NewConnectionId(usage = cid_spare)` response | Not implemented |
+| Spare CID list / receiver-provided CID queue | Not present in `CIDInfo` |
 
-Thus IDs 185, 186, and 187 are real unsatisfied findings.
+## Inconsistency Reason
+
+RFC 9147 requires dynamic CID update messages after the `connection_id` extension has been negotiated. The implementation only supports the negotiated/static CID that is already configured for the connection.
+
+This means wolfSSL can use a CID in records, but it cannot process or generate the post-handshake messages that update CIDs:
+
+```text
+RFC 9147: dynamic CID update messages and usage semantics are part of DTLS 1.3.
+wolfSSL: only static CID negotiation/header usage is implemented.
+```
+
+Therefore IDs 185, 186, and 187 are not the same kind of issue as close-notify ordering. They are a distinct dynamic CID feature gap.
+
+## Static Evidence
+
+Source-behavior harness:
+
+`test-wolfssl-dtls/rfc9147/151-187/repro_usage_185_186_187_source_check.c`
+
+Observed log:
+
+`test-wolfssl-dtls/rfc9147/151-187/repro_usage_185_186_187_source_check.log`
+
+Selected results:
+
+```text
+PASS CIDInfo has tx CID pointer
+PASS CIDInfo has rx CID pointer
+PASS DTLS 1.3 unified header can add CID
+PASS DTLS 1.3 unified header checks received CID
+PASS no request_connection_id handshake enum
+PASS no new_connection_id handshake enum
+PASS no ConnectionIdUsage enum
+PASS no cid_spare usage
+PASS no cid_immediate usage
+PASS no num_cids field
+PASS no RequestConnectionId response code
+PASS CID API rejects changing CID during connection
+```
+
+This is a compiled source-behavior check. It proves both sides of the finding: static CID support exists, while dynamic CID update support is absent.
 
 ## Impact
 
-wolfSSL peers can use a configured or negotiated static DTLS CID, but they cannot interoperate with peers that use RFC 9147 dynamic CID update messages. In particular:
+wolfSSL peers can use a configured or negotiated static DTLS CID, but they cannot interoperate with peers that rely on RFC 9147 Section 9 dynamic CID updates.
 
-- a peer sending `NewConnectionId(usage = cid_immediate)` cannot force an immediate CID switch;
-- a peer sending `NewConnectionId(usage = cid_spare)` cannot populate a spare CID pool;
-- a peer sending `RequestConnectionId(num_cids = N)` will not receive the expected `NewConnectionId(usage = cid_spare)` response.
+Concrete effects:
 
-This affects mobility, multipath, privacy, and CID refresh behavior described by RFC 9147 Section 9.
+| Peer behavior | wolfSSL effect |
+|---|---|
+| Sends `NewConnectionId(usage = cid_immediate)` | wolfSSL has no parser/handler to switch CID immediately |
+| Sends `NewConnectionId(usage = cid_spare)` | wolfSSL has no spare CID pool to store the offered CIDs |
+| Sends `RequestConnectionId(num_cids = N)` | wolfSSL has no response path to send `NewConnectionId(usage = cid_spare)` |
 
-## Suggested Fix Direction
+This can affect CID refresh, mobility, multipath behavior, and privacy properties that RFC 9147 Section 9 is designed to support.
 
-1. Add `request_connection_id = 9` and `new_connection_id = 10` to the TLS/DTLS handshake type enum.
+## Fix Direction
+
+1. Add `request_connection_id = 9` and `new_connection_id = 10` to the DTLS/TLS handshake type enum.
 2. Add parsers and serializers for `RequestConnectionId` and `NewConnectionId`.
 3. Add a `ConnectionIdUsage` enum with `cid_immediate` and `cid_spare`.
-4. Extend `CIDInfo` or a new DTLS 1.3 CID state object to maintain receiver-provided spare CID lists and outstanding request state.
-5. Implement `RequestConnectionId` response behavior by sending `NewConnectionId` with `usage = cid_spare`.
-6. Add tests for `cid_immediate`, `cid_spare`, excessive `num_cids`, no-CID-negotiated unexpected-message errors, and outstanding-request restrictions.
+4. Extend CID state beyond a single `tx`/`rx` pair so receiver-provided spare CIDs and outstanding requests can be tracked.
+5. Implement `cid_immediate` by switching to one of the new CIDs for all future records.
+6. Implement `cid_spare` by storing usable spare CIDs.
+7. Implement `RequestConnectionId` response behavior with `NewConnectionId(usage = cid_spare)`.
+8. Add tests for dynamic CID parsing, immediate switch, spare CID storage, excessive requests, missing-CID-negotiation errors, and outstanding-request restrictions.

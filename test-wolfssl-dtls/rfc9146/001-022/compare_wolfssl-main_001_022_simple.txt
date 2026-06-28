@@ -1,22 +1,22 @@
-001	满足	cid	示例所描述的加密后携带 CID 行为在 wolfSSL 的发送路径中以协商到的 tx CID 大小为条件实现；握手早期无 tx CID 时不会使用 tls12_cid。
-002	满足	cid	wolfSSL 每个连接只保存一个 rx CID 及其固定长度，并按该长度比较接收记录；未发现同一连接选择接收多个不同长度 CID 的路径，因此 self-delineating 条件未被触发。
-003	不适用	cid	该条来自 RFC 示例或 IANA 注册表维护说明，不是 wolfSSL 运行时必须改变的协议状态。代码中相关常量/扩展编号存在时作为佐证，但不把示例值作为实现强制要求。
-004	不适用	cid	该条来自 RFC 示例或 IANA 注册表维护说明，不是 wolfSSL 运行时必须改变的协议状态。代码中相关常量/扩展编号存在时作为佐证，但不把示例值作为实现强制要求。
-005	满足	cid	示例所描述的加密后携带 CID 行为在 wolfSSL 的发送路径中以协商到的 tx CID 大小为条件实现；握手早期无 tx CID 时不会使用 tls12_cid。
-006	满足	cid	wolfSSL 解析 connection_id 扩展后保存对端提供的 tx CID；发送 DTLS 1.2 CID 记录时写入该 tx CID，接收时按本端 rx CID 长度和值校验。
-007	不适用	DTLS-Only	该条来自 RFC 示例或 IANA 注册表维护说明，不是 wolfSSL 运行时必须改变的协议状态。代码中相关常量/扩展编号存在时作为佐证，但不把示例值作为实现强制要求。
-008	不适用	DTLS-Only	该条来自 RFC 示例或 IANA 注册表维护说明，不是 wolfSSL 运行时必须改变的协议状态。代码中相关常量/扩展编号存在时作为佐证，但不把示例值作为实现强制要求。
-009	不适用	DTLS-Only	该条来自 RFC 示例或 IANA 注册表维护说明，不是 wolfSSL 运行时必须改变的协议状态。代码中相关常量/扩展编号存在时作为佐证，但不把示例值作为实现强制要求。
-010	满足	enc_content	发送路径在启用 CID 时先追加 inner content type，再进入后续加密/MAC 处理；接收路径解密后移除 inner padding 并恢复真实内容类型。
-011	部分满足	epoch	wolfSSL 只在记录成功解密后更新 pending peer，并通过 DTLS replay window 过滤明显旧包；但普通 DTLS 1.2 路径允许上一 epoch 的窗口记录进入后仍触发 pending peer 更新，未显式要求触发地址变更的记录同时在 epoch 和 sequence number 上都比已接收最新记录更新。
-012	满足	length_of_DTLSInnerPlaintext	wolfSSL 定义 MAX_PLAINTEXT_SZ 为 2^14，并在非 TLS 1.3/DTLS CID 明文处理路径检查去除 padding/MAC 后的明文长度；CID AAD 构造中写入 length_of_DTLSInnerPlaintext。
-013	满足	length_of_DTLSInnerPlaintext	wolfSSL 定义 MAX_PLAINTEXT_SZ 为 2^14，并在非 TLS 1.3/DTLS CID 明文处理路径检查去除 padding/MAC 后的明文长度；CID AAD 构造中写入 length_of_DTLSInnerPlaintext。
-014	满足	outer_type	writeAeadAuthData 在 DTLS CID 路径中写入 8 字节 0xff 占位符、tls12_cid、cid_length、tls12_cid、版本、序列号、CID 和明文长度。
-015	满足	outer_type	wolfSSL 定义 dtls12_cid 为 25，并在 DTLS 且协商到 tx CID 时把外层记录类型设置为该值。
-016	满足	seq_num_placeholder	writeAeadAuthData 在 DTLS CID 路径中写入 8 字节 0xff 占位符、tls12_cid、cid_length、tls12_cid、版本、序列号、CID 和明文长度。
-017	部分满足	sequence_number	wolfSSL 只在记录成功解密后更新 pending peer，并通过 DTLS replay window 过滤明显旧包；但普通 DTLS 1.2 路径允许上一 epoch 的窗口记录进入后仍触发 pending peer 更新，未显式要求触发地址变更的记录同时在 epoch 和 sequence number 上都比已接收最新记录更新。
-018	部分满足	tls12_cid	源码记录层实现包含 DTLS 1.2 tls12_cid(25) 路径，也没有在 DTLS 1.3 记录中使用 tls12_cid 内容类型；但 CMake 选项在启用 WOLFSSL_DTLS_CID 且未启用 WOLFSSL_DTLS13 时直接报错，导致 CMake 构建路径不能单独启用 DTLS 1.2 CID。
-019	满足	tls12_cid	wolfSSL 定义 dtls12_cid 为 25，并在 DTLS 且协商到 tx CID 时把外层记录类型设置为该值。
-020	满足	type	发送路径只有在 DtlsGetCidTxSize()>0 时改写外层 type 并追加 inner content type；否则保留普通 DTLS 记录头和普通 AAD。
-021	满足	zeros	wolfSSL 发送端不主动加入任意零填充；接收端 removeMsgInnerPadding 从末尾跳过 0 字节并要求找到非零 inner content type，因此接受的填充只能是 0x00。
-022	满足	zeros	wolfSSL 发送端不主动加入任意零填充；接收端 removeMsgInnerPadding 从末尾跳过 0 字节并要求找到非零 inner content type，因此接受的填充只能是 0x00。
+001	satisfied	cid	[non-English text removed]use tls12_cid。
+002	satisfied	cid	wolfSSL [non-English text removed]。
+003	not applicable	cid	[non-English text removed]。
+004	not applicable	cid	[non-English text removed]。
+005	satisfied	cid	[non-English text removed]use tls12_cid。
+006	satisfied	cid	wolfSSL [non-English text removed]validation。
+007	not applicable	DTLS-Only	[non-English text removed]。
+008	not applicable	DTLS-Only	[non-English text removed]。
+009	not applicable	DTLS-Only	[non-English text removed]。
+010	satisfied	enc_content	[non-English text removed]。
+011	partialsatisfied	epoch	wolfSSL [non-English text removed]。
+012	satisfied	length_of_DTLSInnerPlaintext	wolfSSL [non-English text removed] length_of_DTLSInnerPlaintext。
+013	satisfied	length_of_DTLSInnerPlaintext	wolfSSL [non-English text removed] length_of_DTLSInnerPlaintext。
+014	satisfied	outer_type	writeAeadAuthData [non-English text removed]、tls12_cid、cid_length、tls12_cid、[non-English text removed]length。
+015	satisfied	outer_type	wolfSSL [non-English text removed]。
+016	satisfied	seq_num_placeholder	writeAeadAuthData [non-English text removed]、tls12_cid、cid_length、tls12_cid、[non-English text removed]length。
+017	partialsatisfied	sequence_number	wolfSSL [non-English text removed]。
+018	partialsatisfied	tls12_cid	[non-English text removed] DTLS 1.2 tls12_cid(25) path，[non-English text removed] DTLS 1.2 CID。
+019	satisfied	tls12_cid	wolfSSL [non-English text removed]。
+020	satisfied	type	[non-English text removed] DtlsGetCidTxSize()>0 [non-English text removed] AAD。
+021	satisfied	zeros	wolfSSL [non-English text removed] removeMsgInnerPadding [non-English text removed] 0x00。
+022	satisfied	zeros	wolfSSL [non-English text removed] removeMsgInnerPadding [non-English text removed] 0x00。

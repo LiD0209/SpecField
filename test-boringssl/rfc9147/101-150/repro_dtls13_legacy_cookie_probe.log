@@ -1,5 +1,0 @@
-﻿linked BoringSSL probe: PASS
-parser behavior: non-zero DTLS legacy_cookie is accepted and exposed as dtls_cookie_len=1
-server behavior: ssl/handshake_server.cc has no dtls_cookie_len rejection path
-runner coverage: parser helper comments know DTLS 1.3 forbids legacy cookie, but runner.go has no named shim test for non-zero legacy_cookie rejection
-conclusion: RFC 9147 IDs 102 and 108 are confirmed unsatisfied with the same root cause

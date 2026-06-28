@@ -1,4 +1,0 @@
-D:/project/SpecTrace/test-boringssl/rfc9146/001-022/build-linked-probe/CMakeFiles/repro_rfc9146_dtls12_cid_missing_linked_probe.dir
-D:/project/SpecTrace/test-boringssl/rfc9146/001-022/build-linked-probe/CMakeFiles/repro_rfc9146_dtls12_inner_plaintext_padding_linked_probe.dir
-D:/project/SpecTrace/test-boringssl/rfc9146/001-022/build-linked-probe/CMakeFiles/ALL_BUILD.dir
-D:/project/SpecTrace/test-boringssl/rfc9146/001-022/build-linked-probe/CMakeFiles/ZERO_CHECK.dir
