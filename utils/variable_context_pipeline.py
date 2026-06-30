@@ -831,12 +831,12 @@ def score_chunk(
     token_overlap = len(chunk.tokens & var_tokens)
 
     if exact_hits > 0:
-        score += 5.0 + min(3.0, (exact_hits - 1) * 0.8)
+        score += 2.0 + min(3.0, (exact_hits - 1) * 0.8)
     elif token_overlap == 0:
         return 0.0
 
     score += overlap * 0.28
-    score += token_overlap * 0.9
+    score += token_overlap * 0.8
 
     if any(k in low_text for k in ["default", "init", "initialize", "fallback", "config"]):
         score += 0.8

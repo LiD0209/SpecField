@@ -805,7 +805,7 @@ def candidate_bonus(snippet: str, action_type: str) -> float:
     return bonus
 
 
-def score_context(snippet: str, aliases: list[str], query_tokens: set[str], action_type: str, exact_bonus: float = 5.0, var_weight: float = 0.9, rule_weight: float = 0.28) -> float:
+def score_context(snippet: str, aliases: list[str], query_tokens: set[str], action_type: str, exact_bonus: float = 2.0, var_weight: float = 0.8, rule_weight: float = 0.28) -> float:
     low = snippet.lower()
     snippet_tokens = set(tokenize(snippet))
     alias_tokens = set()
